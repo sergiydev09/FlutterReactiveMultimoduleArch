@@ -1,28 +1,19 @@
-import 'package:detail/screen/desktop/DetailScreenDesktop.dart';
-import 'package:detail/screen/mobile/DetailScreenMobile.dart';
+
+import 'package:detail/detail_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:home/ui/screen/desktop/home_screen_desktop.dart';
-import 'package:home/ui/screen/mobile/home_screen_mobile.dart';
+import 'package:home/nav/home_route.dart';
 
 class Routes {
   static String home = '/home';
-  static String detail = '/login';
-
-  static Map<String, WidgetBuilder> getRoutes(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double largeScreenSize = 600;
-
-    return {
-      home: (context) => screenWidth > largeScreenSize ? const HomeScreenDesktop() : const HomeScreenMobile(),
-      detail: (context) => screenWidth > largeScreenSize ? const DetailScreenDesktop() : const DetailScreenMobile(),
+  static String detail = '/detail';
+  static Map<String, WidgetBuilder> getRoutes(BuildContext context) => {
+      home: (context) => HomeRoute(context).screen,
+      detail: (context) => DetailRoute(context).screen,
     };
-  }
 }
 
-
 class MyNavigatorObserver extends NavigatorObserver {
-
   @override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
@@ -38,5 +29,4 @@ class MyNavigatorObserver extends NavigatorObserver {
       print('Popped route: ${route.settings.name}');
     }
   }
-
 }
