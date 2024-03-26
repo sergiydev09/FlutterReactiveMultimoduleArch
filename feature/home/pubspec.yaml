@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   arch:
     path: ../../libs/arch
+  res:
+    path: ../../libs/res
 
   flutter_lints: ^3.0.0
   get_it: ^7.6.7

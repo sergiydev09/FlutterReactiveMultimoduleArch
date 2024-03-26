@@ -1,4 +1,6 @@
-class ComicDTO {
+import 'package:arch/data/cache_data_source.dart';
+
+class ComicDTO implements CacheMappable {
   final int id;
   final String title;
   final String? description;
@@ -44,6 +46,34 @@ class ComicDTO {
       prices: json['prices'],
       creators: creatorUris,
       characters: charactersUris,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toStorageMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description ?? '',
+      'thumbnailPath': thumbnailPath,
+      'pageCount': pageCount,
+      'prices': prices,
+      'creators': creators,
+      'characters': characters,
+    };
+  }
+
+  @override
+  factory ComicDTO.fromStorageMap(Map<String, dynamic> map) {
+    return ComicDTO(
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      thumbnailPath: map['thumbnailPath'],
+      pageCount: map['pageCount'],
+      prices: map['prices'],
+      creators: List<String>.from(map['creators']),
+      characters: List<String>.from(map['characters']),
     );
   }
 }

@@ -29,21 +29,22 @@ class ComicRepositoryImpl implements ComicRepository {
     for (var comicDto in comicDTOs) {
       comicsMap[comicDto.id] = transformToDomainModel(comicDto);
 
-      _creatorsDataSource.fetchCreators(comicDto.creators).listen((batchCreatorDTOs) {
+      _creatorsDataSource.fetchCreators(comicDto.id, comicDto.creators).listen((batchCreatorDTOs) {
         var comic = comicsMap[comicDto.id];
         if (comic != null) {
           List<CreatorModel> newCreatorModels = batchCreatorDTOs.map((creatorDto) {
             final thumbnailPath = creatorDto.thumbnailPath;
             return CreatorModel(name: creatorDto.fullName, imagePath: thumbnailPath);
           }).toList();
-          List<CreatorModel> creatorModels = [...comic.creators, ...newCreatorModels];
 
-          comicsMap[comicDto.id] = comic.copyWith(creators: creatorModels);
+          //List<CreatorModel> creatorModels = [...comic.creators, ...newCreatorModels];
+
+          comicsMap[comicDto.id] = comic.copyWith(creators: newCreatorModels);
           comicsStreamController.add(comicsMap.values.toList());
         }
       });
 
-      _charactersDataSource.fetchCharacters(comicDto.characters).listen((batchCharacters) {
+      _charactersDataSource.fetchCharacters(comicDto.id, comicDto.characters).listen((batchCharacters) {
         var comic = comicsMap[comicDto.id];
         if (comic != null) {
           List<CharacterModel> newBatchCharactersModels = batchCharacters.map((characterDto) {
@@ -51,8 +52,9 @@ class ComicRepositoryImpl implements ComicRepository {
             return CharacterModel(name: characterDto.name, imagePath: thumbnailPath);
           }).toList();
 
-          List<CharacterModel> characterModels = [...comic.characters, ...newBatchCharactersModels];
-          comicsMap[comicDto.id] = comic.copyWith(characters: characterModels);
+          //List<CharacterModel> characterModels = [...comic.characters, ...newBatchCharactersModels];
+
+          comicsMap[comicDto.id] = comic.copyWith(characters: newBatchCharactersModels);
           comicsStreamController.add(comicsMap.values.toList());
         }
       });
