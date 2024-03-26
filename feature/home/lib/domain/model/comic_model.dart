@@ -23,21 +23,25 @@ class ComicModel {
     required this.characters,
   });
 
-  factory ComicModel.fromJson(Map<String, dynamic> json, List<CreatorModel> creators, List<CharacterModel> characters) {
-    final thumbnail = json['thumbnail'];
-    final imagePath = '${thumbnail['path']}.${thumbnail['extension']}';
-    final pricesJson = json['prices'] as List;
-    final price = PriceModel.fromJson(pricesJson.first);
-
+  ComicModel copyWith({
+    String? title,
+    String? description,
+    String? imagePath,
+    int? pageCount,
+    PriceModel? price,
+    List<CreatorModel>? creators,
+    List<CharacterModel>? characters,
+  }) {
     return ComicModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      imagePath: imagePath,
-      pageCount: json['pageCount'],
-      price: price,
-      creators: creators,
-      characters: characters,
+      id: id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      imagePath: imagePath ?? this.imagePath,
+      pageCount: pageCount ?? this.pageCount,
+      price: price ?? this.price,
+      creators: creators ?? this.creators,
+      characters: characters ?? this.characters,
     );
   }
+
 }

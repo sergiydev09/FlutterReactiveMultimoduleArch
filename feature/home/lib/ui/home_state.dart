@@ -1,10 +1,11 @@
 import 'package:home/domain/model/comic_model.dart';
 
 class HomeState {
-  List<ComicModel> comics = [];
+  final List<ComicModel> comics;
+  final bool loading;
 
-  HomeState({this.comics = const []});
+  HomeState({this.comics = const [], this.loading = false});
 
-  HomeState updateWith({required List<ComicModel> comics}) => HomeState(comics: comics);
-
+  HomeState copy({List<ComicModel>? comics, bool? loading}) =>
+      HomeState(comics: comics ?? this.comics, loading: loading ?? this.loading);
 }

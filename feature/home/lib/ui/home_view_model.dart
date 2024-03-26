@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:arch/ui/state_notifier.dart';
 import 'package:home/domain/repository/comics_repository.dart';
 import 'package:home/ui/home_state.dart';
 import 'package:injectable/injectable.dart';
@@ -7,13 +7,21 @@ import 'package:injectable/injectable.dart';
 class HomeViewModel {
   final ComicRepository _comicRepository;
 
-  HomeViewModel(this._comicRepository);
+  HomeViewModel(this._comicRepository) {
+    _getComics();
+  }
 
-  final ValueNotifier<HomeState> state = ValueNotifier(HomeState());
+  final StateNotifier<HomeState> state = StateNotifier<HomeState>(HomeState());
 
-  getComics() {
-    _comicRepository.getComics().then((comics) {
-      state.value = state.value.updateWith(comics: comics);
+  _getComics() async {
+    _comicRepository.getComics().listen((comics) {
+      state.update((currentState) => currentState.copy(comics: comics));
+    }, onError: (error) {
+      // Manejo de errores, por ejemplo, actualizando el estado para mostrar un error.
+      print("Error al cargar cómics: $error");
+    }, onDone: () {
+      // Acciones al completar la carga de todos los cómics, si es necesario.
+      print("Carga de cómics completada");
     });
   }
 }
