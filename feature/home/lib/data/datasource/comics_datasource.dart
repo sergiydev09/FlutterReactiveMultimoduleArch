@@ -15,7 +15,7 @@ class ComicsDataSource {
       return cachedComics;
     }
 
-    final uri = MarvelAuth.buildUri('http://gateway.marvel.com/v1/public/comics');
+    final uri = MarvelAuth.buildUri('https://gateway.marvel.com/v1/public/comics');
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {

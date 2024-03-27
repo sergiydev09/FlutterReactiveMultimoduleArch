@@ -16,16 +16,16 @@ Our architecture is built around the concept of modularity, allowing for easy ad
 ### Dependencies
 
 - **Core Flutter**
-    - `flutter`
-    - `flutter_localizations`
+  - `flutter`
+  - `flutter_localizations`
 
 - **Libraries**
-    - `res`: Resources like images, text, colors, themes. (Located at `libs/res`)
-    - `arch`: Base support classes for architecture, including `feature_route.dart`, `state_notifier.dart`, `cache_data_source.dart`. (Located at `libs/arch`)
+  - `res`: Resources like images, text, colors, themes. (Located at `libs/res`)
+  - `arch`: Base support classes for architecture, including `feature_route.dart`, `state_notifier.dart`, `cache_data_source.dart`. (Located at `libs/arch`)
 
 - **Features**
-    - `home`: UI, Domain, and Data for the home screen feature. (Located at `feature/home`)
-    - `detail`: UI, Domain, and Data for the detail screen feature. (Located at `feature/detail`)
+  - `home`: UI, Domain, and Data for the home screen feature. (Located at `feature/home`) Mobile and Desktop screens
+  - `detail`: UI, Domain, and Data for the detail screen feature. (Located at `feature/detail`) Coming soon
 
 ### Third-Party Libraries
 
@@ -37,7 +37,7 @@ Our architecture is built around the concept of modularity, allowing for easy ad
 - `http: ^1.2.1`
 - `crypto: ^3.0.3`
 - `flutter_secure_storage: ^9.0.0`
-
+- `flutter_staggered_grid_view: ^0.7.0`
 
 ### Development Dependencies
 
@@ -48,16 +48,29 @@ Our architecture is built around the concept of modularity, allowing for easy ad
 
 - [x] Modular architecture implementation
 - [x] CacheManager
-- [x] FeatureRoute, implement mobileScreen or desktopScreen depent's on screen size
+- [x] FeatureRoute, implement mobileScreen or desktopScreen according to screen size
 - [x] MVI architecture, using StateNotifier as Kotlin StateFlow
 - [X] Api res calls (Marvel's public api)
 - [x] Dependency injection setup
 - [x] Multi-language strings support
-- [ ] Authentication with social media
+- [ ] Smart Navigation  
+- [ ] Firebase
+  - [ ] Auth(Email, Google, Apple)
+  - [ ] FireStore
+  - [ ] Storage
+  - [ ] Crashlytics
+  - [ ] Push Notifications
+  - [ ] Dynamic/deep links
 - [ ] Payment library (Stripe or Square)
-- [ ] Documentation improvement
+- [ ] Any suggest?
 
 *Note: The roadmap is subject to change as the project evolves.*
+
+
+## Screenshots
+
+![image](https://github.com/sergiydev09/FlutterReactiveMultimoduleArch/assets/47523024/d0761acd-3b49-48dd-b748-375992f3a23e)
+
 
 ## Getting Started
 

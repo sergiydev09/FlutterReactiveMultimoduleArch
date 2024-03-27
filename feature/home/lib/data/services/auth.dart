@@ -14,9 +14,13 @@ import 'package:crypto/crypto.dart';
 // static const String _apiKey = '1073f46987d0b1a66fb72754d423b54c';
 // static const String _privateKey = 'a6144aeda210e607654140447495bb8e93bbe699';
 
+//Key 3
+// static const String _apiKey = '78a919b737c9c5d21c5b4e84c2599068';
+// static const String _privateKey = '431f36773b14d717fd132df1e56d3cad222ceae1';
+
 class MarvelAuth {
-  static const String _apiKey = '78a919b737c9c5d21c5b4e84c2599068';
-  static const String _privateKey = '431f36773b14d717fd132df1e56d3cad222ceae1';
+  static const String _apiKey = 'cc2ebb44745f6e90b810db9600c3bbce';
+  static const String _privateKey = '1583c94dff673492cabf20bb584d0dcf2dd31b50';
 
   static String get _timestamp => '1';
 
