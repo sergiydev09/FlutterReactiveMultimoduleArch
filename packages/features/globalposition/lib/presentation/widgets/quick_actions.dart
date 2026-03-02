@@ -75,7 +75,7 @@ class _QuickActionItem extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: BankingColors.primary.withValues(alpha:0.08),
+              color: BankingColors.primary.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
             child: Icon(

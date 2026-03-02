@@ -80,12 +80,18 @@ class BankingColorExtension extends ThemeExtension<BankingColorExtension> {
     return BankingColorExtension(
       amountPositive: Color.lerp(amountPositive, other.amountPositive, t)!,
       amountNegative: Color.lerp(amountNegative, other.amountNegative, t)!,
-      cardGradientStart:
-          Color.lerp(cardGradientStart, other.cardGradientStart, t)!,
+      cardGradientStart: Color.lerp(
+        cardGradientStart,
+        other.cardGradientStart,
+        t,
+      )!,
       cardGradientEnd: Color.lerp(cardGradientEnd, other.cardGradientEnd, t)!,
       shimmerBase: Color.lerp(shimmerBase, other.shimmerBase, t)!,
-      shimmerHighlight:
-          Color.lerp(shimmerHighlight, other.shimmerHighlight, t)!,
+      shimmerHighlight: Color.lerp(
+        shimmerHighlight,
+        other.shimmerHighlight,
+        t,
+      )!,
     );
   }
 }

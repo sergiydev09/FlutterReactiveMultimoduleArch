@@ -43,17 +43,17 @@ class PaymentResultPage extends StatelessWidget {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: (isSuccess
-                          ? BankingColors.success
-                          : BankingColors.error)
-                      .withValues(alpha:0.1),
+                  color:
+                      (isSuccess ? BankingColors.success : BankingColors.error)
+                          .withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   isSuccess ? Icons.check_circle_outline : Icons.error_outline,
                   size: 56,
-                  color:
-                      isSuccess ? BankingColors.success : BankingColors.error,
+                  color: isSuccess
+                      ? BankingColors.success
+                      : BankingColors.error,
                 ),
               ),
               const SizedBox(height: 32),
@@ -62,19 +62,20 @@ class PaymentResultPage extends StatelessWidget {
                     ? 'Transferencia realizada'
                     : 'Error en la transferencia',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: BankingColors.onBackgroundLight,
-                    ),
+                  fontWeight: FontWeight.w700,
+                  color: BankingColors.onBackgroundLight,
+                ),
               ),
               const SizedBox(height: 12),
               Text(
                 isSuccess
                     ? 'Tu transferencia se ha procesado correctamente.'
-                    : errorMessage ?? 'Ha ocurrido un error. Inténtalo de nuevo.',
+                    : errorMessage ??
+                          'Ha ocurrido un error. Inténtalo de nuevo.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: BankingColors.onBackgroundLightSecondary,
-                    ),
+                  color: BankingColors.onBackgroundLightSecondary,
+                ),
               ),
               if (isSuccess && confirmationId != null) ...[
                 const SizedBox(height: 20),

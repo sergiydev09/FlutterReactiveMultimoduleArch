@@ -32,10 +32,11 @@ class TransactionTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: (isIncome
-                        ? BankingColors.amountPositive
-                        : BankingColors.amountNegative)
-                    .withValues(alpha:0.1),
+                color:
+                    (isIncome
+                            ? BankingColors.amountPositive
+                            : BankingColors.amountNegative)
+                        .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(

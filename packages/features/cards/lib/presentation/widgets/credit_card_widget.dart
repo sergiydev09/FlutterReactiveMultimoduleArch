@@ -32,7 +32,7 @@ class CreditCardWidget extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: _gradientColors.first.withValues(alpha:0.4),
+              color: _gradientColors.first.withValues(alpha: 0.4),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
@@ -49,7 +49,7 @@ class CreditCardWidget extends StatelessWidget {
                 height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha:0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
             ),
@@ -61,7 +61,7 @@ class CreditCardWidget extends StatelessWidget {
                 height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha:0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                 ),
               ),
             ),
@@ -91,8 +91,8 @@ class CreditCardWidget extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: card.isActive
-                              ? Colors.white.withValues(alpha:0.2)
-                              : Colors.red.withValues(alpha:0.3),
+                              ? Colors.white.withValues(alpha: 0.2)
+                              : Colors.red.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -138,7 +138,7 @@ class CreditCardWidget extends StatelessWidget {
                           Text(
                             'TITULAR',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha:0.6),
+                              color: Colors.white.withValues(alpha: 0.6),
                               fontSize: 9,
                               fontWeight: FontWeight.w500,
                               letterSpacing: 1,
@@ -162,7 +162,7 @@ class CreditCardWidget extends StatelessWidget {
                           Text(
                             'VÁLIDA',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha:0.6),
+                              color: Colors.white.withValues(alpha: 0.6),
                               fontSize: 9,
                               fontWeight: FontWeight.w500,
                               letterSpacing: 1,

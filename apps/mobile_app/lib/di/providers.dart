@@ -32,8 +32,9 @@ class EnvironmentNotifier extends Notifier<Environment> {
   void set(Environment value) => state = value;
 }
 
-final environmentProvider =
-    NotifierProvider<EnvironmentNotifier, Environment>(EnvironmentNotifier.new);
+final environmentProvider = NotifierProvider<EnvironmentNotifier, Environment>(
+  EnvironmentNotifier.new,
+);
 
 // Security
 final secureStorageProvider = Provider<SecureStorageService>((ref) {
@@ -56,8 +57,9 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 // Accounts
-final remoteAccountDataSourceProvider =
-    Provider<RemoteAccountDataSource>((ref) {
+final remoteAccountDataSourceProvider = Provider<RemoteAccountDataSource>((
+  ref,
+) {
   throw UnimplementedError('Must be overridden');
 });
 
@@ -70,19 +72,21 @@ final accountRepositoryProvider = Provider<AccountRepository>((ref) {
 // Global Position
 final remoteGlobalPositionDataSourceProvider =
     Provider<RemoteGlobalPositionDataSource>((ref) {
-  throw UnimplementedError('Must be overridden');
-});
+      throw UnimplementedError('Must be overridden');
+    });
 
-final globalPositionRepositoryProvider =
-    Provider<GlobalPositionRepository>((ref) {
+final globalPositionRepositoryProvider = Provider<GlobalPositionRepository>((
+  ref,
+) {
   return GlobalPositionRepositoryImpl(
     remoteDataSource: ref.watch(remoteGlobalPositionDataSourceProvider),
   );
 });
 
 // Payments
-final remotePaymentDataSourceProvider =
-    Provider<RemotePaymentDataSource>((ref) {
+final remotePaymentDataSourceProvider = Provider<RemotePaymentDataSource>((
+  ref,
+) {
   throw UnimplementedError('Must be overridden');
 });
 
@@ -106,21 +110,21 @@ final cardRepositoryProvider = Provider<CardRepository>((ref) {
 // Notifications
 final remoteNotificationDataSourceProvider =
     Provider<RemoteNotificationDataSource>((ref) {
-  throw UnimplementedError('Must be overridden');
-});
+      throw UnimplementedError('Must be overridden');
+    });
 
-final notificationRepositoryProvider =
-    Provider<NotificationRepository>((ref) {
+final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
   return NotificationRepositoryImpl(
     remoteDataSource: ref.watch(remoteNotificationDataSourceProvider),
   );
 });
 
 // Promotions
-final remotePromotionsDataSourceProvider =
-    Provider<RemotePromotionsDataSource>((ref) {
-  throw UnimplementedError('Must be overridden');
-});
+final remotePromotionsDataSourceProvider = Provider<RemotePromotionsDataSource>(
+  (ref) {
+    throw UnimplementedError('Must be overridden');
+  },
+);
 
 // Auth state
 class IsLoggedInNotifier extends Notifier<bool> {
@@ -150,13 +154,14 @@ class HasSeenOnboardingNotifier extends Notifier<bool> {
   void set({required bool value}) => state = value;
 }
 
-final isLoggedInProvider =
-    NotifierProvider<IsLoggedInNotifier, bool>(IsLoggedInNotifier.new);
+final isLoggedInProvider = NotifierProvider<IsLoggedInNotifier, bool>(
+  IsLoggedInNotifier.new,
+);
 final currentUserNameProvider =
     NotifierProvider<CurrentUserNameNotifier, String>(
-  CurrentUserNameNotifier.new,
-);
+      CurrentUserNameNotifier.new,
+    );
 final hasSeenOnboardingProvider =
     NotifierProvider<HasSeenOnboardingNotifier, bool>(
-  HasSeenOnboardingNotifier.new,
-);
+      HasSeenOnboardingNotifier.new,
+    );

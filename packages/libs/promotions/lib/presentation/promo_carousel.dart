@@ -76,7 +76,7 @@ class _PromoCarouselState extends State<PromoCarousel> {
                 decoration: BoxDecoration(
                   color: isActive
                       ? BankingColors.primary
-                      : BankingColors.primary.withValues(alpha:0.2),
+                      : BankingColors.primary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(4),
                 ),
               );

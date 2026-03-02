@@ -10,8 +10,8 @@ part 'payment_state.dart';
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc({
     required ExecutePaymentUseCase executePaymentUseCase,
-  })  : _executePaymentUseCase = executePaymentUseCase,
-        super(const PaymentInitial()) {
+  }) : _executePaymentUseCase = executePaymentUseCase,
+       super(const PaymentInitial()) {
     on<SubmitPayment>(_onSubmit);
     on<ConfirmPayment>(_onConfirm);
     on<RetryPayment>(_onRetry);

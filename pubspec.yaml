@@ -23,6 +23,7 @@ workspace:
   - packages/libs/webview
 
 dependencies:
+  bloc_concurrency: ^0.3.0
   dio: ^5.8.0+1
   dio_cache_interceptor: ^3.5.0
   easy_localization: ^3.0.7+1

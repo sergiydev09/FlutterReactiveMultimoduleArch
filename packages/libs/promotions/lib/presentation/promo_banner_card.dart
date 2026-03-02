@@ -34,7 +34,7 @@ class PromoBannerCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: BankingColors.primary.withValues(alpha:0.3),
+              color: BankingColors.primary.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -63,7 +63,7 @@ class PromoBannerCard extends StatelessWidget {
                     Text(
                       banner.subtitle,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha:0.85),
+                        color: Colors.white.withValues(alpha: 0.85),
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
@@ -77,7 +77,7 @@ class PromoBannerCard extends StatelessWidget {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha:0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text(
@@ -98,7 +98,7 @@ class PromoBannerCard extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha:0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(

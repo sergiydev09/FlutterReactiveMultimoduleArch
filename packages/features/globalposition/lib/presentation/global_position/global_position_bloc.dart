@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/account.dart';
 import 'package:domain/entities/transaction.dart';
@@ -13,10 +14,10 @@ class GlobalPositionBloc
     extends Bloc<GlobalPositionEvent, GlobalPositionState> {
   GlobalPositionBloc({
     required GetGlobalPositionUseCase getGlobalPositionUseCase,
-  })  : _getGlobalPositionUseCase = getGlobalPositionUseCase,
-        super(const GPInitial()) {
-    on<LoadGlobalPosition>(_onLoad);
-    on<RefreshGlobalPosition>(_onRefresh);
+  }) : _getGlobalPositionUseCase = getGlobalPositionUseCase,
+       super(const GPInitial()) {
+    on<LoadGlobalPosition>(_onLoad, transformer: droppable());
+    on<RefreshGlobalPosition>(_onRefresh, transformer: droppable());
   }
 
   final GetGlobalPositionUseCase _getGlobalPositionUseCase;

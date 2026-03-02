@@ -52,14 +52,13 @@ class SettingsPage extends StatelessWidget {
               _SettingsTile(
                 icon: Icons.fingerprint,
                 title: 'Autenticación biométrica',
-                subtitle:
-                    state.isBiometricsEnabled ? 'Activada' : 'Desactivada',
+                subtitle: state.isBiometricsEnabled
+                    ? 'Activada'
+                    : 'Desactivada',
                 trailing: Switch.adaptive(
                   value: state.isBiometricsEnabled,
                   onChanged: (_) {
-                    context
-                        .read<SettingsBloc>()
-                        .add(const ToggleBiometrics());
+                    context.read<SettingsBloc>().add(const ToggleBiometrics());
                   },
                   activeTrackColor: BankingColors.primary,
                 ),
@@ -76,9 +75,9 @@ class SettingsPage extends StatelessWidget {
                 trailing: Switch.adaptive(
                   value: state.areNotificationsEnabled,
                   onChanged: (_) {
-                    context
-                        .read<SettingsBloc>()
-                        .add(const ToggleNotifications());
+                    context.read<SettingsBloc>().add(
+                      const ToggleNotifications(),
+                    );
                   },
                   activeTrackColor: BankingColors.primary,
                 ),
@@ -185,7 +184,7 @@ class _SettingsTile extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: BankingColors.primary.withValues(alpha:0.08),
+          color: BankingColors.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(

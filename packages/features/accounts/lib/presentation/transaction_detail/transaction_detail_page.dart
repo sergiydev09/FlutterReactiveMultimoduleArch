@@ -37,7 +37,7 @@ class TransactionDetailPage extends StatelessWidget {
                     transaction.isIncome
                         ? Icons.arrow_downward_rounded
                         : Icons.arrow_upward_rounded,
-                    color: Colors.white.withValues(alpha:0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                     size: 32,
                   ),
                   const SizedBox(height: 8),
@@ -59,7 +59,9 @@ class TransactionDetailPage extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: _statusColor(transaction.status).withValues(alpha:0.2),
+                      color: _statusColor(
+                        transaction.status,
+                      ).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(

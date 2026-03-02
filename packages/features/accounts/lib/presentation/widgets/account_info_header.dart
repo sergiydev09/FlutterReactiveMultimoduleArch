@@ -39,7 +39,7 @@ class AccountInfoHeader extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha:0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -59,7 +59,7 @@ class AccountInfoHeader extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: BankingColors.accent.withValues(alpha:0.3),
+                    color: BankingColors.accent.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(
@@ -78,7 +78,7 @@ class AccountInfoHeader extends StatelessWidget {
           Text(
             account.name,
             style: TextStyle(
-              color: Colors.white.withValues(alpha:0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -87,7 +87,7 @@ class AccountInfoHeader extends StatelessWidget {
           Text(
             Formatters.formatIban(account.iban),
             style: TextStyle(
-              color: Colors.white.withValues(alpha:0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 13,
               letterSpacing: 1,
             ),
@@ -102,7 +102,10 @@ class AccountInfoHeader extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            Formatters.formatCurrency(account.balance, currency: account.currency),
+            Formatters.formatCurrency(
+              account.balance,
+              currency: account.currency,
+            ),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 32,

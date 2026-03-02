@@ -61,15 +61,15 @@ class AppText extends StatelessWidget {
   final TextAlign? textAlign;
 
   TextStyle get _baseStyle => switch (variant) {
-        AppTextVariant.headlineLarge => BankingTypography.headlineLarge,
-        AppTextVariant.headlineMedium => BankingTypography.headlineMedium,
-        AppTextVariant.titleLarge => BankingTypography.titleLarge,
-        AppTextVariant.titleMedium => BankingTypography.titleMedium,
-        AppTextVariant.bodyLarge => BankingTypography.bodyLarge,
-        AppTextVariant.bodyMedium => BankingTypography.bodyMedium,
-        AppTextVariant.labelLarge => BankingTypography.labelLarge,
-        AppTextVariant.labelSmall => BankingTypography.labelSmall,
-      };
+    AppTextVariant.headlineLarge => BankingTypography.headlineLarge,
+    AppTextVariant.headlineMedium => BankingTypography.headlineMedium,
+    AppTextVariant.titleLarge => BankingTypography.titleLarge,
+    AppTextVariant.titleMedium => BankingTypography.titleMedium,
+    AppTextVariant.bodyLarge => BankingTypography.bodyLarge,
+    AppTextVariant.bodyMedium => BankingTypography.bodyMedium,
+    AppTextVariant.labelLarge => BankingTypography.labelLarge,
+    AppTextVariant.labelSmall => BankingTypography.labelSmall,
+  };
 
   @override
   Widget build(BuildContext context) {

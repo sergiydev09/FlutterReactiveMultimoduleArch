@@ -44,12 +44,12 @@ class PromoBanner extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        subtitle,
-        imageUrl,
-        actionUrl,
-        actionType,
-        priority,
-      ];
+    id,
+    title,
+    subtitle,
+    imageUrl,
+    actionUrl,
+    actionType,
+    priority,
+  ];
 }

@@ -104,8 +104,8 @@ class CardDetailPage extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             context.read<CardsBloc>().add(
-                                  ToggleCardStatus(cardId: currentCard.id),
-                                );
+                              ToggleCardStatus(cardId: currentCard.id),
+                            );
                           },
                           icon: Icon(
                             currentCard.isActive
@@ -140,8 +140,9 @@ class CardDetailPage extends StatelessWidget {
                           label: const Text('Cambiar PIN'),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: BankingColors.primary,
-                            side:
-                                const BorderSide(color: BankingColors.primary),
+                            side: const BorderSide(
+                              color: BankingColors.primary,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),

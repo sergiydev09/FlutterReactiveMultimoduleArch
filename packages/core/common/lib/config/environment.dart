@@ -24,26 +24,26 @@ class EnvironmentConfig {
   factory EnvironmentConfig.fromEnvironment(Environment environment) {
     return switch (environment) {
       Environment.mock => const EnvironmentConfig._(
-          environment: Environment.mock,
-          baseUrl: 'http://localhost:8080/api/v1',
-          connectTimeout: Duration(seconds: 30),
-          receiveTimeout: Duration(seconds: 30),
-          enableLogging: true,
-        ),
+        environment: Environment.mock,
+        baseUrl: 'http://localhost:8080/api/v1',
+        connectTimeout: Duration(seconds: 30),
+        receiveTimeout: Duration(seconds: 30),
+        enableLogging: true,
+      ),
       Environment.pre => const EnvironmentConfig._(
-          environment: Environment.pre,
-          baseUrl: 'https://pre-api.banking-app.com/api/v1',
-          connectTimeout: Duration(seconds: 15),
-          receiveTimeout: Duration(seconds: 15),
-          enableLogging: true,
-        ),
+        environment: Environment.pre,
+        baseUrl: 'https://pre-api.banking-app.com/api/v1',
+        connectTimeout: Duration(seconds: 15),
+        receiveTimeout: Duration(seconds: 15),
+        enableLogging: true,
+      ),
       Environment.pro => const EnvironmentConfig._(
-          environment: Environment.pro,
-          baseUrl: 'https://api.banking-app.com/api/v1',
-          connectTimeout: Duration(seconds: 10),
-          receiveTimeout: Duration(seconds: 10),
-          enableLogging: false,
-        ),
+        environment: Environment.pro,
+        baseUrl: 'https://api.banking-app.com/api/v1',
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        enableLogging: false,
+      ),
     };
   }
 

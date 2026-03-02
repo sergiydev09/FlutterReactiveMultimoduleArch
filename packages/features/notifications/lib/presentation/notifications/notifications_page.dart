@@ -23,37 +23,38 @@ class NotificationsPage extends StatelessWidget {
     return BlocBuilder<NotificationsBloc, NotificationsState>(
       builder: (context, state) {
         return switch (state) {
-          NotificationsInitial() ||
-          NotificationsLoading() =>
-            const Center(
-              child: CircularProgressIndicator(
-                color: BankingColors.primary,
-              ),
+          NotificationsInitial() || NotificationsLoading() => const Center(
+            child: CircularProgressIndicator(
+              color: BankingColors.primary,
             ),
+          ),
           NotificationsError(:final message) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline,
-                      size: 48, color: BankingColors.error),
-                  const SizedBox(height: 16),
-                  Text(message),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context
-                          .read<NotificationsBloc>()
-                          .add(const LoadNotifications());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BankingColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Reintentar'),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: BankingColors.error,
+                ),
+                const SizedBox(height: 16),
+                Text(message),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<NotificationsBloc>().add(
+                      const LoadNotifications(),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: BankingColors.primary,
+                    foregroundColor: Colors.white,
                   ),
-                ],
-              ),
+                  child: const Text('Reintentar'),
+                ),
+              ],
             ),
+          ),
           NotificationsLoaded(:final notifications) =>
             notifications.isEmpty
                 ? const Center(
@@ -90,10 +91,10 @@ class NotificationsPage extends StatelessWidget {
                         onTap: () {
                           if (!notification.isRead) {
                             context.read<NotificationsBloc>().add(
-                                  MarkNotificationAsRead(
-                                    notificationId: notification.id,
-                                  ),
-                                );
+                              MarkNotificationAsRead(
+                                notificationId: notification.id,
+                              ),
+                            );
                           }
                           onNotificationTap?.call(notification);
                         },
@@ -121,9 +122,9 @@ class _NotificationTile extends StatelessWidget {
       onTap: onTap,
       tileColor: notification.isRead
           ? null
-          : BankingColors.primary.withValues(alpha:0.04),
+          : BankingColors.primary.withValues(alpha: 0.04),
       leading: CircleAvatar(
-        backgroundColor: _iconColor.withValues(alpha:0.1),
+        backgroundColor: _iconColor.withValues(alpha: 0.1),
         child: Icon(
           _iconData,
           color: _iconColor,

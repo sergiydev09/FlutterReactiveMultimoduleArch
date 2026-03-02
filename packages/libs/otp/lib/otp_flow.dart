@@ -176,16 +176,16 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           Text(
             'Verificación de seguridad',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'Hemos enviado un código de ${widget.config.length} dígitos por $deliveryLabel',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+              color: Colors.grey.shade600,
+            ),
           ),
           const SizedBox(height: 32),
           // OTP input fields.
@@ -235,18 +235,18 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           Text(
             'Código válido durante $_formattedTime',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: _remainingSeconds < 30
-                      ? BankingColors.error
-                      : Colors.grey.shade600,
-                ),
+              color: _remainingSeconds < 30
+                  ? BankingColors.error
+                  : Colors.grey.shade600,
+            ),
           ),
           if (_errorMessage != null) ...[
             const SizedBox(height: 8),
             Text(
               _errorMessage!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: BankingColors.error,
-                  ),
+                color: BankingColors.error,
+              ),
             ),
           ],
           const SizedBox(height: 24),
@@ -262,7 +262,9 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                disabledBackgroundColor: BankingColors.primary.withValues(alpha:0.6),
+                disabledBackgroundColor: BankingColors.primary.withValues(
+                  alpha: 0.6,
+                ),
               ),
               child: _isVerifying
                   ? const SizedBox(

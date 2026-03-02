@@ -10,8 +10,8 @@ part 'account_detail_state.dart';
 class AccountDetailBloc extends Bloc<AccountDetailEvent, AccountDetailState> {
   AccountDetailBloc({
     required GetAccountDetailUseCase getAccountDetailUseCase,
-  })  : _getAccountDetailUseCase = getAccountDetailUseCase,
-        super(const AccountDetailInitial()) {
+  }) : _getAccountDetailUseCase = getAccountDetailUseCase,
+       super(const AccountDetailInitial()) {
     on<LoadAccountDetail>(_onLoad);
   }
 

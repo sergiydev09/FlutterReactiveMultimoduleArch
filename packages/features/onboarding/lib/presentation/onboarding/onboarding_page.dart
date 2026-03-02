@@ -61,10 +61,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
       widget.onComplete?.call();
     } else {
       cubit.nextPage();
-      unawaited(_pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      ));
+      unawaited(
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        ),
+      );
     }
   }
 
@@ -130,7 +132,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           decoration: BoxDecoration(
                             color: isActive
                                 ? BankingColors.primary
-                                : BankingColors.primary.withValues(alpha:0.2),
+                                : BankingColors.primary.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                         );
@@ -203,7 +205,7 @@ class _OnboardingSlide extends StatelessWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: data.color.withValues(alpha:0.1),
+              color: data.color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -217,18 +219,18 @@ class _OnboardingSlide extends StatelessWidget {
             data.title,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: BankingColors.onBackgroundLight,
-                ),
+              fontWeight: FontWeight.w700,
+              color: BankingColors.onBackgroundLight,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             data.description,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: BankingColors.onBackgroundLightSecondary,
-                  height: 1.5,
-                ),
+              color: BankingColors.onBackgroundLightSecondary,
+              height: 1.5,
+            ),
           ),
         ],
       ),

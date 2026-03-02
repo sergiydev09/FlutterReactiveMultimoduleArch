@@ -29,7 +29,7 @@ class AccountCard extends StatelessWidget {
           border: Border.all(color: BankingColors.dividerLight),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -41,7 +41,7 @@ class AccountCard extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: BankingColors.primary.withValues(alpha:0.08),
+                color: BankingColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -75,7 +75,10 @@ class AccountCard extends StatelessWidget {
               ),
             ),
             Text(
-              Formatters.formatCurrency(account.balance, currency: account.currency),
+              Formatters.formatCurrency(
+                account.balance,
+                currency: account.currency,
+              ),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,

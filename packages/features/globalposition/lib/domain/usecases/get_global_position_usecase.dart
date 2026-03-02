@@ -21,8 +21,7 @@ class GlobalPositionData extends Equatable {
 }
 
 /// Fetches the global position: all accounts and recent transactions.
-class GetGlobalPositionUseCase
-    extends UseCase<GlobalPositionData, NoParams> {
+class GetGlobalPositionUseCase extends UseCase<GlobalPositionData, NoParams> {
   GetGlobalPositionUseCase({required this.repository});
 
   final GlobalPositionRepository repository;

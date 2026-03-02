@@ -14,8 +14,7 @@ class Iban extends Equatable {
   String get countryCode => value.length >= 2 ? value.substring(0, 2) : '';
 
   /// The check digits (characters 3-4).
-  String get checkDigits =>
-      value.length >= 4 ? value.substring(2, 4) : '';
+  String get checkDigits => value.length >= 4 ? value.substring(2, 4) : '';
 
   /// Formatted IBAN in groups of 4 (e.g. "ES12 3456 7890 1234 56").
   String get formatted {

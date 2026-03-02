@@ -70,7 +70,8 @@ class SessionManager {
     if (lastActivityStr == null) return false;
 
     final lastActivity =
-        DateTime.tryParse(lastActivityStr) ?? DateTime.fromMillisecondsSinceEpoch(0);
+        DateTime.tryParse(lastActivityStr) ??
+        DateTime.fromMillisecondsSinceEpoch(0);
     final elapsed = DateTime.now().difference(lastActivity);
 
     return elapsed < sessionTimeout;

@@ -7,11 +7,13 @@ part 'settings_state.dart';
 /// BLoC for managing user settings/preferences.
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc()
-      : super(const SettingsState(
+    : super(
+        const SettingsState(
           isDarkMode: false,
           isBiometricsEnabled: false,
           areNotificationsEnabled: true,
-        )) {
+        ),
+      ) {
     on<ToggleTheme>(_onToggleTheme);
     on<ToggleBiometrics>(_onToggleBiometrics);
     on<ToggleNotifications>(_onToggleNotifications);
@@ -35,8 +37,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     ToggleNotifications event,
     Emitter<SettingsState> emit,
   ) {
-    emit(state.copyWith(
-      areNotificationsEnabled: !state.areNotificationsEnabled,
-    ));
+    emit(
+      state.copyWith(
+        areNotificationsEnabled: !state.areNotificationsEnabled,
+      ),
+    );
   }
 }

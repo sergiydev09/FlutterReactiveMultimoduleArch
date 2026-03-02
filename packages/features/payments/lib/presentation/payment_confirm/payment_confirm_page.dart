@@ -45,8 +45,9 @@ class PaymentConfirmPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: BankingColors.surfaceLight,
                             borderRadius: BorderRadius.circular(16),
-                            border:
-                                Border.all(color: BankingColors.dividerLight),
+                            border: Border.all(
+                              color: BankingColors.dividerLight,
+                            ),
                           ),
                           child: Column(
                             children: [
@@ -78,8 +79,9 @@ class PaymentConfirmPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: BankingColors.surfaceLight,
                             borderRadius: BorderRadius.circular(16),
-                            border:
-                                Border.all(color: BankingColors.dividerLight),
+                            border: Border.all(
+                              color: BankingColors.dividerLight,
+                            ),
                           ),
                           child: Column(
                             children: [
@@ -112,9 +114,9 @@ class PaymentConfirmPage extends StatelessWidget {
                     onPressed: isProcessing
                         ? null
                         : () {
-                            context
-                                .read<PaymentBloc>()
-                                .add(const ConfirmPayment());
+                            context.read<PaymentBloc>().add(
+                              const ConfirmPayment(),
+                            );
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: BankingColors.secondary,
@@ -130,8 +132,9 @@ class PaymentConfirmPage extends StatelessWidget {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : const Text(

@@ -4,7 +4,6 @@ import 'package:mobile_app/routing/app_router.dart';
 import 'package:ui/theme/banking_theme.dart';
 
 class BankingApp extends ConsumerWidget {
-
   const BankingApp({
     this.showEnvironmentSelector = false,
     super.key,

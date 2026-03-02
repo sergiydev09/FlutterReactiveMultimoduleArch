@@ -122,14 +122,14 @@ class Transaction extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        accountId,
-        amount,
-        currency,
-        description,
-        category,
-        status,
-        createdAt,
-        merchant,
-      ];
+    id,
+    accountId,
+    amount,
+    currency,
+    description,
+    category,
+    status,
+    createdAt,
+    merchant,
+  ];
 }

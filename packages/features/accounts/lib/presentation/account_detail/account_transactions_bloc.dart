@@ -11,8 +11,8 @@ class AccountTransactionsBloc
     extends Bloc<AccountTransactionsEvent, AccountTransactionsState> {
   AccountTransactionsBloc({
     required GetAccountTransactionsUseCase getAccountTransactionsUseCase,
-  })  : _getAccountTransactionsUseCase = getAccountTransactionsUseCase,
-        super(const AccountTransactionsInitial()) {
+  }) : _getAccountTransactionsUseCase = getAccountTransactionsUseCase,
+       super(const AccountTransactionsInitial()) {
     on<LoadTransactions>(_onLoad);
     on<LoadMoreTransactions>(_onLoadMore);
   }
@@ -30,8 +30,7 @@ class AccountTransactionsBloc
     );
 
     result.match(
-      (failure) =>
-          emit(AccountTransactionsError(message: failure.message)),
+      (failure) => emit(AccountTransactionsError(message: failure.message)),
       (transactions) => emit(
         AccountTransactionsLoaded(
           transactions: transactions,
@@ -63,8 +62,7 @@ class AccountTransactionsBloc
     );
 
     result.match(
-      (failure) =>
-          emit(AccountTransactionsError(message: failure.message)),
+      (failure) => emit(AccountTransactionsError(message: failure.message)),
       (newTransactions) => emit(
         AccountTransactionsLoaded(
           transactions: [

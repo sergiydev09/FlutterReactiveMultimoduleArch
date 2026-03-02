@@ -50,10 +50,10 @@ class GlobalPositionPage extends StatelessWidget {
       builder: (context, state) {
         return switch (state) {
           GPInitial() || GPLoading() => const Center(
-              child: CircularProgressIndicator(
-                color: BankingColors.primary,
-              ),
+            child: CircularProgressIndicator(
+              color: BankingColors.primary,
             ),
+          ),
           GPError(:final message) => _buildError(context, message),
           GPLoaded() => _buildLoaded(context, state),
         };
@@ -71,7 +71,7 @@ class GlobalPositionPage extends StatelessWidget {
             Icon(
               Icons.error_outline,
               size: 48,
-              color: BankingColors.error.withValues(alpha:0.7),
+              color: BankingColors.error.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 16),
             Text(
@@ -85,9 +85,9 @@ class GlobalPositionPage extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                context
-                    .read<GlobalPositionBloc>()
-                    .add(const LoadGlobalPosition());
+                context.read<GlobalPositionBloc>().add(
+                  const LoadGlobalPosition(),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: BankingColors.primary,
@@ -105,9 +105,7 @@ class GlobalPositionPage extends StatelessWidget {
     return RefreshIndicator(
       color: BankingColors.primary,
       onRefresh: () async {
-        context
-            .read<GlobalPositionBloc>()
-            .add(const RefreshGlobalPosition());
+        context.read<GlobalPositionBloc>().add(const RefreshGlobalPosition());
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -144,8 +142,10 @@ class GlobalPositionPage extends StatelessWidget {
             const SizedBox(height: 12),
             ...state.accounts.map(
               (account) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: AccountCard(
                   account: account,
                   onTap: () => onAccountTap?.call(account.id),
@@ -233,7 +233,7 @@ class _TotalBalanceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: BankingColors.primary.withValues(alpha:0.3),
+            color: BankingColors.primary.withValues(alpha: 0.3),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -245,7 +245,7 @@ class _TotalBalanceCard extends StatelessWidget {
           Text(
             'Saldo total',
             style: TextStyle(
-              color: Colors.white.withValues(alpha:0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),

@@ -13,9 +13,9 @@ class CardsBloc extends Bloc<CardsEvent, CardsState> {
   CardsBloc({
     required GetCardsUseCase getCardsUseCase,
     required CardRepository cardRepository,
-  })  : _getCardsUseCase = getCardsUseCase,
-        _cardRepository = cardRepository,
-        super(const CardsInitial()) {
+  }) : _getCardsUseCase = getCardsUseCase,
+       _cardRepository = cardRepository,
+       super(const CardsInitial()) {
     on<LoadCards>(_onLoadCards);
     on<ToggleCardStatus>(_onToggleCardStatus);
   }

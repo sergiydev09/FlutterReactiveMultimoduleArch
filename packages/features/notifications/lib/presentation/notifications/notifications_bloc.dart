@@ -10,8 +10,8 @@ part 'notifications_state.dart';
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc({
     required NotificationRepository notificationRepository,
-  })  : _notificationRepository = notificationRepository,
-        super(const NotificationsInitial()) {
+  }) : _notificationRepository = notificationRepository,
+       super(const NotificationsInitial()) {
     on<LoadNotifications>(_onLoad);
     on<MarkNotificationAsRead>(_onMarkAsRead);
   }
@@ -41,7 +41,9 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     final currentState = state;
     if (currentState is! NotificationsLoaded) return;
 
-    final result = await _notificationRepository.markAsRead(event.notificationId);
+    final result = await _notificationRepository.markAsRead(
+      event.notificationId,
+    );
 
     result.match(
       (failure) {
@@ -49,9 +51,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       },
       (_) {
         final updatedNotifications = currentState.notifications.map((n) {
-          return n.id == event.notificationId
-              ? n.copyWith(isRead: true)
-              : n;
+          return n.id == event.notificationId ? n.copyWith(isRead: true) : n;
         }).toList();
         emit(NotificationsLoaded(notifications: updatedNotifications));
       },

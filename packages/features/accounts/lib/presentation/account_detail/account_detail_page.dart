@@ -24,112 +24,111 @@ class AccountDetailPage extends StatelessWidget {
       body: BlocBuilder<AccountDetailBloc, AccountDetailState>(
         builder: (context, detailState) {
           return switch (detailState) {
-            AccountDetailInitial() ||
-            AccountDetailLoading() =>
-              const Center(
-                child: CircularProgressIndicator(
-                  color: BankingColors.primary,
-                ),
+            AccountDetailInitial() || AccountDetailLoading() => const Center(
+              child: CircularProgressIndicator(
+                color: BankingColors.primary,
               ),
+            ),
             AccountDetailError(:final message) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: BankingColors.error),
-                    const SizedBox(height: 16),
-                    Text(message),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Volver'),
-                    ),
-                  ],
-                ),
-              ),
-            AccountDetailLoaded(:final account) => CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    expandedHeight: 220,
-                    pinned: true,
-                    backgroundColor: BankingColors.primary,
-                    foregroundColor: Colors.white,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: AccountInfoHeader(account: account),
-                    ),
-                    title: Text(
-                      account.name,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: BankingColors.error,
                   ),
-                  // Transactions list.
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-                      child: Text(
-                        'Movimientos',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                    ),
-                  ),
-                  BlocBuilder<AccountTransactionsBloc,
-                      AccountTransactionsState>(
-                    builder: (context, txState) {
-                      return switch (txState) {
-                        AccountTransactionsInitial() ||
-                        AccountTransactionsLoading() =>
-                          const SliverFillRemaining(
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: BankingColors.primary,
-                              ),
-                            ),
-                          ),
-                        AccountTransactionsError(:final message) =>
-                          SliverFillRemaining(
-                            child: Center(child: Text(message)),
-                          ),
-                        AccountTransactionsLoaded(
-                          :final transactions,
-                          :final hasReachedMax,
-                        ) =>
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                if (index >= transactions.length) {
-                                  if (!hasReachedMax) {
-                                    context
-                                        .read<AccountTransactionsBloc>()
-                                        .add(const LoadMoreTransactions());
-                                    return const Padding(
-                                      padding: EdgeInsets.all(16),
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: BankingColors.primary,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  return null;
-                                }
-
-                                final tx = transactions[index];
-                                return _TransactionListItem(
-                                  transaction: tx,
-                                  onTap: () => onTransactionTap?.call(tx),
-                                );
-                              },
-                              childCount: transactions.length +
-                                  (hasReachedMax ? 0 : 1),
-                            ),
-                          ),
-                      };
-                    },
+                  const SizedBox(height: 16),
+                  Text(message),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Volver'),
                   ),
                 ],
               ),
+            ),
+            AccountDetailLoaded(:final account) => CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 220,
+                  pinned: true,
+                  backgroundColor: BankingColors.primary,
+                  foregroundColor: Colors.white,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: AccountInfoHeader(account: account),
+                  ),
+                  title: Text(
+                    account.name,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                // Transactions list.
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+                    child: Text(
+                      'Movimientos',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
+                  builder: (context, txState) {
+                    return switch (txState) {
+                      AccountTransactionsInitial() ||
+                      AccountTransactionsLoading() => const SliverFillRemaining(
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: BankingColors.primary,
+                          ),
+                        ),
+                      ),
+                      AccountTransactionsError(:final message) =>
+                        SliverFillRemaining(
+                          child: Center(child: Text(message)),
+                        ),
+                      AccountTransactionsLoaded(
+                        :final transactions,
+                        :final hasReachedMax,
+                      ) =>
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              if (index >= transactions.length) {
+                                if (!hasReachedMax) {
+                                  context.read<AccountTransactionsBloc>().add(
+                                    const LoadMoreTransactions(),
+                                  );
+                                  return const Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: BankingColors.primary,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return null;
+                              }
+
+                              final tx = transactions[index];
+                              return _TransactionListItem(
+                                transaction: tx,
+                                onTap: () => onTransactionTap?.call(tx),
+                              );
+                            },
+                            childCount:
+                                transactions.length + (hasReachedMax ? 0 : 1),
+                          ),
+                        ),
+                    };
+                  },
+                ),
+              ],
+            ),
           };
         },
       ),
@@ -151,14 +150,13 @@ class _TransactionListItem extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: CircleAvatar(
-        backgroundColor: (transaction.isIncome
-                ? BankingColors.amountPositive
-                : BankingColors.amountNegative)
-            .withValues(alpha:0.1),
+        backgroundColor:
+            (transaction.isIncome
+                    ? BankingColors.amountPositive
+                    : BankingColors.amountNegative)
+                .withValues(alpha: 0.1),
         child: Icon(
-          transaction.isIncome
-              ? Icons.arrow_downward
-              : Icons.arrow_upward,
+          transaction.isIncome ? Icons.arrow_downward : Icons.arrow_upward,
           color: transaction.isIncome
               ? BankingColors.amountPositive
               : BankingColors.amountNegative,

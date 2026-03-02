@@ -5,23 +5,23 @@ import 'package:fpdart/fpdart.dart';
 extension EitherExtensions<T> on Either<Failure, T> {
   /// Returns the right value or throws a [StateError] if left.
   T getOrThrow() => match(
-        (failure) => throw StateError(
-          'Expected Right but got Left: ${failure.message}',
-        ),
-        (value) => value,
-      );
+    (failure) => throw StateError(
+      'Expected Right but got Left: ${failure.message}',
+    ),
+    (value) => value,
+  );
 
   /// Returns the right value or [defaultValue] if left.
   T getOrElse(T defaultValue) => match(
-        (_) => defaultValue,
-        (value) => value,
-      );
+    (_) => defaultValue,
+    (value) => value,
+  );
 
   /// Returns the failure or `null` if right.
   Failure? get failureOrNull => match(
-        (failure) => failure,
-        (_) => null,
-      );
+    (failure) => failure,
+    (_) => null,
+  );
 
   /// Returns `true` if this is a successful result.
   bool get isSuccess => isRight();

@@ -77,9 +77,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 container.read(environmentProvider.notifier).set(env);
               },
               onLoginSuccess: (user) {
-                container
-                    .read(isLoggedInProvider.notifier)
-                    .set(value: true);
+                container.read(isLoggedInProvider.notifier).set(value: true);
                 container
                     .read(currentUserNameProvider.notifier)
                     .set(user.fullName);

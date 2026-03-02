@@ -70,9 +70,7 @@ class CardEntity extends Equatable {
 
   /// Credit usage percentage (0.0 to 1.0). Returns null for debit cards.
   double? get usagePercentage {
-    if (availableLimit == null ||
-        usedLimit == null ||
-        availableLimit == 0) {
+    if (availableLimit == null || usedLimit == null || availableLimit == 0) {
       return null;
     }
     return usedLimit! / (availableLimit! + usedLimit!);
@@ -105,14 +103,14 @@ class CardEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        type,
-        lastFourDigits,
-        cardHolderName,
-        expiryDate,
-        isActive,
-        brand,
-        availableLimit,
-        usedLimit,
-      ];
+    id,
+    type,
+    lastFourDigits,
+    cardHolderName,
+    expiryDate,
+    isActive,
+    brand,
+    availableLimit,
+    usedLimit,
+  ];
 }

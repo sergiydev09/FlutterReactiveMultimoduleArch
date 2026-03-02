@@ -51,8 +51,8 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
       final payment = Payment(
         fromAccount: _selectedAccount ?? '',
         toIban: _ibanController.text.trim(),
-        amount: double.tryParse(_amountController.text.replaceAll(',', '.')) ??
-            0.0,
+        amount:
+            double.tryParse(_amountController.text.replaceAll(',', '.')) ?? 0.0,
         concept: _conceptController.text.trim(),
       );
       context.read<PaymentBloc>().add(SubmitPayment(payment: payment));
@@ -72,8 +72,8 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             Text(
               'Cuenta de origen',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: BankingColors.onBackgroundLight,
-                  ),
+                color: BankingColors.onBackgroundLight,
+              ),
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
@@ -114,8 +114,8 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             Text(
               'IBAN destino',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: BankingColors.onBackgroundLight,
-                  ),
+                color: BankingColors.onBackgroundLight,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
@@ -145,14 +145,15 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             Text(
               'Importe',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: BankingColors.onBackgroundLight,
-                  ),
+                color: BankingColors.onBackgroundLight,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(
               controller: _amountController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
               ],
@@ -170,8 +171,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
                 if (value == null || value.trim().isEmpty) {
                   return 'Introduce el importe';
                 }
-                final amount =
-                    double.tryParse(value.replaceAll(',', '.'));
+                final amount = double.tryParse(value.replaceAll(',', '.'));
                 if (amount == null || amount <= 0) {
                   return 'El importe debe ser mayor que 0';
                 }
@@ -183,8 +183,8 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             Text(
               'Concepto',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: BankingColors.onBackgroundLight,
-                  ),
+                color: BankingColors.onBackgroundLight,
+              ),
             ),
             const SizedBox(height: 8),
             TextFormField(

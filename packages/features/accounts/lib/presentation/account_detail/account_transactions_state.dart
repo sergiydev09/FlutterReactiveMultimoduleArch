@@ -40,8 +40,12 @@ final class AccountTransactionsLoaded extends AccountTransactionsState {
   final String accountId;
 
   @override
-  List<Object?> get props =>
-      [transactions, hasReachedMax, currentPage, accountId];
+  List<Object?> get props => [
+    transactions,
+    hasReachedMax,
+    currentPage,
+    accountId,
+  ];
 }
 
 /// Error loading transactions.

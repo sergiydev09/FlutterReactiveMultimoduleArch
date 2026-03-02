@@ -29,8 +29,7 @@ class WebViewConfig {
     final uri = Uri.tryParse(url);
     if (uri == null) return false;
     return allowedDomains.any(
-      (domain) =>
-          uri.host == domain || uri.host.endsWith('.$domain'),
+      (domain) => uri.host == domain || uri.host.endsWith('.$domain'),
     );
   }
 }
