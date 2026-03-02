@@ -16,3 +16,6 @@ pubspec.lock
 
 # MCP servers local config
 .mcp.json
+
+# Test coverage
+coverage/
