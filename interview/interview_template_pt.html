@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrevista Tecnica Flutter</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-light: #e8f0fe;
+      --mid: #0d9488;
+      --mid-light: #ccfbf1;
+      --mid-border: #5eead4;
+      --senior: #7c3aed;
+      --senior-light: #ede9fe;
+      --senior-border: #a78bfa;
+      --success: #16a34a;
+      --warning: #ea580c;
+      --danger: #dc2626;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: var(--primary);
+      margin-bottom: 24px;
+    }
+
+    .header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .header-grid label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-grid input, .header-grid select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+
+    .header-grid input:focus, .header-grid select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* Level filter tabs */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      align-items: center;
+    }
+
+    .filter-bar span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+      margin-right: 8px;
+    }
+
+    .filter-btn {
+      padding: 6px 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 20px;
+      background: white;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover { background: var(--gray-100); }
+    .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Category section */
+    .category {
+      margin-bottom: 32px;
+    }
+
+    .category-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-700);
+      padding: 12px 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .category-title .cat-icon { margin-right: 8px; }
+
+    /* Question card */
+    .question-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .question-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+    .question-card.level-mid { border-left: 4px solid var(--mid); }
+    .question-card.level-senior { border-left: 4px solid var(--senior); }
+
+    .q-header {
+      display: flex;
+      align-items: flex-start;
+      padding: 16px 20px;
+      cursor: pointer;
+      gap: 12px;
+      user-select: none;
+    }
+
+    .q-number {
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .level-mid .q-number { background: var(--mid); }
+    .level-senior .q-number { background: var(--senior); }
+
+    .q-meta {
+      flex: 1;
+    }
+
+    .q-badges {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-mid { background: var(--mid-light); color: var(--mid); }
+    .badge-senior { background: var(--senior-light); color: var(--senior); }
+
+    .q-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-900);
+      line-height: 1.5;
+    }
+
+    .q-toggle {
+      color: var(--gray-300);
+      font-size: 20px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .question-card.open .q-toggle { transform: rotate(180deg); }
+
+    /* Expandable body */
+    .q-body {
+      display: none;
+      padding: 0 20px 20px 60px;
+    }
+
+    .question-card.open .q-body { display: block; }
+
+    .answer-section {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .answer-section h4 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+    }
+
+    .answer-section p, .answer-section ul {
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.7;
+    }
+
+    .answer-section ul {
+      padding-left: 20px;
+    }
+
+    .answer-section li { margin-bottom: 4px; }
+
+    .answer-section code {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'SF Mono', Consolas, monospace;
+    }
+
+    .answer-section pre {
+      background: var(--gray-900);
+      color: #e5e7eb;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      overflow-x: auto;
+      margin-top: 8px;
+      font-family: 'SF Mono', Consolas, monospace;
+      line-height: 1.5;
+    }
+
+    /* Evaluation */
+    .eval-section {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px 16px;
+      align-items: start;
+    }
+
+    .eval-section label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+      padding-top: 8px;
+    }
+
+    .rating-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .rating-btn {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      background: white;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .rating-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .rating-btn.selected-1 { background: var(--danger); color: white; border-color: var(--danger); }
+    .rating-btn.selected-2 { background: var(--warning); color: white; border-color: var(--warning); }
+    .rating-btn.selected-3 { background: #eab308; color: white; border-color: #eab308; }
+    .rating-btn.selected-4 { background: var(--success); color: white; border-color: var(--success); }
+    .rating-btn.selected-5 { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .rating-label {
+      font-size: 11px;
+      color: var(--gray-500);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 2px;
+      margin-top: 2px;
+    }
+
+    .notes-input {
+      width: 100%;
+      min-height: 60px;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .notes-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* Summary footer */
+    .summary {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 24px 32px;
+      margin-top: 32px;
+    }
+
+    .summary h2 {
+      font-size: 18px;
+      color: var(--gray-700);
+      margin-bottom: 16px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      text-align: center;
+      padding: 16px;
+      border-radius: var(--radius);
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+    }
+
+    .summary-card .score {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .summary-card .label {
+      font-size: 12px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .general-notes {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      margin-top: 8px;
+    }
+
+    .general-notes:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-outline { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
+    .btn-outline:hover { background: var(--gray-100); }
+    .btn-danger { background: white; color: var(--danger); border: 1px solid var(--gray-300); }
+    .btn-danger:hover { background: #fef2f2; border-color: var(--danger); }
+
+    /* Print */
+    @media print {
+      body { background: white; }
+      .container { max-width: 100%; padding: 0; }
+      .filter-bar, .actions, .btn { display: none !important; }
+      .question-card.open .q-body { display: block !important; }
+      .question-card { break-inside: avoid; page-break-inside: avoid; }
+      .q-toggle { display: none; }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header-grid { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .eval-section { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Entrevista Tecnica &mdash; Flutter Developer</h1>
+      <div class="header-grid">
+        <div>
+          <label>Nome do candidato</label>
+          <input type="text" id="candidateName" placeholder="Nome completo">
+        </div>
+        <div>
+          <label>Cargo avaliado</label>
+          <select id="positionLevel">
+            <option value="mid">Desenvolvedor Pleno</option>
+            <option value="senior">Desenvolvedor Senior</option>
+          </select>
+        </div>
+        <div>
+          <label>Data</label>
+          <input type="date" id="interviewDate">
+        </div>
+        <div>
+          <label>Entrevistador</label>
+          <input type="text" id="interviewerName" placeholder="Seu nome">
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <span>Filtrar:</span>
+      <button class="filter-btn active" onclick="filterQuestions('all')">Todas</button>
+      <button class="filter-btn" onclick="filterQuestions('mid')">Pleno</button>
+      <button class="filter-btn" onclick="filterQuestions('senior')">Senior</button>
+    </div>
+
+    <!-- Questions container -->
+    <div id="questionsContainer"></div>
+
+    <!-- Summary -->
+    <div class="summary">
+      <h2>Resumo da Avaliacao</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="score" id="avgScore">-</div>
+          <div class="label">Media geral</div>
+        </div>
+        <div class="summary-card">
+          <div class="score" id="avgMid">-</div>
+          <div class="label">Media Pleno</div>
+        </div>
+        <div class="summary-card">
+          <div class="score" id="avgSenior">-</div>
+          <div class="label">Media Senior</div>
+        </div>
+        <div class="summary-card">
+          <div class="score" id="answeredCount">0</div>
+          <div class="label">Perguntas avaliadas</div>
+        </div>
+      </div>
+      <label style="font-size:13px; font-weight:600; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.5px;">
+        Notas gerais / Decisao final
+      </label>
+      <textarea class="general-notes" id="generalNotes" placeholder="Impressoes gerais, pontos fortes, areas de melhoria, decisao..."></textarea>
+      <div class="actions">
+        <button class="btn btn-danger" onclick="resetAll()">Limpar tudo</button>
+        <button class="btn btn-outline" onclick="expandAll()">Expandir todas</button>
+        <button class="btn btn-outline" onclick="collapseAll()">Recolher todas</button>
+        <button class="btn btn-outline" onclick="exportJSON()">Exportar JSON</button>
+        <button class="btn btn-primary" onclick="window.print()">Imprimir / PDF</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ──────────────────────────────────────────
+//  DATA: Questions bank
+// ──────────────────────────────────────────
+const questions = [
+  // ── DART & FLUTTER CORE ──
+  {
+    cat: "Dart & Flutter Core",
+    catIcon: "01",
+    level: "mid",
+    q: "Explique a diferenca entre StatelessWidget e StatefulWidget. Quando voce usaria cada um?",
+    a: `<p><code>StatelessWidget</code> nao possui estado interno mutavel; seu <code>build()</code> depende apenas da configuracao recebida pelo construtor. <code>StatefulWidget</code> esta associado a um <code>State</code> que persiste entre rebuilds e pode ser alterado com <code>setState()</code>.</p>
+<ul>
+  <li><b>Stateless:</b> widgets puramente apresentacionais (icones, labels, layouts fixos).</li>
+  <li><b>Stateful:</b> quando e necessario estado local: animacoes, controladores de texto, formularios.</li>
+</ul>
+<p>Se voce usa BLoC para o estado de negocio, a maioria das Pages sao <code>StatefulWidget</code> apenas quando precisam do <code>dispose</code> de controladores; a logica de estado fica no Bloc.</p>`
+  },
+  {
+    cat: "Dart & Flutter Core",
+    level: "mid",
+    q: "O que sao os BuildContext e como funciona a arvore de widgets?",
+    a: `<p><code>BuildContext</code> e um handle para o no do widget na Element Tree. Cada widget cria um <code>Element</code>; o contexto permite navegar pela arvore para cima (<code>context.findAncestorWidgetOfExactType</code>, <code>context.read</code>, etc.).</p>
+<ul>
+  <li>Flutter mantem tres arvores: Widget Tree, Element Tree e RenderObject Tree.</li>
+  <li>Os widgets sao configuracoes imutaveis; os Elements sao a instancia viva que compara old vs new widget.</li>
+  <li>Usar o contexto incorreto (por exemplo, antes de um Provider estar na arvore) causa erros de <code>ProviderNotFoundException</code>.</li>
+</ul>`
+  },
+  {
+    cat: "Dart & Flutter Core",
+    level: "mid",
+    q: "Qual a diferenca entre const e final em Dart? Quando voce usa cada um?",
+    a: `<p><code>final</code> e atribuido uma unica vez, em runtime. <code>const</code> e uma constante de compilacao &mdash; o valor deve ser conhecido em tempo de compilacao.</p>
+<ul>
+  <li><code>const</code> em widgets permite ao framework reutilizar a mesma instancia (canonicalizacao), melhorando a performance.</li>
+  <li><code>final</code> e usado para valores calculados em runtime que nao mudam depois (parametros de construtor, resultado de uma funcao).</li>
+</ul>
+<pre>const maxRetries = 3;          // compile-time
+final now = DateTime.now();     // runtime, imutavel</pre>`
+  },
+  {
+    cat: "Dart & Flutter Core",
+    level: "mid",
+    q: "Como funciona o ciclo de vida de um StatefulWidget? Cite os metodos principais.",
+    a: `<ul>
+  <li><code>createState()</code> &mdash; cria o objeto State.</li>
+  <li><code>initState()</code> &mdash; chamado uma vez ao inserir o widget. Ideal para subscricoes ou inicializacao.</li>
+  <li><code>didChangeDependencies()</code> &mdash; chamado apos initState e quando InheritedWidgets mudam.</li>
+  <li><code>build()</code> &mdash; constroi a sub-arvore. Chamado toda vez que o estado muda.</li>
+  <li><code>didUpdateWidget()</code> &mdash; quando o pai reconstroi e passa uma nova configuracao.</li>
+  <li><code>deactivate()</code> &mdash; o widget e removido da arvore (pode ser reinserido).</li>
+  <li><code>dispose()</code> &mdash; limpeza definitiva (cancelar subscricoes, controllers).</li>
+</ul>`
+  },
+  {
+    cat: "Dart & Flutter Core",
+    level: "senior",
+    q: "Explique como funciona o rendering pipeline do Flutter (do widget aos pixels). Qual o papel das tres arvores?",
+    a: `<p>Flutter mantem tres arvores:</p>
+<ol>
+  <li><b>Widget Tree:</b> configuracoes imutaveis declaradas no <code>build()</code>.</li>
+  <li><b>Element Tree:</b> instancias vivas que comparam old/new widget (<code>canUpdate</code> por <code>runtimeType</code> + <code>key</code>). Gerenciam o ciclo de vida.</li>
+  <li><b>RenderObject Tree:</b> responsavel pelo layout (<code>performLayout</code>), painting (<code>paint</code>) e hit testing.</li>
+</ol>
+<p>Pipeline: <code>build phase</code> &rarr; <code>layout phase</code> (constraints down, sizes up) &rarr; <code>paint phase</code> (Layer tree) &rarr; <code>compositing</code> (Skia/Impeller) &rarr; <code>rasterization</code> na GPU.</p>
+<p>Entender isso e fundamental para diagnosticar jank: se o build e custoso, utiliza-se <code>const</code> widgets ou limita-se os rebuilds com <code>BlocSelector</code>/<code>BlocBuilder</code> com <code>buildWhen</code>.</p>`
+  },
+  {
+    cat: "Dart & Flutter Core",
+    level: "senior",
+    q: "O que e Impeller e como se diferencia do Skia? Qual o impacto na performance?",
+    a: `<p><b>Skia</b> era o backend de renderizacao original; compilava shaders em runtime, causando &laquo;shader compilation jank&raquo; na primeira execucao de animacoes.</p>
+<p><b>Impeller</b> (default no iOS desde Flutter 3.16, Android desde 3.22) pre-compila todos os shaders em build time. Vantagens:</p>
+<ul>
+  <li>Eliminacao total do shader jank.</li>
+  <li>Melhor uso de APIs graficas modernas (Metal no iOS, Vulkan no Android).</li>
+  <li>Performance mais previsivel e consistent frame times.</li>
+</ul>`
+  },
+  {
+    cat: "Dart & Flutter Core",
+    level: "senior",
+    q: "Dart e single-threaded. Quando voce usa async/await e quando um Isolate? De exemplos de um app bancario.",
+    a: `<p>Dart possui uma unica thread com um <b>event loop</b>. Ha duas formas de executar trabalho sem bloquear a UI:</p>
+
+<table style="width:100%; border-collapse:collapse; font-size:13px; margin:12px 0;">
+  <tr style="background:#f3f4f6;">
+    <th style="padding:8px; text-align:left; border:1px solid #e5e7eb;">Mecanismo</th>
+    <th style="padding:8px; text-align:left; border:1px solid #e5e7eb;">Quando usar</th>
+    <th style="padding:8px; text-align:left; border:1px solid #e5e7eb;">Exemplo em app bancario</th>
+  </tr>
+  <tr>
+    <td style="padding:8px; border:1px solid #e5e7eb;"><code>Future</code> / async-await</td>
+    <td style="padding:8px; border:1px solid #e5e7eb;">Operacoes de <b>I/O</b> (HTTP, DB, arquivos). A thread fica livre enquanto aguarda a resposta externa.</td>
+    <td style="padding:8px; border:1px solid #e5e7eb;">Chamadas de API (login, contas, transferencias), leitura/escrita no SecureStorage, queries no SQLite.</td>
+  </tr>
+  <tr style="background:#f9fafb;">
+    <td style="padding:8px; border:1px solid #e5e7eb;"><code>Isolate.run()</code></td>
+    <td style="padding:8px; border:1px solid #e5e7eb;">Trabalho <b>intensivo de CPU</b> que bloqueia a thread (&gt;16ms). Roda em uma thread separada com memoria isolada.</td>
+    <td style="padding:8px; border:1px solid #e5e7eb;">Parsear JSON de 10k transacoes, criptografia/descriptografia AES, gerar PDF de extrato bancario.</td>
+  </tr>
+</table>
+
+<p><b>Regra pratica:</b> se o trabalho e <b>esperar</b> (rede, disco) &rarr; <code>async/await</code>. Se o trabalho e <b>calcular</b> (CPU) &rarr; <code>Isolate</code>.</p>
+
+<pre>// ESPERAR resposta da rede - async/await
+final accounts = await accountsRepository.getAll();
+// A thread fica livre, a UI continua respondendo
+
+// CALCULAR algo pesado - Isolate
+final parsed = await Isolate.run(() {
+  return jsonDecode(hugeJsonString) as List; // CPU-bound
+});
+// Sem Isolate, a UI congela durante o parsing</pre>
+
+<p><b>Erro comum:</b> usar <code>async/await</code> para trabalho CPU-bound achando que nao bloqueia. <code>await</code> so libera a thread enquanto aguarda I/O; se a funcao faz calculo puro, a thread bloqueia do mesmo jeito e a UI perde frames.</p>`
+  },
+
+  // ── CLEAN ARCHITECTURE ──
+  {
+    cat: "Clean Architecture",
+    catIcon: "02",
+    level: "mid",
+    q: "O que e Clean Architecture e quais sao suas camadas? Como voce aplicaria em um projeto Flutter?",
+    a: `<p>Clean Architecture separa o codigo em camadas concentricas com a regra de dependencia: as camadas internas nao conhecem as externas.</p>
+<p>Em Flutter, cada feature costuma ter 3 camadas:</p>
+<ul>
+  <li><b>Presentation:</b> Pages, BLoCs, widgets. Depende de domain.</li>
+  <li><b>Domain:</b> Entities, contratos de Repository (abstratos), UseCases. Camada pura, sem dependencias externas.</li>
+  <li><b>Data:</b> Models (DTOs), DataSources (abstratos), implementacoes de Repository. Depende de domain.</li>
+</ul>
+<pre>presentation/ &rarr; domain/ &larr; data/</pre>
+<p>Domain e o centro: presentation e data dependem de domain, NUNCA o contrario.</p>`
+  },
+  {
+    cat: "Clean Architecture",
+    level: "mid",
+    q: "Qual a diferenca entre uma Entity e um Model (DTO)? Onde e feita a conversao?",
+    a: `<ul>
+  <li><b>Entity:</b> objeto puro de dominio, sem logica de serializacao. Fica em <code>domain/entities/</code>.</li>
+  <li><b>Model (DTO):</b> representacao de dados com <code>fromJson()</code> e <code>toEntity()</code>. Fica em <code>data/models/</code>.</li>
+</ul>
+<p>A conversao e feita <b>no repository</b> (camada data), NUNCA na UI:</p>
+<pre>// Na impl do repository
+final model = AuthTokenModel.fromJson(response.data);
+return Right(model.toEntity());</pre>`
+  },
+  {
+    cat: "Clean Architecture",
+    level: "mid",
+    q: "O que e um UseCase e por que se usa? Mostre a assinatura tipica.",
+    a: `<p>Um UseCase encapsula uma unica regra de negocio. Torna o codigo testavel e desacoplado do framework.</p>
+<pre>class GetAccountDetailUseCase
+    extends UseCase&lt;AccountDetail, AccountDetailParams&gt; {
+  final AccountRepository repository;
+
+  GetAccountDetailUseCase(this.repository);
+
+  @override
+  Future&lt;Either&lt;Failure, AccountDetail&gt;&gt; call(
+    AccountDetailParams params,
+  ) {
+    return repository.getAccountDetail(params.accountId);
+  }
+}</pre>
+<p>Usa <code>NoParams</code> quando nao precisa de parametros. Sempre retorna <code>Future&lt;Either&lt;Failure, T&gt;&gt;</code>.</p>`
+  },
+  {
+    cat: "Clean Architecture",
+    level: "senior",
+    q: "Quais problemas voce ve em um feature importar diretamente outro feature? Como eles deveriam se comunicar?",
+    a: `<p>Importar entre features cria <b>acoplamento horizontal</b>: mudancas em um feature quebram outro, dificulta o testing independente e cria dependencias circulares potenciais.</p>
+<p>Formas corretas de comunicar features:</p>
+<ul>
+  <li><b>Navegacao:</b> <code>context.go('/accounts/\${id}')</code> ou <code>context.push</code> com parametro <code>extra</code>.</li>
+  <li><b>Entidades compartilhadas:</b> um pacote core/domain com modelos comuns (User, Account, etc.).</li>
+  <li><b>Estado global:</b> providers na app root (ex: sessao do usuario).</li>
+</ul>
+<p>NUNCA se importa <code>package:authentication</code> a partir de <code>package:payments</code>.</p>`
+  },
+  {
+    cat: "Clean Architecture",
+    level: "senior",
+    q: "Se voce precisa que o feature de pagamentos acesse o saldo atualizado de contas, como desenharia isso sem quebrar a regra de dependencias?",
+    a: `<p>Opcoes validas:</p>
+<ol>
+  <li><b>Entidade compartilhada em core/domain:</b> Se <code>Account</code> ja esta em <code>core/domain</code>, o feature de pagamentos recebe o saldo como parametro via navegacao ou provider global.</li>
+  <li><b>Provider global (Riverpod):</b> Um <code>Notifier</code> na app root expoe o estado de contas. Pagamentos o le sem importar o feature de contas.</li>
+  <li><b>Parametro de navegacao:</b> Ao navegar para pagamentos, passa-se o saldo em <code>extra</code>.</li>
+  <li><b>Shared UseCase em core:</b> Se a logica e comum, pode ser movida para <code>core/common</code>.</li>
+</ol>
+<p>O ponto chave: as dependencias sempre vao em direcao ao core, nunca horizontalmente entre features.</p>`
+  },
+
+  // ── BLOC ──
+  {
+    cat: "BLoC Pattern",
+    catIcon: "03",
+    level: "mid",
+    q: "O que e o padrao BLoC? Qual a diferenca entre Events e States?",
+    a: `<p><b>BLoC</b> (Business Logic Component) separa a logica da UI usando streams reativos:</p>
+<ul>
+  <li><b>Events:</b> intencoes do usuario ou do sistema (input). Ex: <code>LoginRequested</code>, <code>AccountsLoaded</code>.</li>
+  <li><b>States:</b> representacao do estado atual da UI (output). Ex: <code>AuthLoading</code>, <code>AuthAuthenticated</code>.</li>
+</ul>
+<p>Fluxo: <code>UI &rarr; Event &rarr; Bloc &rarr; State &rarr; UI</code></p>
+<p>Idealmente, events e states sao modelados como <b>sealed classes</b> que estendem <code>Equatable</code>, permitindo exhaustive pattern matching na UI.</p>`
+  },
+  {
+    cat: "BLoC Pattern",
+    level: "mid",
+    q: "Por que usamos sealed class para Events e States? Que vantagem tem sobre enums ou classes abstratas?",
+    a: `<p><code>sealed class</code> (Dart 3+) habilita <b>exhaustive pattern matching</b>: o compilador garante que voce trate TODOS os casos em um <code>switch</code>.</p>
+<pre>return switch (state) {
+  AuthInitial()        => const LoginForm(),
+  AuthLoading()        => const LoadingSpinner(),
+  AuthAuthenticated()  => const HomePage(),
+  AuthError(:final message) => ErrorView(message),
+};</pre>
+<p>Vantagens sobre abstract class: o compilador avisa se voce adiciona um novo estado e esquece de trata-lo. Sobre enums: cada subclasse pode ter seus proprios campos (ex: <code>message</code> em <code>AuthError</code>).</p>`
+  },
+  {
+    cat: "BLoC Pattern",
+    level: "mid",
+    q: "Onde voce instanciaria os BlocProviders em um app com go_router? Por que nao dentro das pages?",
+    a: `<p>O recomendado e instancia-los no router, PER ROUTE:</p>
+<pre>GoRoute(
+  path: '/login',
+  builder: (context, state) {
+    final container = ProviderScope.containerOf(context);
+    return BlocProvider(
+      create: (_) => LoginBloc(
+        loginUseCase: container.read(loginUseCaseProvider),
+      ),
+      child: const LoginPage(),
+    );
+  },
+),</pre>
+<p>Razoes:</p>
+<ul>
+  <li>O ciclo de vida do Bloc fica atrelado a rota, nao a um widget arbitrario.</li>
+  <li>A page fica livre de logica de DI &mdash; so faz <code>context.read&lt;LoginBloc&gt;()</code>.</li>
+  <li>Facilita testing: voce pode injetar mocks do Bloc diretamente.</li>
+</ul>`
+  },
+  {
+    cat: "BLoC Pattern",
+    level: "senior",
+    q: "Como voce lida com side effects no BLoC (navegacao, mostrar snackbar, dialogo)? Que estrategias usa para evitar que se repitam no rebuild?",
+    a: `<p>Estrategias:</p>
+<ol>
+  <li><b>BlocListener:</b> reage a mudancas de estado uma unica vez (nao no build). Ideal para navegacao e snackbars.</li>
+  <li><b>Estado de navegacao:</b> Um estado como <code>AuthAuthenticated</code> dispara <code>context.go('/home')</code> no listener, NAO no builder.</li>
+  <li><b>Consumido uma vez:</b> Se precisa que um side effect ocorra uma unica vez, voce pode modelar um campo <code>bool hasNavigated</code> no state ou usar um padrao de &laquo;command state&raquo; que se consome.</li>
+</ol>
+<pre>BlocListener&lt;AuthBloc, AuthState&gt;(
+  listenWhen: (prev, curr) => curr is AuthAuthenticated,
+  listener: (context, state) => context.go('/home'),
+  child: BlocBuilder&lt;AuthBloc, AuthState&gt;(...),
+)</pre>`
+  },
+  {
+    cat: "BLoC Pattern",
+    level: "senior",
+    q: "Qual a diferenca entre Bloc e Cubit? Quando voce escolheria um em vez do outro?",
+    a: `<ul>
+  <li><b>Cubit:</b> expoe metodos que emitem estados diretamente. Mais simples, menos boilerplate.</li>
+  <li><b>Bloc:</b> usa Events como intermediario. Permite transformacoes de eventos (<code>transformer</code>), melhor rastreabilidade e replay de eventos.</li>
+</ul>
+<p>Usar <b>Bloc</b> quando:</p>
+<ul>
+  <li>Precisa de debounce/throttle (ex: busca em tempo real com <code>restartable()</code>).</li>
+  <li>Quer rastreabilidade completa do que provocou cada mudanca de estado.</li>
+  <li>O fluxo e complexo com multiplos eventos.</li>
+</ul>
+<p>Usar <b>Cubit</b> quando: a logica e simples, poucos triggers, nao precisa de event sourcing.</p>
+<p>Alguns times optam por usar <b>sempre Bloc</b> por consistencia e rastreabilidade, embora Cubit seja valido para casos simples.</p>`
+  },
+  {
+    cat: "BLoC Pattern",
+    level: "senior",
+    q: "Como voce implementaria paginacao com BLoC em uma lista de transacoes? Descreva a abordagem com events, states e transformers.",
+    a: `<p>Modelagem:</p>
+<pre>// Events
+sealed class TransactionsEvent {
+  TransactionsLoadRequested({this.page = 1})
+  TransactionsNextPageRequested()
+}
+
+// State
+class TransactionsState extends Equatable {
+  final List&lt;Transaction&gt; transactions;
+  final int currentPage;
+  final bool hasReachedMax;
+  final Status status; // initial | loading | success | failure
+}</pre>
+<p>No Bloc:</p>
+<ul>
+  <li>Usar <code>droppable()</code> transformer para evitar requisicoes duplicadas enquanto uma esta em andamento.</li>
+  <li>Ao receber <code>NextPage</code>, verificar <code>hasReachedMax</code> antes de chamar o UseCase.</li>
+  <li>Concatenar resultados: <code>state.transactions + newTransactions</code>.</li>
+</ul>
+<pre>on&lt;TransactionsNextPageRequested&gt;(
+  _onNextPage,
+  transformer: droppable(),
+);</pre>`
+  },
+
+  // ── STATE MANAGEMENT & DI ──
+  {
+    cat: "State Management & DI",
+    catIcon: "04",
+    level: "mid",
+    q: "Faz sentido usar Riverpod e BLoC juntos? Qual o papel de cada um?",
+    a: `<p>Sim, podem ter papeis complementares:</p>
+<ul>
+  <li><b>BLoC:</b> estado de UI por feature (fluxo de login, listagem de contas, fluxo de pagamento).</li>
+  <li><b>Riverpod:</b> injecao de dependencias (DI) e estado global compartilhado (sessao, configuracao).</li>
+</ul>
+<p>Riverpod substitui um service locator (como GetIt). Os providers sao definidos em <code>di/providers.dart</code> e sobrescritos nos entry points (main_dev, main_staging, main_prod).</p>`
+  },
+  {
+    cat: "State Management & DI",
+    level: "mid",
+    q: "Como funciona o override de providers nos diferentes ambientes (dev/staging/prod)?",
+    a: `<p>Os providers de DataSource sao declarados com <code>throw UnimplementedError()</code>:</p>
+<pre>final remoteAuthDataSourceProvider = Provider&lt;RemoteAuthDataSource&gt;(
+  (ref) => throw UnimplementedError('Must be overridden'),
+);</pre>
+<p>Em cada entry point sao sobrescritos:</p>
+<pre>// main_dev.dart
+runApp(
+  ProviderScope(
+    overrides: [
+      remoteAuthDataSourceProvider.overrideWithValue(
+        MockAuthDataSource(),
+      ),
+    ],
+    child: const App(),
+  ),
+);</pre>
+<p>Assim, em dev usam-se mocks sem tocar no codigo de producao.</p>`
+  },
+  {
+    cat: "State Management & DI",
+    level: "senior",
+    q: "Por que se usa Notifier em vez de StateProvider no Riverpod 3.x? Qual a diferenca pratica?",
+    a: `<ul>
+  <li><b>StateProvider:</b> expoe um <code>.state</code> mutavel diretamente. Nao permite logica de validacao, side effects ou estados complexos. Deprecado no Riverpod 3.x.</li>
+  <li><b>Notifier:</b> classe com metodos tipados que encapsulam a logica de mutacao. Permite validar, transformar e controlar as transicoes de estado.</li>
+</ul>
+<pre>class SessionNotifier extends Notifier&lt;SessionState&gt; {
+  @override
+  SessionState build() => const SessionState.unauthenticated();
+
+  void authenticate(User user) {
+    state = SessionState.authenticated(user);
+  }
+
+  void logout() {
+    state = const SessionState.unauthenticated();
+  }
+}</pre>`
+  },
+  {
+    cat: "State Management & DI",
+    level: "senior",
+    q: "Como voce testa um Bloc que depende de um UseCase? Mostre o setup de um teste unitario.",
+    a: `<pre>// Dependencias
+class MockLoginUseCase extends Mock implements LoginUseCase {}
+
+void main() {
+  late LoginBloc bloc;
+  late MockLoginUseCase mockLoginUseCase;
+
+  setUp(() {
+    mockLoginUseCase = MockLoginUseCase();
+    bloc = LoginBloc(loginUseCase: mockLoginUseCase);
+  });
+
+  tearDown(() => bloc.close());
+
+  blocTest&lt;LoginBloc, LoginState&gt;(
+    'emits [Loading, Authenticated] on successful login',
+    build: () {
+      when(() => mockLoginUseCase(any()))
+        .thenAnswer((_) async => const Right(authToken));
+      return bloc;
+    },
+    act: (bloc) => bloc.add(
+      LoginRequested(dni: '12345678A', password: 'Test1234!'),
+    ),
+    expect: () => [
+      const LoginLoading(),
+      const LoginAuthenticated(token: authToken),
+    ],
+  );
+}</pre>
+<p>Usa-se <code>bloc_test</code> + <code>mocktail</code>. A injecao por construtor permite mock direto.</p>`
+  },
+
+  // ── ERROR HANDLING ──
+  {
+    cat: "Tratamento de Erros",
+    catIcon: "05",
+    level: "mid",
+    q: "O que e Either<Failure, T> e por que usamos em vez de try/catch?",
+    a: `<p><code>Either</code> do <b>fpdart</b> representa um valor que pode ser um erro (<code>Left</code>) ou um sucesso (<code>Right</code>):</p>
+<pre>Future&lt;Either&lt;Failure, AuthToken&gt;&gt; login(Credentials creds);</pre>
+<p>Vantagens sobre try/catch:</p>
+<ul>
+  <li><b>Explicito:</b> a assinatura da funcao diz que pode falhar, nao fica escondido.</li>
+  <li><b>Exaustivo:</b> obriga a tratar ambos os casos (fold, pattern matching).</li>
+  <li><b>Componivel:</b> pode ser encadeado com <code>flatMap</code>, <code>map</code>, etc.</li>
+  <li><b>Sem excecoes descontroladas:</b> elimina erros silenciosos.</li>
+</ul>
+<pre>final result = await loginUseCase(params);
+result.fold(
+  (failure) => emit(LoginError(failure.message)),
+  (token) => emit(LoginAuthenticated(token)),
+);</pre>`
+  },
+  {
+    cat: "Tratamento de Erros",
+    level: "mid",
+    q: "Quais tipos de Failure voce modelaria em um app bancario com Either? De um exemplo de cada.",
+    a: `<pre>sealed class Failure extends Equatable {
+  ServerFailure   // API retorna 500, timeout, erro de parsing
+  CacheFailure    // Erro lendo/escrevendo SharedPreferences ou DB
+  AuthFailure     // Token expirado, credenciais invalidas, 401
+  NetworkFailure  // Sem conexao com a internet
+}</pre>
+<p>Exemplo no repository:</p>
+<pre>try {
+  final response = await dataSource.login(credentials);
+  return Right(response.toEntity());
+} on DioException catch (e) {
+  if (e.response?.statusCode == 401) {
+    return const Left(AuthFailure('Credenciais invalidas'));
+  }
+  return Left(ServerFailure(e.message ?? 'Erro do servidor'));
+} catch (e) {
+  return Left(ServerFailure(e.toString()));
+}</pre>`
+  },
+  {
+    cat: "Tratamento de Erros",
+    level: "senior",
+    q: "Como voce desenharia um interceptor de Dio para lidar com renovacao automatica de tokens e retentativas em um app bancario?",
+    a: `<p>Padrao com <code>QueuedInterceptor</code> do Dio:</p>
+<ol>
+  <li><b>onRequest:</b> anexar o access token do <code>SecureStorage</code> ao header Authorization.</li>
+  <li><b>onError (401):</b>
+    <ul>
+      <li>Bloquear o interceptor (QueuedInterceptor serializa requisicoes).</li>
+      <li>Tentar refresh com o refresh token.</li>
+      <li>Se sucesso: salvar novo token, retentar a requisicao original.</li>
+      <li>Se falha: emitir um AuthFailure, forcar logout (limpar sessao).</li>
+    </ul>
+  </li>
+  <li><b>Retentativas:</b> para erros de rede (timeout, connection error), retentar com backoff exponencial, maximo 3 tentativas.</li>
+  <li><b>Seguranca:</b> NUNCA logar tokens. Limpar tokens ao detectar sessao comprometida.</li>
+</ol>`
+  },
+
+  // ── NAVIGATION & ROUTING ──
+  {
+    cat: "Navegacao & Routing",
+    catIcon: "06",
+    level: "mid",
+    q: "Qual a diferenca entre context.go() e context.push() no go_router? Quando voce usaria cada um?",
+    a: `<ul>
+  <li><code>context.go('/path')</code>: navegacao declarativa, substitui a pilha completa ate a rota de destino.</li>
+  <li><code>context.push('/path')</code>: adiciona a rota a pilha (como Navigator.push). O usuario pode voltar.</li>
+</ul>
+<p>Tipicamente:</p>
+<ul>
+  <li><code>go</code> e usado para mudancas de secao (login &rarr; home, home &rarr; settings).</li>
+  <li><code>push</code> e usado para fluxos dentro de um feature (listagem &rarr; detalhe &rarr; editar).</li>
+  <li>Dados sao passados entre telas via <code>extra</code> ou path parameters.</li>
+</ul>`
+  },
+  {
+    cat: "Navegacao & Routing",
+    level: "mid",
+    q: "Como funciona o auth guard (redirect) no go_router?",
+    a: `<p>Configurado no <code>GoRouter.redirect</code>:</p>
+<pre>redirect: (context, state) {
+  final isAuthenticated = /* verificar estado da sessao */;
+  final isLoginRoute = state.matchedLocation == '/login';
+
+  if (!isAuthenticated && !isLoginRoute) return '/login';
+  if (isAuthenticated && isLoginRoute) return '/home';
+  return null; // sem redirect
+},</pre>
+<p>Vantagens:</p>
+<ul>
+  <li>Centralizado: uma unica funcao protege TODAS as rotas.</li>
+  <li>Reativo: se a sessao expira, o redirect redireciona automaticamente.</li>
+  <li>Nao se protegem pages individualmente &mdash; NUNCA colocar guards em widgets.</li>
+</ul>`
+  },
+  {
+    cat: "Navegacao & Routing",
+    level: "senior",
+    q: "Como voce implementaria deep linking em um app bancario com go_router? Quais consideracoes de seguranca aplicaria?",
+    a: `<p>Configuracao:</p>
+<ul>
+  <li>Definir esquema de URI (ex: <code>bankapp://</code>) e Universal Links (iOS) / App Links (Android).</li>
+  <li>Cada <code>GoRoute</code> ja tem seu path; go_router parseia automaticamente os deep links.</li>
+</ul>
+<p>Seguranca critica:</p>
+<ul>
+  <li><b>Auth guard:</b> o redirect SEMPRE e avaliado antes de resolver o deep link. Se nao ha sessao, redireciona para login e guarda a rota pendente.</li>
+  <li><b>Validacao de parametros:</b> nunca confiar em IDs de URL sem verificar permissoes no backend.</li>
+  <li><b>Rotas sensiveis:</b> transferencias e alteracoes de dados NAO devem ser acessiveis por deep link direto &mdash; exigir re-autenticacao.</li>
+  <li><b>Verificacao de App Links:</b> configurar o <code>assetlinks.json</code> / <code>apple-app-site-association</code> corretamente para prevenir link hijacking.</li>
+</ul>`
+  },
+
+  // ── MONOREPO & TOOLING ──
+  {
+    cat: "Monorepo & Tooling",
+    catIcon: "07",
+    level: "mid",
+    q: "O que e Melos e quais as vantagens em um monorepo Flutter?",
+    a: `<p><b>Melos</b> e uma ferramenta de gerenciamento de monorepos Dart/Flutter:</p>
+<ul>
+  <li><b>Bootstrap:</b> resolve dependencias locais entre pacotes com um unico comando (<code>melos bootstrap</code>).</li>
+  <li><b>Scripts compartilhados:</b> <code>melos analyze</code>, <code>melos test</code>, etc. rodam em todos os pacotes.</li>
+  <li><b>Filtragem:</b> <code>melos test:changed</code> roda testes apenas nos pacotes modificados (CI rapido).</li>
+  <li><b>Pub workspaces:</b> resolucao de dependencias a nivel de workspace, evitando conflitos de versoes.</li>
+</ul>
+<p>Comandos chave do projeto:</p>
+<pre>melos bootstrap      # Resolver dependencias
+melos analyze        # Lint
+melos test           # Tests + coverage
+melos build:runner   # Code gen (freezed, json_serializable)</pre>`
+  },
+  {
+    cat: "Monorepo & Tooling",
+    level: "mid",
+    q: "O que e Freezed e para que serve? Quais arquivos ele gera?",
+    a: `<p><b>Freezed</b> e um gerador de codigo que cria:</p>
+<ul>
+  <li>Classes imutaveis com <code>copyWith</code> gerado.</li>
+  <li>Union types / sealed classes com pattern matching.</li>
+  <li><code>==</code> e <code>hashCode</code> automaticos.</li>
+  <li><code>toString()</code> legivel.</li>
+</ul>
+<p>Junto com <code>json_serializable</code>, gera <code>fromJson/toJson</code>.</p>
+<p>Arquivos gerados:</p>
+<ul>
+  <li><code>*.freezed.dart</code> &mdash; logica do Freezed.</li>
+  <li><code>*.g.dart</code> &mdash; serializacao JSON.</li>
+</ul>
+<p><b>NUNCA</b> editar arquivos gerados. Sao regenerados com <code>melos build:runner</code>.</p>`
+  },
+  {
+    cat: "Monorepo & Tooling",
+    level: "senior",
+    q: "Como voce organizaria o pipeline de CI/CD para um monorepo Flutter com 17 pacotes? Como otimizaria os tempos de build?",
+    a: `<p>Estrategia:</p>
+<ol>
+  <li><b>Deteccao de mudancas:</b> usar <code>melos list --since=origin/main</code> para identificar pacotes afetados.</li>
+  <li><b>Paralelizar:</b> rodar lint, testes e analise de cada pacote em jobs paralelos no CI.</li>
+  <li><b>Cache agressivo:</b> cachear <code>.pub-cache</code>, <code>.dart_tool</code> e builds de Gradle/CocoaPods.</li>
+  <li><b>Testes incrementais:</b> <code>melos test:changed</code> roda testes apenas dos pacotes modificados + dependentes.</li>
+  <li><b>Build matrix:</b> separar builds Android e iOS em pipelines independentes.</li>
+  <li><b>Verificacao de code gen:</b> verificar que <code>*.g.dart</code> e <code>*.freezed.dart</code> estao atualizados (falhar se houver diff).</li>
+</ol>
+<p>Exemplo GitHub Actions:</p>
+<pre>jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps: [checkout, flutter, melos bootstrap, melos analyze]
+  test:
+    runs-on: ubuntu-latest
+    steps: [checkout, flutter, melos bootstrap, melos test:changed]
+  build-android:
+    needs: [analyze, test]
+    ...</pre>`
+  },
+
+  // ── SECURITY ──
+  {
+    cat: "Seguranca",
+    catIcon: "08",
+    level: "mid",
+    q: "Como voce armazena tokens e dados sensiveis em um app Flutter?",
+    a: `<p>Usa-se <b>flutter_secure_storage</b> (wrapper sobre Keychain no iOS e EncryptedSharedPreferences no Android):</p>
+<ul>
+  <li>Tokens de sessao (access token, refresh token).</li>
+  <li>Dados biometricos de configuracao.</li>
+  <li>PINs criptografados.</li>
+</ul>
+<p>NUNCA usar:</p>
+<ul>
+  <li><code>SharedPreferences</code> para dados sensiveis (texto puro).</li>
+  <li>Hardcodear tokens ou API keys no codigo.</li>
+  <li>Logar tokens no console.</li>
+</ul>
+<p>E uma boa pratica encapsular o acesso a SecureStorage, biometrics e SessionManager em um pacote ou camada dedicada de seguranca.</p>`
+  },
+  {
+    cat: "Seguranca",
+    level: "senior",
+    q: "Quais medidas de seguranca voce implementaria em um app bancario Flutter alem do armazenamento seguro?",
+    a: `<ul>
+  <li><b>Certificate pinning:</b> validar o certificado SSL do servidor para prevenir MITM. Implementar no interceptor do Dio.</li>
+  <li><b>Deteccao de root/jailbreak:</b> detectar dispositivos comprometidos e limitar funcionalidades.</li>
+  <li><b>Ofuscacao:</b> <code>flutter build --obfuscate --split-debug-info</code> para dificultar engenharia reversa.</li>
+  <li><b>Prevencao de screenshot:</b> <code>FLAG_SECURE</code> no Android, ocultar conteudo no app switcher.</li>
+  <li><b>Timeout de sessao:</b> expirar sessao apos inatividade. Exigir re-autenticacao para operacoes sensiveis.</li>
+  <li><b>Autenticacao biometrica:</b> para acesso rapido sem expor credenciais.</li>
+  <li><b>Anti-tampering:</b> verificar integridade do app em runtime.</li>
+  <li><b>Sem dados em logs:</b> sanitizar logs em producao (nunca PII nem tokens).</li>
+  <li><b>ProGuard/R8:</b> minificacao no Android para reduzir superficie de ataque.</li>
+</ul>`
+  },
+  {
+    cat: "Seguranca",
+    level: "senior",
+    q: "Como voce implementaria certificate pinning com Dio no Flutter? O que acontece se o certificado rotacionar?",
+    a: `<p>Implementacao com Dio:</p>
+<pre>final dio = Dio();
+(dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+  final client = HttpClient();
+  client.badCertificateCallback = (cert, host, port) {
+    // Comparar o SHA-256 do certificado
+    final serverFingerprint = sha256.convert(cert.der).toString();
+    return pinnedFingerprints.contains(serverFingerprint);
+  };
+  return client;
+};</pre>
+<p>Rotacao de certificados:</p>
+<ul>
+  <li>Pinear a <b>public key</b> (SPKI) em vez do certificado completo &mdash; a key costuma sobreviver a renovacoes.</li>
+  <li>Manter um conjunto de pins (atual + backup) e atualiza-los via config remota.</li>
+  <li>Implementar um mecanismo de fallback com remote config para atualizar pins sem deploy.</li>
+  <li>Monitorar erros de pinning para detectar renovacoes inesperadas.</li>
+</ul>`
+  },
+
+  // ── TESTING ──
+  {
+    cat: "Testing",
+    catIcon: "09",
+    level: "mid",
+    q: "Quais tipos de testes existem no Flutter? Quais voce usaria em um projeto com Clean Architecture e BLoC?",
+    a: `<ul>
+  <li><b>Testes unitarios:</b> testam funcoes, classes, BLoCs e UseCases isolados. Rapidos, sem UI.</li>
+  <li><b>Testes de widget:</b> testam widgets individuais com <code>WidgetTester</code>. Renderizam em memoria.</li>
+  <li><b>Testes de integracao:</b> testam fluxos completos em um emulador/dispositivo real.</li>
+</ul>
+<p>Com Clean Architecture + BLoC:</p>
+<ul>
+  <li><b>Unitario:</b> BLoCs (com <code>bloc_test</code>), UseCases, Repositories.</li>
+  <li><b>Widget:</b> Pages com BLoC mockado, verificando que a UI reage aos estados.</li>
+  <li><b>Mocks:</b> <code>mocktail</code> para criar mocks de dependencias.</li>
+</ul>
+<pre>melos test           # Todos os testes
+melos test:changed   # Apenas pacotes modificados</pre>`
+  },
+  {
+    cat: "Testing",
+    level: "mid",
+    q: "Como voce testa um widget que depende de um BLoC?",
+    a: `<pre>testWidgets('mostra erro quando estado e LoginError', (tester) async {
+  final mockBloc = MockLoginBloc();
+
+  when(() => mockBloc.state).thenReturn(
+    const LoginError(message: 'Credenciais invalidas'),
+  );
+  whenListen(mockBloc, Stream.fromIterable([
+    const LoginError(message: 'Credenciais invalidas'),
+  ]));
+
+  await tester.pumpWidget(
+    MaterialApp(
+      home: BlocProvider&lt;LoginBloc&gt;.value(
+        value: mockBloc,
+        child: const LoginPage(),
+      ),
+    ),
+  );
+
+  expect(find.text('Credenciais invalidas'), findsOneWidget);
+});</pre>
+<p>Usa-se <code>MockBloc</code> do <code>bloc_test</code> + <code>whenListen</code> para simular streams de estados.</p>`
+  },
+  {
+    cat: "Testing",
+    level: "senior",
+    q: "Como voce desenharia uma estrategia de testes para um feature completo (ex: fluxo de pagamento)? Qual proporcao de testes unitarios/widget/integracao voce usaria?",
+    a: `<p><b>Piramide de testes:</b></p>
+<ul>
+  <li><b>70% Testes unitarios:</b> cada UseCase, Repository, Bloc testado com casos de sucesso, erro e edge cases.</li>
+  <li><b>20% Testes de widget:</b> cada Page com seus estados (loading, success, error, empty). Verificar interacoes (tap &rarr; event).</li>
+  <li><b>10% Testes de integracao:</b> fluxo completo end-to-end (login &rarr; selecionar conta &rarr; iniciar pagamento &rarr; OTP &rarr; confirmacao).</li>
+</ul>
+<p>Para o fluxo de pagamento:</p>
+<ol>
+  <li><b>Unitario:</b> <code>CreatePaymentUseCase</code> com todos os tipos de Failure, validacao de IBAN, limites.</li>
+  <li><b>Unitario:</b> <code>PaymentBloc</code> com bloc_test para cada transicao de estado.</li>
+  <li><b>Widget:</b> <code>PaymentFormPage</code> com validacoes, estados de carregamento, confirmacao.</li>
+  <li><b>Integracao:</b> fluxo completo com mock server verificando a sequencia de telas.</li>
+</ol>
+<p>Meta de cobertura: >80% em domain e data, >60% em presentation.</p>`
+  },
+
+  // ── PERFORMANCE ──
+  {
+    cat: "Performance & Otimizacao",
+    catIcon: "10",
+    level: "mid",
+    q: "Como voce evita rebuilds desnecessarios no Flutter com BLoC?",
+    a: `<ul>
+  <li><b>BlocBuilder com buildWhen:</b> so reconstroi se a parte relevante do estado mudou.</li>
+  <li><b>BlocSelector:</b> seleciona um sub-valor do estado, so faz rebuild se esse valor muda.</li>
+  <li><b>const widgets:</b> marcar como <code>const</code> widgets que nao dependem de estado.</li>
+  <li><b>Equatable:</b> os states estendem Equatable para comparacao por valor (evita rebuilds se o state e identico).</li>
+</ul>
+<pre>BlocSelector&lt;AccountsBloc, AccountsState, double&gt;(
+  selector: (state) => state is AccountsLoaded
+    ? state.totalBalance
+    : 0.0,
+  builder: (context, balance) => BalanceWidget(balance),
+)</pre>`
+  },
+  {
+    cat: "Performance & Otimizacao",
+    level: "senior",
+    q: "Quais ferramentas voce usa para diagnosticar problemas de performance no Flutter? Descreva um caso real.",
+    a: `<p>Ferramentas:</p>
+<ul>
+  <li><b>Flutter DevTools &mdash; Performance:</b> timeline de frames, detectar jank (frames >16ms).</li>
+  <li><b>Flutter DevTools &mdash; CPU Profiler:</b> flame chart para identificar funcoes custosas.</li>
+  <li><b>Flutter DevTools &mdash; Memory:</b> detectar leaks, objetos retidos, analise de heap.</li>
+  <li><b>Widget Inspector:</b> ver contagem de rebuilds, identificar widgets que se reconstroem demais.</li>
+  <li><b>Profile mode:</b> sempre perfilar em <code>--profile</code> (nao debug, nao release).</li>
+</ul>
+<p>Caso: listagem de transacoes com jank ao rolar.</p>
+<ol>
+  <li>DevTools mostra frames de 40ms.</li>
+  <li>CPU profiler: <code>build()</code> do <code>TransactionTile</code> custoso (formatacao de data em cada build).</li>
+  <li>Solucao: mover formatacao para o modelo, usar <code>const</code> em widgets estaticos, <code>ListView.builder</code> com <code>itemExtent</code>.</li>
+</ol>`
+  },
+  {
+    cat: "Performance & Otimizacao",
+    level: "senior",
+    q: "Como voce otimizaria uma lista de 10.000 transacoes no Flutter? Quais tecnicas aplicaria?",
+    a: `<ul>
+  <li><b>ListView.builder:</b> renderiza apenas widgets visiveis (lazy loading).</li>
+  <li><b>itemExtent ou prototypeItem:</b> evita que o Flutter calcule o tamanho de cada item.</li>
+  <li><b>Paginacao:</b> carregar 20-50 itens por pagina, infinite scroll com BLoC.</li>
+  <li><b>const widgets:</b> itens sem dados dinamicos marcados como const.</li>
+  <li><b>RepaintBoundary:</b> isolar secoes que mudam independentemente.</li>
+  <li><b>Cache de formatacao:</b> pre-computar strings (datas, valores) no modelo, nao no build.</li>
+  <li><b>Isolate para parsing:</b> se o JSON e grande, parsear em um Isolate.</li>
+  <li><b>Cache de imagens:</b> se ha avatares, usar <code>CachedNetworkImage</code>.</li>
+  <li><b>Keys:</b> usar <code>ValueKey(transaction.id)</code> para que o framework reutilize widgets corretamente.</li>
+</ul>`
+  },
+
+  // ── DESIGN PATTERNS & ADVANCED ──
+  {
+    cat: "Padroes de Design & Avancado",
+    catIcon: "11",
+    level: "senior",
+    q: "Quais padroes de design voce identifica nesta arquitetura? Cite pelo menos 5.",
+    a: `<ol>
+  <li><b>Repository Pattern:</b> abstracao sobre data sources (local/remote). Interface em domain, implementacao em data.</li>
+  <li><b>Strategy Pattern:</b> DataSources intercambiaveis (Mock vs Real) via DI/override.</li>
+  <li><b>Observer Pattern:</b> BLoC expoe streams de estados; a UI observa e reage.</li>
+  <li><b>Dependency Injection:</b> Riverpod injeta dependencias, eliminando acoplamento.</li>
+  <li><b>Facade Pattern:</b> UseCases simplificam a interface em direcao a domain/data.</li>
+  <li><b>Factory Pattern:</b> <code>fromJson()</code> nos Models, construtores de Failure.</li>
+  <li><b>Adapter Pattern:</b> <code>toEntity()</code> converte DTOs em entidades de dominio.</li>
+  <li><b>Mediator Pattern:</b> go_router media a comunicacao entre features sem acoplamento.</li>
+</ol>`
+  },
+  {
+    cat: "Padroes de Design & Avancado",
+    level: "senior",
+    q: "Se voce tivesse que migrar este app para Kotlin Multiplatform ou para um backend compartilhado, quais camadas reutilizaria e quais reescreveria?",
+    a: `<p><b>Reutilizavel (logica):</b></p>
+<ul>
+  <li><b>Domain:</b> entities, use cases, contratos de repository &mdash; a logica pura e portavel.</li>
+  <li><b>Regras de negocio:</b> validacoes, calculos, fluxos &mdash; traduzem-se 1:1.</li>
+</ul>
+<p><b>Parcialmente reutilizavel:</b></p>
+<ul>
+  <li><b>Data/Models:</b> os DTOs e serializacao podem ser adaptados para kotlinx.serialization.</li>
+  <li><b>Implementacoes de Repository:</b> a estrutura e a mesma, muda o HTTP client (Ktor em vez de Dio).</li>
+</ul>
+<p><b>Reescrever:</b></p>
+<ul>
+  <li><b>Presentation:</b> Flutter widgets &rarr; Compose/SwiftUI.</li>
+  <li><b>BLoC:</b> &rarr; ViewModel com StateFlow/MVI em KMP.</li>
+  <li><b>DI:</b> Riverpod &rarr; Koin/Hilt.</li>
+  <li><b>Platform specifics:</b> secure storage, biometrics.</li>
+</ul>
+<p>Clean Architecture maximiza o que e reutilizavel ao manter o domain livre de framework.</p>`
+  },
+  {
+    cat: "Padroes de Design & Avancado",
+    level: "senior",
+    q: "Como voce implementaria feature flags nesta arquitetura para lancar funcionalidades gradualmente?",
+    a: `<p>Design:</p>
+<ol>
+  <li><b>Camada core:</b> criar <code>FeatureFlagService</code> em <code>core/common</code> com interface abstrata.</li>
+  <li><b>DataSource:</b> implementacao com Firebase Remote Config (ou similar) que cacheia flags localmente.</li>
+  <li><b>Provider:</b> expor flags via provider global do Riverpod.</li>
+  <li><b>Router:</b> condicionar rotas no <code>app_router.dart</code> conforme as flags.</li>
+  <li><b>UI:</b> condicionar widgets com <code>ref.watch(featureFlagProvider('payments_v2'))</code>.</li>
+</ol>
+<pre>// No router
+if (ref.read(featureFlagProvider('new_payments'))) {
+  GoRoute(path: '/payments', builder: (_,__) => NewPaymentsPage())
+} else {
+  GoRoute(path: '/payments', builder: (_,__) => LegacyPaymentsPage())
+}</pre>
+<p>Nao acoplar flags aos BLoCs &mdash; mantenha-os na camada de composicao (router/main).</p>`
+  },
+
+  // ── PROBLEM SOLVING (practical) ──
+  {
+    cat: "Resolucao de Problemas",
+    catIcon: "12",
+    level: "mid",
+    q: "O usuario relata que o app congela ao carregar a lista de contas. Como voce investigaria?",
+    a: `<p>Passos de investigacao:</p>
+<ol>
+  <li><b>Reproduzir:</b> verificar em debug e profile mode.</li>
+  <li><b>DevTools Timeline:</b> procurar frames que excedam 16ms.</li>
+  <li><b>CPU Profiler:</b> identificar qual funcao consome mais tempo.</li>
+  <li><b>Verificar BLoC:</b> esta emitindo estados corretamente? Ha um estado de Loading?</li>
+  <li><b>Network:</b> a API demora muito? Verificar com DevTools Network ou logs do Dio.</li>
+  <li><b>Parsing pesado:</b> se o JSON e grande, considerar parsing em Isolate.</li>
+  <li><b>Rebuilds excessivos:</b> verificar se <code>BlocBuilder</code> reconstroi toda a lista a cada mudanca.</li>
+</ol>
+<p>Causas comuns: API lenta sem estado de loading, parsing de JSON grande na main isolate ou <code>ListView</code> sem <code>.builder</code>.</p>`
+  },
+  {
+    cat: "Resolucao de Problemas",
+    level: "mid",
+    q: "Um colega colocou um BlocProvider dentro de uma Page em vez de no router. Quais problemas isso pode causar?",
+    a: `<p>Problemas:</p>
+<ul>
+  <li><b>Ciclo de vida incorreto:</b> o Bloc e recriado toda vez que a page e reconstruida (ex: mudanca de orientacao, teclado).</li>
+  <li><b>Perda de estado:</b> se a page e destruida e recriada (por navegacao), o Bloc perde seu estado.</li>
+  <li><b>Testing dificil:</b> nao e possivel injetar um mock Bloc facilmente de fora.</li>
+  <li><b>Inconsistencia:</b> quebra a convencao do projeto, dificultando a manutencao.</li>
+</ul>
+<p>Solucao: mover o <code>BlocProvider</code> para o router, onde o ciclo de vida se atrela a rota:</p>
+<pre>// app_router.dart
+builder: (context, state) => BlocProvider(
+  create: (_) => AccountsBloc(useCase: ...),
+  child: const AccountsPage(),
+),</pre>`
+  },
+  {
+    cat: "Resolucao de Problemas",
+    level: "senior",
+    q: "Voce tem um memory leak no app. O BlocListener continua recebendo eventos apos navegar para outra tela. Como voce diagnostica e resolve?",
+    a: `<p>Diagnostico:</p>
+<ol>
+  <li><b>DevTools Memory:</b> tirar snapshots antes e depois de navegar. Procurar objetos Bloc/State que nao sao liberados.</li>
+  <li><b>Verificar dispose:</b> o BlocProvider fecha o Bloc automaticamente SE foi criado com <code>create:</code>. Se usou <code>.value</code>, nao fecha.</li>
+  <li><b>Listeners:</b> verificar que nao ha subscricoes manuais sem <code>cancel()</code> no <code>dispose()</code>.</li>
+</ol>
+<p>Causas comuns:</p>
+<ul>
+  <li><code>BlocProvider.value</code> sem fechar manualmente o Bloc.</li>
+  <li>Closures que capturam o context ou o Bloc e impedem o GC.</li>
+  <li>StreamSubscriptions sem cancel no dispose.</li>
+  <li>Timers ativos que referenciam o widget.</li>
+</ul>
+<p>Solucao: garantir que BlocProvider usa <code>create:</code> (auto-dispose), mover para o router e cancelar qualquer subscricao manual no <code>dispose()</code>.</p>`
+  },
+  {
+    cat: "Resolucao de Problemas",
+    level: "senior",
+    q: "A equipe precisa implementar modo offline para consultar saldos e transacoes recentes. Como voce desenharia isso?",
+    a: `<p>Arquitetura offline-first:</p>
+<ol>
+  <li><b>Cache local:</b> usar <code>drift</code> (SQLite) ou <code>hive</code> para persistir dados estruturados.</li>
+  <li><b>Repository pattern:</b> o repository orquestra:
+    <ul>
+      <li>Tentar remote &rarr; cachear resultado localmente &rarr; retornar.</li>
+      <li>Se falhar (NetworkFailure) &rarr; ler do cache local &rarr; retornar com flag <code>isFromCache: true</code>.</li>
+    </ul>
+  </li>
+  <li><b>DataSources duais:</b>
+    <pre>abstract class AccountsDataSource { ... }
+class RemoteAccountsDataSource implements AccountsDataSource { ... }
+class LocalAccountsDataSource implements AccountsDataSource { ... }</pre>
+  </li>
+  <li><b>Estrategia de sync:</b> ao recuperar conexao, sincronizar dados pendentes. Fila de operacoes offline.</li>
+  <li><b>Indicador na UI:</b> mostrar banner &laquo;Dados offline&raquo; e timestamp da ultima sincronizacao.</li>
+  <li><b>Seguranca:</b> criptografar o DB local. Limpar cache ao encerrar sessao.</li>
+</ol>`
+  }
+];
+
+// ──────────────────────────────────────────
+//  RENDER
+// ──────────────────────────────────────────
+let activeFilter = 'all';
+
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+
+  const grouped = {};
+  let globalIdx = 0;
+  questions.forEach((q, i) => {
+    q._idx = i;
+    q._num = ++globalIdx;
+    if (!grouped[q.cat]) grouped[q.cat] = { icon: q.catIcon || '', items: [] };
+    grouped[q.cat].items.push(q);
+  });
+
+  for (const [cat, data] of Object.entries(grouped)) {
+    const filtered = data.items.filter(q => activeFilter === 'all' || q.level === activeFilter);
+    if (filtered.length === 0) continue;
+
+    const section = document.createElement('div');
+    section.className = 'category';
+    section.innerHTML = `<div class="category-title"><span class="cat-icon">${data.icon}</span>${cat}</div>`;
+
+    filtered.forEach(q => {
+      const card = document.createElement('div');
+      card.className = `question-card level-${q.level}`;
+      card.id = `q-${q._idx}`;
+      card.innerHTML = `
+        <div class="q-header" onclick="toggleCard(${q._idx})">
+          <div class="q-number">${q._num}</div>
+          <div class="q-meta">
+            <div class="q-badges">
+              <span class="badge badge-${q.level}">${q.level}</span>
+            </div>
+            <div class="q-text">${q.q}</div>
+          </div>
+          <div class="q-toggle">&#9662;</div>
+        </div>
+        <div class="q-body">
+          <div class="answer-section">
+            <h4>Resposta esperada</h4>
+            ${q.a}
+          </div>
+          <div class="eval-section">
+            <label>Pontuacao</label>
+            <div>
+              <div class="rating-group">
+                ${[1,2,3,4,5].map(n => `<button class="rating-btn" onclick="rate(${q._idx}, ${n})" id="rate-${q._idx}-${n}">${n}</button>`).join('')}
+              </div>
+              <div class="rating-label"><span>Insuficiente</span><span>Excelente</span></div>
+            </div>
+            <label>Notas</label>
+            <textarea class="notes-input" id="notes-${q._idx}" placeholder="Anotacoes sobre a resposta do candidato..." oninput="saveNotes(${q._idx})"></textarea>
+          </div>
+        </div>
+      `;
+      section.appendChild(card);
+    });
+
+    container.appendChild(section);
+  }
+
+  // Restore saved data
+  restoreData();
+}
+
+// ──────────────────────────────────────────
+//  INTERACTIONS
+// ──────────────────────────────────────────
+const ratings = {};
+const notes = {};
+
+function toggleCard(idx) {
+  const card = document.getElementById(`q-${idx}`);
+  card.classList.toggle('open');
+}
+
+function rate(idx, value) {
+  ratings[idx] = value;
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.getElementById(`rate-${idx}-${i}`);
+    btn.className = 'rating-btn' + (i === value ? ` selected-${i}` : '');
+  }
+  updateSummary();
+  saveToStorage();
+}
+
+function saveNotes(idx) {
+  const el = document.getElementById(`notes-${idx}`);
+  if (el) {
+    notes[idx] = el.value;
+    saveToStorage();
+  }
+}
+
+function filterQuestions(level) {
+  activeFilter = level;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === level || (level === 'all' && btn.textContent.trim() === 'Todas'));
+  });
+  renderQuestions();
+}
+
+function expandAll() {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.add('open'));
+}
+
+function collapseAll() {
+  document.querySelectorAll('.question-card').forEach(c => c.classList.remove('open'));
+}
+
+function updateSummary() {
+  const allRatings = Object.entries(ratings);
+  const midRatings = allRatings.filter(([idx]) => questions[idx].level === 'mid');
+  const seniorRatings = allRatings.filter(([idx]) => questions[idx].level === 'senior');
+
+  const avg = arr => arr.length ? (arr.reduce((s, [,v]) => s + v, 0) / arr.length).toFixed(1) : '-';
+
+  document.getElementById('avgScore').textContent = avg(allRatings);
+  document.getElementById('avgMid').textContent = avg(midRatings);
+  document.getElementById('avgSenior').textContent = avg(seniorRatings);
+  document.getElementById('answeredCount').textContent = allRatings.length + '/' + questions.length;
+}
+
+// ──────────────────────────────────────────
+//  PERSISTENCE (localStorage)
+// ──────────────────────────────────────────
+function saveToStorage() {
+  const data = {
+    candidate: document.getElementById('candidateName').value,
+    position: document.getElementById('positionLevel').value,
+    date: document.getElementById('interviewDate').value,
+    interviewer: document.getElementById('interviewerName').value,
+    ratings,
+    notes,
+    generalNotes: document.getElementById('generalNotes').value,
+  };
+  localStorage.setItem('flutter_interview_pt', JSON.stringify(data));
+}
+
+function restoreData() {
+  const raw = localStorage.getItem('flutter_interview_pt');
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    document.getElementById('candidateName').value = data.candidate || '';
+    document.getElementById('positionLevel').value = data.position || 'mid';
+    document.getElementById('interviewDate').value = data.date || '';
+    document.getElementById('interviewerName').value = data.interviewer || '';
+    document.getElementById('generalNotes').value = data.generalNotes || '';
+
+    if (data.ratings) {
+      Object.entries(data.ratings).forEach(([idx, val]) => {
+        ratings[idx] = val;
+        for (let i = 1; i <= 5; i++) {
+          const btn = document.getElementById(`rate-${idx}-${i}`);
+          if (btn) btn.className = 'rating-btn' + (i === val ? ` selected-${i}` : '');
+        }
+      });
+    }
+    if (data.notes) {
+      Object.entries(data.notes).forEach(([idx, val]) => {
+        notes[idx] = val;
+        const el = document.getElementById(`notes-${idx}`);
+        if (el) el.value = val;
+      });
+    }
+    updateSummary();
+  } catch(e) {}
+}
+
+function resetAll() {
+  if (!confirm('Tem certeza de que deseja limpar toda a avaliacao?')) return;
+  localStorage.removeItem('flutter_interview_pt');
+  Object.keys(ratings).forEach(k => delete ratings[k]);
+  Object.keys(notes).forEach(k => delete notes[k]);
+  document.getElementById('candidateName').value = '';
+  document.getElementById('positionLevel').value = 'mid';
+  document.getElementById('interviewDate').value = '';
+  document.getElementById('interviewerName').value = '';
+  document.getElementById('generalNotes').value = '';
+  renderQuestions();
+}
+
+function exportJSON() {
+  const data = {
+    candidate: document.getElementById('candidateName').value,
+    position: document.getElementById('positionLevel').value,
+    date: document.getElementById('interviewDate').value,
+    interviewer: document.getElementById('interviewerName').value,
+    generalNotes: document.getElementById('generalNotes').value,
+    questions: questions.map((q, i) => ({
+      number: q._num,
+      category: q.cat,
+      level: q.level,
+      question: q.q,
+      rating: ratings[i] || null,
+      notes: notes[i] || '',
+    })),
+    summary: {
+      average: document.getElementById('avgScore').textContent,
+      averageMid: document.getElementById('avgMid').textContent,
+      averageSenior: document.getElementById('avgSenior').textContent,
+      answeredCount: Object.keys(ratings).length,
+      totalQuestions: questions.length,
+    }
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `entrevista_${data.candidate.replace(/\s+/g, '_') || 'candidato'}_${data.date || 'sem_data'}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Auto-save header fields
+['candidateName', 'positionLevel', 'interviewDate', 'interviewerName', 'generalNotes'].forEach(id => {
+  document.getElementById(id).addEventListener('input', saveToStorage);
+  document.getElementById(id).addEventListener('change', saveToStorage);
+});
+
+// Set today's date
+document.getElementById('interviewDate').value = new Date().toISOString().split('T')[0];
+
+// Initial render
+renderQuestions();
+</script>
+</body>
+</html>
