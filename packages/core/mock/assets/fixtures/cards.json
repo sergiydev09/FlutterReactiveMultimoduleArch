@@ -1,0 +1,24 @@
+[
+  {
+    "id": "card-001",
+    "type": "debit",
+    "last_four_digits": "4532",
+    "card_holder_name": "SERGIY GARCIA",
+    "expiry_date": "12/28",
+    "is_active": true,
+    "brand": "visa",
+    "available_limit": 3000.00,
+    "used_limit": 523.87
+  },
+  {
+    "id": "card-002",
+    "type": "credit",
+    "last_four_digits": "8901",
+    "card_holder_name": "SERGIY GARCIA",
+    "expiry_date": "06/27",
+    "is_active": false,
+    "brand": "mastercard",
+    "available_limit": 5000.00,
+    "used_limit": 1250.00
+  }
+]

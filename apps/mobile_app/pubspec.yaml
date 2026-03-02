@@ -1,0 +1,62 @@
+name: mobile_app
+description: Banking app - composition root
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  accounts:
+    path: ../../packages/features/accounts
+  authentication:
+    path: ../../packages/features/authentication
+  cards:
+    path: ../../packages/features/cards
+  common:
+    path: ../../packages/core/common
+  dio:
+  domain:
+    path: ../../packages/core/domain
+  easy_localization:
+  flutter:
+    sdk: flutter
+  flutter_bloc:
+  flutter_riverpod:
+  globalposition:
+    path: ../../packages/features/globalposition
+  go_router:
+  mock:
+    path: ../../packages/core/mock
+  notifications_feature:
+    path: ../../packages/features/notifications
+  onboarding:
+    path: ../../packages/features/onboarding
+  otp:
+    path: ../../packages/libs/otp
+  payments:
+    path: ../../packages/features/payments
+  promotions:
+    path: ../../packages/libs/promotions
+  riverpod:
+  riverpod_annotation:
+  security:
+    path: ../../packages/core/security
+  settings_feature:
+    path: ../../packages/features/settings
+  ui:
+    path: ../../packages/core/ui
+  webview_lib:
+    path: ../../packages/libs/webview
+
+dev_dependencies:
+  build_runner:
+  flutter_test:
+    sdk: flutter
+  riverpod_generator:
+  very_good_analysis:
+
+flutter:
+  uses-material-design: true

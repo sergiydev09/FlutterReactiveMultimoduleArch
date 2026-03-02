@@ -1,0 +1,137 @@
+[
+  {
+    "id": "notif-001",
+    "title": "Transferencia recibida",
+    "body": "Has recibido 500,00 EUR de Juan López",
+    "type": "transfer",
+    "is_read": false,
+    "created_at": "2026-02-27T11:00:00Z",
+    "deep_link": "/accounts/acc-001/transactions/tx-007"
+  },
+  {
+    "id": "notif-002",
+    "title": "Pago realizado",
+    "body": "Pago de 45,99 EUR en Amazon Prime",
+    "type": "payment",
+    "is_read": false,
+    "created_at": "2026-02-27T14:30:00Z",
+    "deep_link": "/accounts/acc-001/transactions/tx-001"
+  },
+  {
+    "id": "notif-003",
+    "title": "Tarjeta bloqueada",
+    "body": "Tu tarjeta Mastercard ****8901 ha sido bloqueada",
+    "type": "security",
+    "is_read": true,
+    "created_at": "2026-02-26T09:00:00Z",
+    "deep_link": "/cards/card-002"
+  },
+  {
+    "id": "notif-004",
+    "title": "Nómina recibida",
+    "body": "Se ha abonado tu nómina de 2.500,00 EUR",
+    "type": "income",
+    "is_read": true,
+    "created_at": "2026-02-25T08:00:00Z",
+    "deep_link": "/accounts/acc-001/transactions/tx-002"
+  },
+  {
+    "id": "notif-005",
+    "title": "Promoción especial",
+    "body": "Cuenta Nómina sin comisiones. ¡Descúbrela!",
+    "type": "promotion",
+    "is_read": false,
+    "created_at": "2026-02-25T10:00:00Z",
+    "deep_link": null
+  },
+  {
+    "id": "notif-006",
+    "title": "Bizum recibido",
+    "body": "Has recibido un Bizum de 25,00 EUR de María",
+    "type": "transfer",
+    "is_read": true,
+    "created_at": "2026-02-24T17:30:00Z",
+    "deep_link": null
+  },
+  {
+    "id": "notif-007",
+    "title": "Alerta de seguridad",
+    "body": "Nuevo inicio de sesión detectado desde Madrid",
+    "type": "security",
+    "is_read": false,
+    "created_at": "2026-02-24T08:15:00Z",
+    "deep_link": "/settings"
+  },
+  {
+    "id": "notif-008",
+    "title": "Recibo domiciliado",
+    "body": "Se ha cargado el recibo de Spotify: 35,00 EUR",
+    "type": "payment",
+    "is_read": true,
+    "created_at": "2026-02-24T00:00:00Z",
+    "deep_link": "/accounts/acc-001/transactions/tx-005"
+  },
+  {
+    "id": "notif-009",
+    "title": "Ahorro automático",
+    "body": "Se han transferido 1.000,00 EUR a tu Cuenta Ahorro",
+    "type": "transfer",
+    "is_read": true,
+    "created_at": "2026-02-01T09:00:00Z",
+    "deep_link": "/accounts/acc-002"
+  },
+  {
+    "id": "notif-010",
+    "title": "Dividendos recibidos",
+    "body": "Has recibido 450,25 EUR en dividendos de Iberdrola",
+    "type": "income",
+    "is_read": true,
+    "created_at": "2026-02-20T10:00:00Z",
+    "deep_link": "/accounts/acc-003/transactions/tx-011"
+  },
+  {
+    "id": "notif-011",
+    "title": "Tarjeta Gold gratis",
+    "body": "Solicita tu tarjeta Gold sin coste el primer año",
+    "type": "promotion",
+    "is_read": false,
+    "created_at": "2026-02-20T12:00:00Z",
+    "deep_link": null
+  },
+  {
+    "id": "notif-012",
+    "title": "Límite de gasto alcanzado",
+    "body": "Has alcanzado el 80% del límite mensual en restaurantes",
+    "type": "alert",
+    "is_read": false,
+    "created_at": "2026-02-19T20:00:00Z",
+    "deep_link": null
+  },
+  {
+    "id": "notif-013",
+    "title": "Pago en gasolinera",
+    "body": "Pago de 65,00 EUR en Repsol",
+    "type": "payment",
+    "is_read": true,
+    "created_at": "2026-02-19T15:30:00Z",
+    "deep_link": "/accounts/acc-001/transactions/tx-013"
+  },
+  {
+    "id": "notif-014",
+    "title": "Actualización disponible",
+    "body": "Nueva versión de BankApp disponible. Actualiza para mejoras de seguridad",
+    "type": "system",
+    "is_read": true,
+    "created_at": "2026-02-18T10:00:00Z",
+    "deep_link": null
+  },
+  {
+    "id": "notif-015",
+    "title": "Plan Ahorro Inteligente",
+    "body": "Descubre cómo ahorrar automáticamente cada mes",
+    "type": "promotion",
+    "is_read": false,
+    "created_at": "2026-02-17T14:00:00Z",
+    "deep_link": null
+  }
+]

@@ -1,0 +1,25 @@
+name: common
+description: Shared utilities, networking, config, error handling
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  dio:
+  dio_cache_interceptor:
+  easy_localization:
+  equatable:
+  flutter:
+    sdk: flutter
+  fpdart:
+  freezed_annotation:
+
+dev_dependencies:
+  build_runner:
+  flutter_test:
+    sdk: flutter
+  freezed:
+  very_good_analysis:

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "acc-001",
+    "type": "current",
+    "name": "Cuenta Corriente",
+    "iban": "ES12 3456 7890 1234 5678 9012",
+    "balance": 4523.87,
+    "currency": "EUR",
+    "is_main": true
+  },
+  {
+    "id": "acc-002",
+    "type": "savings",
+    "name": "Cuenta Ahorro",
+    "iban": "ES98 7654 3210 9876 5432 1098",
+    "balance": 15200.00,
+    "currency": "EUR",
+    "is_main": false
+  },
+  {
+    "id": "acc-003",
+    "type": "investment",
+    "name": "Cartera Inversión",
+    "iban": "ES45 1122 3344 5566 7788 9900",
+    "balance": 32450.25,
+    "currency": "EUR",
+    "is_main": false
+  }
+]

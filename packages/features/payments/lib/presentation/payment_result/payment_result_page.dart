@@ -1,0 +1,179 @@
+import 'package:flutter/material.dart';
+import 'package:ui/tokens/colors.dart';
+
+/// Page showing the result of a payment (success or error).
+class PaymentResultPage extends StatelessWidget {
+  const PaymentResultPage({
+    required this.isSuccess,
+    super.key,
+    this.confirmationId,
+    this.errorMessage,
+    this.onDone,
+    this.onRetry,
+  });
+
+  /// Whether the payment was successful.
+  final bool isSuccess;
+
+  /// Confirmation ID for successful payments.
+  final String? confirmationId;
+
+  /// Error message for failed payments.
+  final String? errorMessage;
+
+  /// Callback for the "Done" button.
+  final VoidCallback? onDone;
+
+  /// Callback for the "Retry" button.
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: BankingColors.backgroundLight,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(),
+              // Status icon.
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: (isSuccess
+                          ? BankingColors.success
+                          : BankingColors.error)
+                      .withValues(alpha:0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isSuccess ? Icons.check_circle_outline : Icons.error_outline,
+                  size: 56,
+                  color:
+                      isSuccess ? BankingColors.success : BankingColors.error,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text(
+                isSuccess
+                    ? 'Transferencia realizada'
+                    : 'Error en la transferencia',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: BankingColors.onBackgroundLight,
+                    ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                isSuccess
+                    ? 'Tu transferencia se ha procesado correctamente.'
+                    : errorMessage ?? 'Ha ocurrido un error. Inténtalo de nuevo.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: BankingColors.onBackgroundLightSecondary,
+                    ),
+              ),
+              if (isSuccess && confirmationId != null) ...[
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: BankingColors.surfaceVariantLight,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Referencia: ',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: BankingColors.onBackgroundLightSecondary,
+                        ),
+                      ),
+                      Text(
+                        confirmationId!,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: BankingColors.onBackgroundLight,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              const Spacer(),
+              // Action buttons.
+              if (isSuccess) ...[
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: onDone,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: BankingColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Volver al inicio',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ] else ...[
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: onRetry,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: BankingColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Reintentar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: onDone,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: BankingColors.primary,
+                      side: const BorderSide(color: BankingColors.primary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('Cancelar'),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

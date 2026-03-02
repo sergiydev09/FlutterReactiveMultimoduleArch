@@ -1,0 +1,22 @@
+name: webview_lib
+description: Banking WebView infrastructure
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  common:
+    path: ../../core/common
+  flutter:
+    sdk: flutter
+  flutter_inappwebview:
+  security:
+    path: ../../core/security
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis:

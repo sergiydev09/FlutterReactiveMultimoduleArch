@@ -1,0 +1,167 @@
+[
+  {
+    "id": "tx-001",
+    "account_id": "acc-001",
+    "amount": -45.99,
+    "currency": "EUR",
+    "description": "Amazon Prime",
+    "category": "shopping",
+    "status": "completed",
+    "created_at": "2026-02-27T14:30:00Z",
+    "merchant": {"name": "Amazon", "logo_url": null}
+  },
+  {
+    "id": "tx-002",
+    "account_id": "acc-001",
+    "amount": 2500.00,
+    "currency": "EUR",
+    "description": "Nómina Febrero 2026",
+    "category": "income",
+    "status": "completed",
+    "created_at": "2026-02-25T08:00:00Z",
+    "merchant": null
+  },
+  {
+    "id": "tx-003",
+    "account_id": "acc-001",
+    "amount": -12.50,
+    "currency": "EUR",
+    "description": "Café Central",
+    "category": "restaurants",
+    "status": "completed",
+    "created_at": "2026-02-27T09:15:00Z",
+    "merchant": {"name": "Café Central", "logo_url": null}
+  },
+  {
+    "id": "tx-004",
+    "account_id": "acc-001",
+    "amount": -89.90,
+    "currency": "EUR",
+    "description": "Mercadona",
+    "category": "groceries",
+    "status": "completed",
+    "created_at": "2026-02-26T18:45:00Z",
+    "merchant": {"name": "Mercadona", "logo_url": null}
+  },
+  {
+    "id": "tx-005",
+    "account_id": "acc-001",
+    "amount": -35.00,
+    "currency": "EUR",
+    "description": "Spotify Premium",
+    "category": "entertainment",
+    "status": "completed",
+    "created_at": "2026-02-24T00:00:00Z",
+    "merchant": {"name": "Spotify", "logo_url": null}
+  },
+  {
+    "id": "tx-006",
+    "account_id": "acc-001",
+    "amount": -150.00,
+    "currency": "EUR",
+    "description": "Zara",
+    "category": "shopping",
+    "status": "completed",
+    "created_at": "2026-02-23T16:20:00Z",
+    "merchant": {"name": "Zara", "logo_url": null}
+  },
+  {
+    "id": "tx-007",
+    "account_id": "acc-001",
+    "amount": 500.00,
+    "currency": "EUR",
+    "description": "Transferencia recibida - Juan López",
+    "category": "transfer",
+    "status": "completed",
+    "created_at": "2026-02-22T11:00:00Z",
+    "merchant": null
+  },
+  {
+    "id": "tx-008",
+    "account_id": "acc-001",
+    "amount": -22.50,
+    "currency": "EUR",
+    "description": "Uber",
+    "category": "transport",
+    "status": "completed",
+    "created_at": "2026-02-21T22:30:00Z",
+    "merchant": {"name": "Uber", "logo_url": null}
+  },
+  {
+    "id": "tx-009",
+    "account_id": "acc-002",
+    "amount": 1000.00,
+    "currency": "EUR",
+    "description": "Ahorro mensual",
+    "category": "transfer",
+    "status": "completed",
+    "created_at": "2026-02-01T09:00:00Z",
+    "merchant": null
+  },
+  {
+    "id": "tx-010",
+    "account_id": "acc-002",
+    "amount": 200.00,
+    "currency": "EUR",
+    "description": "Intereses",
+    "category": "income",
+    "status": "completed",
+    "created_at": "2026-02-15T00:00:00Z",
+    "merchant": null
+  },
+  {
+    "id": "tx-011",
+    "account_id": "acc-003",
+    "amount": 450.25,
+    "currency": "EUR",
+    "description": "Dividendos Iberdrola",
+    "category": "income",
+    "status": "completed",
+    "created_at": "2026-02-20T10:00:00Z",
+    "merchant": null
+  },
+  {
+    "id": "tx-012",
+    "account_id": "acc-001",
+    "amount": -8.99,
+    "currency": "EUR",
+    "description": "Netflix",
+    "category": "entertainment",
+    "status": "completed",
+    "created_at": "2026-02-20T00:00:00Z",
+    "merchant": {"name": "Netflix", "logo_url": null}
+  },
+  {
+    "id": "tx-013",
+    "account_id": "acc-001",
+    "amount": -65.00,
+    "currency": "EUR",
+    "description": "Gasolinera Repsol",
+    "category": "transport",
+    "status": "completed",
+    "created_at": "2026-02-19T15:30:00Z",
+    "merchant": {"name": "Repsol", "logo_url": null}
+  },
+  {
+    "id": "tx-014",
+    "account_id": "acc-001",
+    "amount": -320.00,
+    "currency": "EUR",
+    "description": "Alquiler plaza garaje",
+    "category": "housing",
+    "status": "completed",
+    "created_at": "2026-02-01T00:00:00Z",
+    "merchant": null
+  },
+  {
+    "id": "tx-015",
+    "account_id": "acc-001",
+    "amount": -42.30,
+    "currency": "EUR",
+    "description": "Farmacia",
+    "category": "health",
+    "status": "completed",
+    "created_at": "2026-02-18T12:00:00Z",
+    "merchant": {"name": "Farmacia Pérez", "logo_url": null}
+  }
+]

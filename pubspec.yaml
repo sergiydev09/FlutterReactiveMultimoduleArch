@@ -1,0 +1,55 @@
+name: banking_app_workspace
+
+environment:
+  sdk: ^3.11.0
+
+workspace:
+  - apps/mobile_app
+  - packages/core/common
+  - packages/core/domain
+  - packages/core/mock
+  - packages/core/security
+  - packages/core/ui
+  - packages/features/accounts
+  - packages/features/authentication
+  - packages/features/cards
+  - packages/features/globalposition
+  - packages/features/notifications
+  - packages/features/onboarding
+  - packages/features/payments
+  - packages/features/settings
+  - packages/libs/otp
+  - packages/libs/promotions
+  - packages/libs/webview
+
+dependencies:
+  dio: ^5.8.0+1
+  dio_cache_interceptor: ^3.5.0
+  easy_localization: ^3.0.7+1
+  equatable: ^2.0.7
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.0
+  flutter_inappwebview: ^6.1.5
+  flutter_riverpod: ^3.2.1
+  flutter_secure_storage: ^9.2.4
+  fpdart: ^1.1.0
+  freezed_annotation: ^3.0.0
+  go_router: ^14.8.1
+  intl: any
+  json_annotation: ^4.9.0
+  local_auth: ^2.3.0
+  riverpod: ^3.2.1
+  riverpod_annotation: ^4.0.2
+
+dev_dependencies:
+  bloc_test: any
+  build_runner: any
+  flutter_test:
+    sdk: flutter
+  freezed: any
+  json_serializable: any
+  mocktail: any
+  riverpod_generator: ^4.0.3
+  riverpod_lint: ^3.1.3
+  very_good_analysis: any

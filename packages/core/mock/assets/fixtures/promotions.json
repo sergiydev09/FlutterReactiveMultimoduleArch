@@ -1,0 +1,29 @@
+[
+  {
+    "id": "promo-001",
+    "title": "Cuenta Nómina Sin Comisiones",
+    "subtitle": "Domicilia tu nómina y olvídate de las comisiones",
+    "image_url": "https://cdn.company.com/promos/cuenta-nomina.png",
+    "action_url": "/accounts/new?type=payroll",
+    "action_type": "deep_link",
+    "priority": 1
+  },
+  {
+    "id": "promo-002",
+    "title": "Tarjeta Gold Gratis el Primer Año",
+    "subtitle": "Solicita tu tarjeta Gold sin coste de emisión",
+    "image_url": "https://cdn.company.com/promos/tarjeta-gold.png",
+    "action_url": "/cards/new?type=gold",
+    "action_type": "deep_link",
+    "priority": 2
+  },
+  {
+    "id": "promo-003",
+    "title": "Plan Ahorro Inteligente",
+    "subtitle": "Descubre cómo ahorrar automáticamente cada mes",
+    "image_url": "https://cdn.company.com/promos/ahorro.png",
+    "action_url": "https://bankapp.com/promo/ahorro-inteligente",
+    "action_type": "webview",
+    "priority": 3
+  }
+]

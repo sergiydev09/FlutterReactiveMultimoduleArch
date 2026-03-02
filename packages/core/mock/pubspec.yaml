@@ -1,0 +1,39 @@
+name: mock
+description: Mock implementations - DEV only
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  accounts:
+    path: ../../features/accounts
+  authentication:
+    path: ../../features/authentication
+  cards:
+    path: ../../features/cards
+  common:
+    path: ../common
+  domain:
+    path: ../domain
+  flutter:
+    sdk: flutter
+  globalposition:
+    path: ../../features/globalposition
+  notifications_feature:
+    path: ../../features/notifications
+  payments:
+    path: ../../features/payments
+  promotions:
+    path: ../../libs/promotions
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis:
+
+flutter:
+  assets:
+    - assets/fixtures/

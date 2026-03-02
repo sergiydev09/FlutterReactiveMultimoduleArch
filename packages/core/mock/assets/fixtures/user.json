@@ -1,0 +1,10 @@
+{
+  "id": "usr-001",
+  "dni": "12345678A",
+  "first_name": "Sergiy",
+  "last_name": "García",
+  "email": "sergiy@company.com",
+  "phone": "+34 612 345 678",
+  "avatar_url": null,
+  "created_at": "2024-03-15T10:00:00Z"
+}

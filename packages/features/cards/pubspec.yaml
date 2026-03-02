@@ -1,0 +1,31 @@
+name: cards
+description: Cards feature
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  common:
+    path: ../../core/common
+  dio:
+  domain:
+    path: ../../core/domain
+  equatable:
+  flutter:
+    sdk: flutter
+  flutter_bloc:
+  fpdart:
+  ui:
+    path: ../../core/ui
+  webview_lib:
+    path: ../../libs/webview
+
+dev_dependencies:
+  bloc_test:
+  flutter_test:
+    sdk: flutter
+  mocktail:
+  very_good_analysis:

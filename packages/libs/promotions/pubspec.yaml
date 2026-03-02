@@ -1,0 +1,24 @@
+name: promotions
+description: Promotional banners and content
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  common:
+    path: ../../core/common
+  equatable:
+  flutter:
+    sdk: flutter
+  ui:
+    path: ../../core/ui
+  webview_lib:
+    path: ../webview
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis:

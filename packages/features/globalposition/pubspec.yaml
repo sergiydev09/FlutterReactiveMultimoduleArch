@@ -1,0 +1,31 @@
+name: globalposition
+description: Global position feature - home screen
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  common:
+    path: ../../core/common
+  dio:
+  domain:
+    path: ../../core/domain
+  equatable:
+  flutter:
+    sdk: flutter
+  flutter_bloc:
+  fpdart:
+  promotions:
+    path: ../../libs/promotions
+  ui:
+    path: ../../core/ui
+
+dev_dependencies:
+  bloc_test:
+  flutter_test:
+    sdk: flutter
+  mocktail:
+  very_good_analysis:

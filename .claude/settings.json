@@ -1,0 +1,103 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dart format:*)",
+      "Bash(dart analyze:*)",
+      "Bash(dart run build_runner:*)",
+      "Bash(dart pub get:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(flutter pub add:*)",
+      "Bash(flutter pub remove:*)",
+      "Bash(flutter run:*)",
+      "Bash(flutter test:*)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter build:*)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(melos analyze:*)",
+      "Bash(melos test:*)",
+      "Bash(melos build:runner:*)",
+      "Bash(melos clean:*)",
+      "Bash(melos format:check:*)",
+      "Bash(melos bootstrap:*)",
+      "Bash(melos deps:upgrade:*)",
+      "Bash(melos exec:*)",
+      "Bash(dart run build_runner build:*)",
+      "Bash(flutter pub run build_runner build:*)",
+      "Bash(git push:*)",
+      "Bash(git remote:*)",
+      "Bash(gh api:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh issue:*)",
+      "mcp__dart-mcp-server__list_devices",
+      "mcp__dart-mcp-server__launch_app",
+      "mcp__dart-mcp-server__connect_dart_tooling_daemon",
+      "mcp__dart-mcp-server__get_widget_tree",
+      "mcp__dart-mcp-server__hot_reload",
+      "mcp__dart-mcp-server__hot_restart",
+      "mcp__dart-mcp-server__get_runtime_errors",
+      "mcp__dart-mcp-server__flutter_driver",
+      "mcp__dart-mcp-server__get_app_logs",
+      "mcp__dart-mcp-server__stop_app",
+      "mcp__dart-mcp-server__list_running_apps",
+      "mcp__dart-mcp-server__analyze_files",
+      "mcp__dart-mcp-server__add_roots",
+      "mcp__dart-mcp-server__remove_roots",
+      "mcp__dart-mcp-server__create_project",
+      "mcp__dart-mcp-server__dart_fix",
+      "mcp__dart-mcp-server__get_active_location",
+      "mcp__dart-mcp-server__get_selected_widget",
+      "mcp__dart-mcp-server__set_widget_selection_mode",
+      "mcp__dart-mcp-server__hover",
+      "mcp__dart-mcp-server__signature_help",
+      "mcp__dart-mcp-server__resolve_workspace_symbol",
+      "mcp__dart-mcp-server__pub",
+      "mcp__dart-mcp-server__pub_dev_search",
+      "mcp__dart-mcp-server__run_tests",
+      "mcp__dart-mcp-server__dart_format",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__github__get_file_contents",
+      "mcp__github__search_code",
+      "mcp__github__get_issue",
+      "WebFetch(domain:pub.dev)",
+      "WebFetch(domain:dart.dev)",
+      "WebFetch(domain:api.flutter.dev)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:github.com)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(firebase deploy:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/format-dart.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/protect-generated.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

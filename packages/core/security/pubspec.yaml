@@ -1,0 +1,21 @@
+name: security
+description: Security module - storage, biometrics, session management
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  common:
+    path: ../common
+  flutter:
+    sdk: flutter
+  flutter_secure_storage:
+  local_auth:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis:

@@ -1,0 +1,53 @@
+name: banking_app
+repository: https://github.com/org/banking_app
+
+packages:
+  - apps/**
+  - packages/**
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+scripts:
+  analyze:
+    description: Analyze all packages
+    run: dart analyze .
+    exec:
+      concurrency: 4
+
+  test:
+    description: Run all tests
+    run: flutter test --coverage
+    exec:
+      concurrency: 4
+      failFast: true
+
+  test:changed:
+    description: Run tests only for changed packages
+    run: melos exec --since=origin/main -- "flutter test --coverage"
+
+  format:check:
+    description: Check formatting
+    run: dart format --set-exit-if-changed .
+    exec:
+      concurrency: 4
+
+  build:runner:
+    description: Run build_runner in all packages that need it
+    run: dart run build_runner build --delete-conflicting-outputs
+    exec:
+      concurrency: 2
+      orderDependents: true
+
+  clean:
+    description: Clean all packages
+    run: flutter clean
+    exec:
+      concurrency: 4
+
+  deps:upgrade:
+    description: Upgrade all dependencies across the workspace
+    run: dart pub upgrade
+    exec:
+      concurrency: 1
