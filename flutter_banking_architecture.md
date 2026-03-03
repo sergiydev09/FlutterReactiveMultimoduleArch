@@ -419,9 +419,9 @@ abstract class UseCase<Type, Params> {
   Future<Either<Failure, Type>> call(Params params);
 }
 
-class NoParams extends Equatable {
-  @override
-  List<Object?> get props => [];
+@freezed
+abstract class NoParams with _$NoParams {
+  const factory NoParams() = _NoParams;
 }
 ```
 
@@ -1066,7 +1066,7 @@ class LocalAuthDataSource {
 
 ### Code Generation: Freezed para Todo
 
-Freezed es la única librería para data classes. Genera `==`, `hashCode`, `toString`, `copyWith` y pattern matching. No usamos Equatable ni ninguna otra — una sola librería, sin duplicar.
+Freezed es la única librería para data classes, events, states y value objects. Genera `==`, `hashCode`, `toString`, `copyWith` y pattern matching. No usamos Equatable — una sola librería, sin duplicar.
 
 #### Nomenclatura
 

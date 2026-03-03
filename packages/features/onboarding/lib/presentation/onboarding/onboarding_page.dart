@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onboarding/presentation/onboarding/onboarding_cubit.dart';
+import 'package:onboarding/presentation/onboarding/onboarding_bloc.dart';
 import 'package:ui/tokens/colors.dart';
 
 /// The onboarding page shown to first-time users.
@@ -56,17 +56,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _onNext(BuildContext context) {
-    final cubit = context.read<OnboardingCubit>();
-    if (cubit.state.isLastPage) {
+    final bloc = context.read<OnboardingBloc>();
+    final isLastPage = switch (bloc.state) {
+      OnboardingIdle(:final isLastPage) => isLastPage,
+    };
+
+    if (isLastPage) {
       widget.onComplete?.call();
     } else {
-      cubit.nextPage();
-      unawaited(
-        _pageController.nextPage(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        ),
-      );
+      bloc.add(const NextPageRequested());
     }
   }
 
@@ -76,99 +74,116 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OnboardingCubit(),
-      child: Scaffold(
-        backgroundColor: BankingColors.backgroundLight,
-        body: SafeArea(
-          child: BlocBuilder<OnboardingCubit, OnboardingState>(
-            builder: (context, state) {
-              return Column(
-                children: [
-                  // Skip button.
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: TextButton(
-                        onPressed: state.isLastPage ? null : _onSkip,
-                        child: Text(
-                          state.isLastPage ? '' : 'Saltar',
-                          style: const TextStyle(
-                            color: BankingColors.onBackgroundLightSecondary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Pages.
-                  Expanded(
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: _slides.length,
-                      onPageChanged: (index) {
-                        context.read<OnboardingCubit>().setPage(index);
-                      },
-                      itemBuilder: (context, index) {
-                        final slide = _slides[index];
-                        return _OnboardingSlide(data: slide);
-                      },
-                    ),
-                  ),
-                  // Page indicators.
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(_slides.length, (index) {
-                        final isActive = index == state.currentPage;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: isActive ? 32 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? BankingColors.primary
-                                : BankingColors.primary.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                  // Next / Get started button.
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: () => _onNext(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: BankingColors.primary,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 2,
-                        ),
-                        child: Text(
-                          state.isLastPage ? 'Comenzar' : 'Siguiente',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+    return Scaffold(
+      backgroundColor: BankingColors.backgroundLight,
+      body: SafeArea(
+        child: BlocConsumer<OnboardingBloc, OnboardingState>(
+          listener: (context, state) {
+            if (state is OnboardingIdle) {
+              unawaited(
+                _pageController.animateToPage(
+                  state.currentPage,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
               );
-            },
-          ),
+            }
+          },
+          builder: (context, state) {
+            final currentPage = switch (state) {
+              OnboardingIdle(:final currentPage) => currentPage,
+            };
+            final isLastPage = switch (state) {
+              OnboardingIdle(:final isLastPage) => isLastPage,
+            };
+
+            return Column(
+              children: [
+                // Skip button.
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: TextButton(
+                      onPressed: isLastPage ? null : _onSkip,
+                      child: Text(
+                        isLastPage ? '' : 'Saltar',
+                        style: const TextStyle(
+                          color: BankingColors.onBackgroundLightSecondary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Pages.
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _slides.length,
+                    onPageChanged: (index) {
+                      context
+                          .read<OnboardingBloc>()
+                          .add(PageChanged(page: index));
+                    },
+                    itemBuilder: (context, index) {
+                      final slide = _slides[index];
+                      return _OnboardingSlide(data: slide);
+                    },
+                  ),
+                ),
+                // Page indicators.
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(_slides.length, (index) {
+                      final isActive = index == currentPage;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: isActive ? 32 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? BankingColors.primary
+                              : BankingColors.primary.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                // Next / Get started button.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () => _onNext(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: BankingColors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: Text(
+                        isLastPage ? 'Comenzar' : 'Siguiente',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

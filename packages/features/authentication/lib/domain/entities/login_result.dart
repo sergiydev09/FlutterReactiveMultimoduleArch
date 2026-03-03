@@ -1,20 +1,13 @@
 import 'package:authentication/domain/entities/auth_token.dart';
 import 'package:domain/entities/user.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Domain entity representing the result of a successful login.
-class LoginResult extends Equatable {
-  const LoginResult({
-    required this.token,
-    required this.user,
-  });
+part 'generated/login_result.freezed.dart';
 
-  /// Authentication tokens.
-  final AuthToken token;
-
-  /// Authenticated user.
-  final User user;
-
-  @override
-  List<Object?> get props => [token, user];
+@freezed
+abstract class LoginResult with _$LoginResult {
+  const factory LoginResult({
+    required AuthToken token,
+    required User user,
+  }) = _LoginResult;
 }

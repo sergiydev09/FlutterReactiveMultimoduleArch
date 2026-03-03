@@ -1,24 +1,10 @@
 part of 'settings_bloc.dart';
 
-/// Events for the settings BLoC.
-sealed class SettingsEvent extends Equatable {
-  const SettingsEvent();
+@freezed
+sealed class SettingsEvent with _$SettingsEvent {
+  const factory SettingsEvent.toggleTheme() = ToggleTheme;
 
-  @override
-  List<Object?> get props => [];
-}
+  const factory SettingsEvent.toggleBiometrics() = ToggleBiometrics;
 
-/// Toggle between light and dark theme.
-final class ToggleTheme extends SettingsEvent {
-  const ToggleTheme();
-}
-
-/// Toggle biometric authentication on/off.
-final class ToggleBiometrics extends SettingsEvent {
-  const ToggleBiometrics();
-}
-
-/// Toggle push notifications on/off.
-final class ToggleNotifications extends SettingsEvent {
-  const ToggleNotifications();
+  const factory SettingsEvent.toggleNotifications() = ToggleNotifications;
 }

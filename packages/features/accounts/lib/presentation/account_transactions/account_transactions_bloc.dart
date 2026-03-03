@@ -1,10 +1,11 @@
 import 'package:accounts/domain/usecases/get_account_transactions_usecase.dart';
 import 'package:domain/entities/transaction.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'account_transactions_event.dart';
 part 'account_transactions_state.dart';
+part 'generated/account_transactions_bloc.freezed.dart';
 
 /// BLoC for loading and paginating account transactions.
 class AccountTransactionsBloc

@@ -1,20 +1,19 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'generated/money.freezed.dart';
 
 /// Value object representing a monetary amount with its currency.
-class Money extends Equatable {
-  const Money({
-    required this.amount,
-    this.currency = 'EUR',
-  });
+@freezed
+abstract class Money with _$Money {
+  const factory Money({
+    required double amount,
+    @Default('EUR') String currency,
+  }) = _Money;
+
+  const Money._();
 
   /// Creates a zero-value Money in the given [currency].
-  const Money.zero({this.currency = 'EUR'}) : amount = 0;
-
-  /// The numeric amount.
-  final double amount;
-
-  /// ISO 4217 currency code.
-  final String currency;
+  static const zero = Money(amount: 0);
 
   /// Whether the amount is positive.
   bool get isPositive => amount >= 0;
@@ -61,15 +60,4 @@ class Money extends Equatable {
 
   /// Negates the amount.
   Money operator -() => Money(amount: -amount, currency: currency);
-
-  /// Creates a copy with optionally overridden fields.
-  Money copyWith({double? amount, String? currency}) {
-    return Money(
-      amount: amount ?? this.amount,
-      currency: currency ?? this.currency,
-    );
-  }
-
-  @override
-  List<Object?> get props => [amount, currency];
 }

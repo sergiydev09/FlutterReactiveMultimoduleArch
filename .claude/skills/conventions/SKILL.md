@@ -20,8 +20,9 @@ Claude DEBE aplicar estas reglas automáticamente al escribir o modificar códig
 
 ## BLoC
 
-- Events y States son `sealed class` que extienden `Equatable`
+- Events y States son `@freezed sealed class` con `_$<Name>` mixin
 - Usar `part` / `part of` para separar events y states en archivos propios
+- Archivos generados (`.freezed.dart`) van en subcarpeta `generated/` junto al fuente
 - Inyección de dependencias SOLO por constructor
 - Handlers nombrados `_on<EventName>`
 - SIEMPRE emitir al menos un estado en cada handler

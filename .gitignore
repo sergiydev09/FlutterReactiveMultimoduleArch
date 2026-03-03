@@ -17,5 +17,8 @@ pubspec.lock
 # MCP servers local config
 .mcp.json
 
+# Generated code (Freezed, json_serializable)
+**/generated/
+
 # Test coverage
 coverage/

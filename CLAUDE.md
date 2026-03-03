@@ -67,9 +67,10 @@ packages/features/<name>/lib/
 ## Patrones obligatorios
 
 ### BLoC
-- Events y States son **sealed class** (exhaustive pattern matching)
-- Todos extienden `Equatable`
+- Events y States son **`@freezed sealed class`** (exhaustive pattern matching)
+- Usan mixin `_$<Name>` generado por Freezed (NO Equatable)
 - Usan `part` / `part of` (event y state en archivos separados)
+- Archivos generados (`.freezed.dart`) van en subcarpeta `generated/` junto al fuente
 - Handlers se nombran `_on<EventName>`
 - Siempre emitir al menos un estado
 - Inyección por constructor (NUNCA service locator)
@@ -103,11 +104,12 @@ packages/features/<name>/lib/
 ## Failure types (sealed class)
 
 ```dart
-sealed class Failure extends Equatable {
-  ServerFailure   // Error de servidor
-  CacheFailure    // Error de caché local
-  AuthFailure     // Error de autenticación
-  NetworkFailure  // Sin conexión
+@freezed
+sealed class Failure with _$Failure {
+  const factory Failure.server({...})  = ServerFailure;   // Error de servidor
+  const factory Failure.cache({...})   = CacheFailure;    // Error de caché local
+  const factory Failure.auth({...})    = AuthFailure;     // Error de autenticación
+  const factory Failure.network({...}) = NetworkFailure;  // Sin conexión
 }
 ```
 

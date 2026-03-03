@@ -14,11 +14,11 @@ dependencies:
   dio:
   domain:
     path: ../../core/domain
-  equatable:
   flutter:
     sdk: flutter
   flutter_bloc:
   fpdart:
+  freezed_annotation:
   promotions:
     path: ../../libs/promotions
   ui:
@@ -26,7 +26,9 @@ dependencies:
 
 dev_dependencies:
   bloc_test:
+  build_runner:
   flutter_test:
     sdk: flutter
+  freezed:
   mocktail:
   very_good_analysis:

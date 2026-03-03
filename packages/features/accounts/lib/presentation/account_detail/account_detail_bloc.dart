@@ -1,10 +1,11 @@
 import 'package:accounts/domain/usecases/get_account_detail_usecase.dart';
 import 'package:domain/entities/account.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'account_detail_event.dart';
 part 'account_detail_state.dart';
+part 'generated/account_detail_bloc.freezed.dart';
 
 /// BLoC for loading account detail information.
 class AccountDetailBloc extends Bloc<AccountDetailEvent, AccountDetailState> {

@@ -1,41 +1,22 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'generated/user.freezed.dart';
 
 /// Represents an authenticated user of the banking application.
-class User extends Equatable {
-  const User({
-    required this.id,
-    required this.dni,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.createdAt,
-    this.phone,
-    this.avatarUrl,
-  });
+@freezed
+abstract class User with _$User {
+  const factory User({
+    required String id,
+    required String dni,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required DateTime createdAt,
+    String? phone,
+    String? avatarUrl,
+  }) = _User;
 
-  /// Unique user identifier.
-  final String id;
-
-  /// National identification number (DNI / NIF).
-  final String dni;
-
-  /// User's first name.
-  final String firstName;
-
-  /// User's last name.
-  final String lastName;
-
-  /// Email address.
-  final String email;
-
-  /// Phone number (optional).
-  final String? phone;
-
-  /// URL to the user's avatar image (optional).
-  final String? avatarUrl;
-
-  /// Account creation timestamp.
-  final DateTime createdAt;
+  const User._();
 
   /// Full name convenience getter.
   String get fullName => '$firstName $lastName';
@@ -46,39 +27,4 @@ class User extends Equatable {
     final last = lastName.isNotEmpty ? lastName[0].toUpperCase() : '';
     return '$first$last';
   }
-
-  /// Creates a copy with optionally overridden fields.
-  User copyWith({
-    String? id,
-    String? dni,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? phone,
-    String? avatarUrl,
-    DateTime? createdAt,
-  }) {
-    return User(
-      id: id ?? this.id,
-      dni: dni ?? this.dni,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    id,
-    dni,
-    firstName,
-    lastName,
-    email,
-    phone,
-    avatarUrl,
-    createdAt,
-  ];
 }

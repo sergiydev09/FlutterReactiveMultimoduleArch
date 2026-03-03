@@ -2,11 +2,12 @@ import 'package:cards/domain/repositories/card_repository.dart';
 import 'package:cards/domain/usecases/get_cards_usecase.dart';
 import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/card_entity.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'cards_event.dart';
 part 'cards_state.dart';
+part 'generated/cards_bloc.freezed.dart';
 
 /// BLoC for managing the user's banking cards.
 class CardsBloc extends Bloc<CardsEvent, CardsState> {

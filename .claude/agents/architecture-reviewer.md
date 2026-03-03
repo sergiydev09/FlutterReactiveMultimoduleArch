@@ -22,9 +22,9 @@ Buscar violaciones de imports entre paquetes:
 
 ### 2. Patrones BLoC
 Verificar:
-- Events y States son `sealed class`
-- Extienden `Equatable`
+- Events y States son `@freezed sealed class` con mixin `_$<Name>`
 - Usan `part` / `part of`
+- Archivos generados (`.freezed.dart`) en subcarpeta `generated/`
 - Constructor injection (no service locator, no `getIt`, no `context.read` en constructor)
 - BlocProvider se crea en `app_router.dart`, NO en páginas
 

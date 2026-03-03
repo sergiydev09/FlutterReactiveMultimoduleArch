@@ -1,38 +1,34 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'generated/failures.freezed.dart';
 
 /// Base failure class for the application.
 ///
 /// All specific failure types extend this sealed class,
 /// ensuring exhaustive pattern matching in error handling.
-sealed class Failure extends Equatable {
-  const Failure({this.message = '', this.statusCode});
+@freezed
+sealed class Failure with _$Failure {
+  /// Failure originating from a remote server response.
+  const factory Failure.server({
+    @Default('Server error') String message,
+    int? statusCode,
+  }) = ServerFailure;
 
-  /// Human-readable error message.
-  final String message;
+  /// Failure originating from local cache operations.
+  const factory Failure.cache({
+    @Default('Cache error') String message,
+    int? statusCode,
+  }) = CacheFailure;
 
-  /// Optional HTTP status code associated with the failure.
-  final int? statusCode;
+  /// Failure related to authentication or authorization.
+  const factory Failure.auth({
+    @Default('Authentication error') String message,
+    int? statusCode,
+  }) = AuthFailure;
 
-  @override
-  List<Object?> get props => [message, statusCode];
-}
-
-/// Failure originating from a remote server response.
-final class ServerFailure extends Failure {
-  const ServerFailure({super.message = 'Server error', super.statusCode});
-}
-
-/// Failure originating from local cache operations.
-final class CacheFailure extends Failure {
-  const CacheFailure({super.message = 'Cache error'});
-}
-
-/// Failure related to authentication or authorization.
-final class AuthFailure extends Failure {
-  const AuthFailure({super.message = 'Authentication error', super.statusCode});
-}
-
-/// Failure due to network connectivity issues.
-final class NetworkFailure extends Failure {
-  const NetworkFailure({super.message = 'No internet connection'});
+  /// Failure due to network connectivity issues.
+  const factory Failure.network({
+    @Default('No internet connection') String message,
+    int? statusCode,
+  }) = NetworkFailure;
 }

@@ -1,46 +1,15 @@
 part of 'auth_bloc.dart';
 
-/// States for the authentication BLoC.
-sealed class AuthState extends Equatable {
-  const AuthState();
+@freezed
+sealed class AuthState with _$AuthState {
+  const factory AuthState.initial() = AuthInitial;
 
-  @override
-  List<Object?> get props => [];
-}
+  const factory AuthState.loading() = AuthLoading;
 
-/// Initial state before any authentication check.
-final class AuthInitial extends AuthState {
-  const AuthInitial();
-}
+  const factory AuthState.authenticated({required User user}) =
+      AuthAuthenticated;
 
-/// Authentication operation in progress.
-final class AuthLoading extends AuthState {
-  const AuthLoading();
-}
+  const factory AuthState.unauthenticated() = AuthUnauthenticated;
 
-/// User is authenticated.
-final class AuthAuthenticated extends AuthState {
-  const AuthAuthenticated({required this.user});
-
-  /// The authenticated user.
-  final User user;
-
-  @override
-  List<Object?> get props => [user];
-}
-
-/// User is not authenticated.
-final class AuthUnauthenticated extends AuthState {
-  const AuthUnauthenticated();
-}
-
-/// An error occurred during authentication.
-final class AuthError extends AuthState {
-  const AuthError({required this.message});
-
-  /// Human-readable error message.
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
+  const factory AuthState.error({required String message}) = AuthError;
 }

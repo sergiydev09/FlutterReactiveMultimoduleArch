@@ -1,19 +1,13 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_event.dart';
 part 'settings_state.dart';
+part 'generated/settings_bloc.freezed.dart';
 
 /// BLoC for managing user settings/preferences.
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  SettingsBloc()
-    : super(
-        const SettingsState(
-          isDarkMode: false,
-          isBiometricsEnabled: false,
-          areNotificationsEnabled: true,
-        ),
-      ) {
+  SettingsBloc() : super(const SettingsState()) {
     on<ToggleTheme>(_onToggleTheme);
     on<ToggleBiometrics>(_onToggleBiometrics);
     on<ToggleNotifications>(_onToggleNotifications);

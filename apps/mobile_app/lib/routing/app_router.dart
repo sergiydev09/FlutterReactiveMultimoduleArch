@@ -4,7 +4,7 @@ import 'package:accounts/domain/usecases/get_account_detail_usecase.dart';
 import 'package:accounts/domain/usecases/get_account_transactions_usecase.dart';
 import 'package:accounts/presentation/account_detail/account_detail_bloc.dart';
 import 'package:accounts/presentation/account_detail/account_detail_page.dart';
-import 'package:accounts/presentation/account_detail/account_transactions_bloc.dart';
+import 'package:accounts/presentation/account_transactions/account_transactions_bloc.dart';
 import 'package:accounts/presentation/transaction_detail/transaction_detail_page.dart';
 import 'package:authentication/domain/usecases/login_usecase.dart';
 import 'package:authentication/domain/usecases/logout_usecase.dart';
@@ -30,6 +30,7 @@ import 'package:mobile_app/di/providers.dart';
 import 'package:mobile_app/routing/main_shell.dart';
 import 'package:notifications_feature/presentation/notifications/notifications_bloc.dart';
 import 'package:notifications_feature/presentation/notifications/notifications_page.dart';
+import 'package:onboarding/presentation/onboarding/onboarding_bloc.dart';
 import 'package:onboarding/presentation/onboarding/onboarding_page.dart';
 import 'package:payments/domain/entities/payment.dart';
 import 'package:payments/domain/usecases/execute_payment_usecase.dart';
@@ -96,7 +97,20 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Onboarding
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingPage(),
+        builder: (context, state) {
+          return BlocProvider(
+            create: (_) => OnboardingBloc(),
+            child: OnboardingPage(
+              onComplete: () {
+                final container = ProviderScope.containerOf(context);
+                container
+                    .read(hasSeenOnboardingProvider.notifier)
+                    .set(value: true);
+                context.go('/globalposition');
+              },
+            ),
+          );
+        },
       ),
       // Main shell with bottom nav (3 tabs)
       ShellRoute(

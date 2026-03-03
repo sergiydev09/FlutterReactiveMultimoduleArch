@@ -21,13 +21,14 @@ El nombre se recibe en: $ARGUMENTS
 ```
 packages/features/<nombre>/
 ├── pubspec.yaml
+├── build.yaml
 └── lib/
     ├── presentation/
     │   ├── <nombre>/                     # Carpeta por pantalla (misma que el feature para la pantalla principal)
     │   │   ├── <nombre>_page.dart        # Page (StatelessWidget con BlocBuilder)
     │   │   ├── <nombre>_bloc.dart        # extends Bloc<Event, State>
-    │   │   ├── <nombre>_event.dart       # sealed class + final class per event
-    │   │   └── <nombre>_state.dart       # sealed class + final class per state
+    │   │   ├── <nombre>_event.dart       # @freezed sealed class
+    │   │   └── <nombre>_state.dart       # @freezed sealed class
     │   └── widgets/                      # Widgets compartidos entre pantallas del feature
     │       └── .gitkeep
     ├── domain/
@@ -59,49 +60,65 @@ environment:
 resolution: workspace
 
 dependencies:
+  common:
+    path: ../../core/common
+  dio:
+  domain:
+    path: ../../core/domain
   flutter:
     sdk: flutter
   flutter_bloc:
   fpdart:
-  equatable:
-  dio:
-  common:
-    path: ../../core/common
+  freezed_annotation:
   ui:
     path: ../../core/ui
-  domain:
-    path: ../../core/domain
 
 dev_dependencies:
+  bloc_test:
+  build_runner:
   flutter_test:
     sdk: flutter
-  very_good_analysis:
-  bloc_test:
+  freezed:
   mocktail:
+  very_good_analysis:
 ```
 
-3. **BLoC** — seguir el patrón exacto de `packages/features/authentication/lib/presentation/login/auth_bloc.dart` (o la pantalla principal del feature de referencia):
+3. **build.yaml** — configurar Freezed para generar en subcarpeta `generated/`:
+
+```yaml
+targets:
+  $default:
+    builders:
+      freezed|freezed:
+        enabled: true
+        options:
+          build_extensions:
+            '^lib/{{path}}/{{file}}.dart': 'lib/{{path}}/generated/{{file}}.freezed.dart'
+```
+
+4. **BLoC** — seguir el patrón Freezed del proyecto:
    - Usar `part` / `part of` para events y states
-   - Events: `sealed class` que extiende `Equatable`
-   - States: `sealed class` que extiende `Equatable` con `Initial`, `Loading`, `Loaded`, `Error`
+   - Events: `@freezed sealed class` con `_$<Name>Event` mixin
+   - States: `@freezed sealed class` con `_$<Name>State` mixin, con `Initial`, `Loading`, `Loaded`, `Error`
+   - `part 'generated/<name>_bloc.freezed.dart';` para el archivo generado
    - Constructor injection de use cases
    - Handlers nombrados `_on<EventName>`
 
-4. **Repository abstracto** en `domain/repositories/` — métodos retornan `Future<Either<Failure, T>>`
+5. **Repository abstracto** en `domain/repositories/` — métodos retornan `Future<Either<Failure, T>>`
 
-5. **DataSource abstracto** en `data/datasources/` — métodos retornan `Future<Model>` y lanzan excepciones
+6. **DataSource abstracto** en `data/datasources/` — métodos retornan `Future<Model>` y lanzan excepciones
 
-6. **Repository impl** en `data/repositories/` — catch `DioException` → `ServerFailure`, catch genérico → `ServerFailure`
+7. **Repository impl** en `data/repositories/` — catch `DioException` → `ServerFailure`, catch genérico → `ServerFailure`
 
-7. **Page** — `StatelessWidget` con `BlocBuilder` básico, usando `BankingColors` de `ui/tokens/colors.dart`
+8. **Page** — `StatelessWidget` con `BlocBuilder` básico, usando `BankingColors` de `ui/tokens/colors.dart`
 
-8. **Registrar en el proyecto**:
+9. **Registrar en el proyecto**:
    - Añadir providers en `apps/mobile_app/lib/di/providers.dart` (remoteDataSource + repository)
    - Añadir ruta en `apps/mobile_app/lib/routing/app_router.dart`
    - Añadir mock datasource en `packages/core/mock/lib/datasources/`
    - Añadir override en `apps/mobile_app/lib/main_dev.dart`
 
-9. Ejecutar `melos bootstrap` al finalizar
+10. Ejecutar `melos bootstrap` y luego `melos run build:runner` al finalizar
 
 ## Referencia
 

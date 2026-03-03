@@ -10,7 +10,6 @@ resolution: workspace
 dependencies:
   common:
     path: ../common
-  equatable:
   fpdart:
   freezed_annotation:
 

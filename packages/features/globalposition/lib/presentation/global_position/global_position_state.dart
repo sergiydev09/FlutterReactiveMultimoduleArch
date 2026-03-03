@@ -1,54 +1,21 @@
 part of 'global_position_bloc.dart';
 
-/// States for the global position BLoC.
-sealed class GlobalPositionState extends Equatable {
-  const GlobalPositionState();
+@freezed
+sealed class GlobalPositionState with _$GlobalPositionState {
+  const factory GlobalPositionState.initial() = GPInitial;
 
-  @override
-  List<Object?> get props => [];
+  const factory GlobalPositionState.loading() = GPLoading;
+
+  const factory GlobalPositionState.loaded({
+    required List<Account> accounts,
+    required List<Transaction> transactions,
+    required String userName,
+  }) = GPLoaded;
+
+  const factory GlobalPositionState.error({required String message}) = GPError;
 }
 
-/// Initial state before data is loaded.
-final class GPInitial extends GlobalPositionState {
-  const GPInitial();
-}
-
-/// Data is being loaded.
-final class GPLoading extends GlobalPositionState {
-  const GPLoading();
-}
-
-/// Data loaded successfully.
-final class GPLoaded extends GlobalPositionState {
-  const GPLoaded({
-    required this.accounts,
-    required this.transactions,
-    required this.userName,
-  });
-
-  /// User's bank accounts.
-  final List<Account> accounts;
-
-  /// Recent transactions across all accounts.
-  final List<Transaction> transactions;
-
-  /// User's display name for greeting.
-  final String userName;
-
-  /// Total balance across all accounts.
+extension GPLoadedX on GPLoaded {
   double get totalBalance =>
       accounts.fold(0, (sum, account) => sum + account.balance);
-
-  @override
-  List<Object?> get props => [accounts, transactions, userName];
-}
-
-/// An error occurred while loading data.
-final class GPError extends GlobalPositionState {
-  const GPError({required this.message});
-
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
 }

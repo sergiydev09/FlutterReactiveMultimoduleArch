@@ -1,14 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'generated/iban.freezed.dart';
 
 /// Value object representing an International Bank Account Number.
-class Iban extends Equatable {
+@freezed
+abstract class Iban with _$Iban {
   /// Creates an [Iban] from a raw string. Whitespace is stripped.
-  const Iban(this._raw);
+  const factory Iban({required String raw}) = _Iban;
 
-  final String _raw;
+  const Iban._();
 
   /// The normalized (uppercase, no spaces) IBAN.
-  String get value => _raw.replaceAll(RegExp(r'\s+'), '').toUpperCase();
+  String get value => raw.replaceAll(RegExp(r'\s+'), '').toUpperCase();
 
   /// The country code (first 2 characters).
   String get countryCode => value.length >= 2 ? value.substring(0, 2) : '';
@@ -60,10 +63,4 @@ class Iban extends Equatable {
     final pattern = RegExp(r'^[A-Z]{2}\d{2}[A-Z0-9]+$');
     return pattern.hasMatch(clean);
   }
-
-  @override
-  String toString() => formatted;
-
-  @override
-  List<Object?> get props => [value];
 }

@@ -1,10 +1,11 @@
 import 'package:domain/entities/notification_entity.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:notifications_feature/domain/repositories/notification_repository.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
+part 'generated/notifications_bloc.freezed.dart';
 
 /// BLoC for managing in-app notifications.
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {

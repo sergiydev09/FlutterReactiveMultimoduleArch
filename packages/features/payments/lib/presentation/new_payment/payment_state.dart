@@ -1,50 +1,16 @@
 part of 'payment_bloc.dart';
 
-/// States for the payment BLoC.
-sealed class PaymentState extends Equatable {
-  const PaymentState();
+@freezed
+sealed class PaymentState with _$PaymentState {
+  const factory PaymentState.initial() = PaymentInitial;
 
-  @override
-  List<Object?> get props => [];
-}
+  const factory PaymentState.review({required Payment payment}) =
+      PaymentReview;
 
-/// Initial state - payment form.
-final class PaymentInitial extends PaymentState {
-  const PaymentInitial();
-}
+  const factory PaymentState.processing() = PaymentProcessing;
 
-/// Payment details under review before confirmation.
-final class PaymentReview extends PaymentState {
-  const PaymentReview({required this.payment});
+  const factory PaymentState.success({required String confirmationId}) =
+      PaymentSuccess;
 
-  final Payment payment;
-
-  @override
-  List<Object?> get props => [payment];
-}
-
-/// Payment is being processed.
-final class PaymentProcessing extends PaymentState {
-  const PaymentProcessing();
-}
-
-/// Payment completed successfully.
-final class PaymentSuccess extends PaymentState {
-  const PaymentSuccess({required this.confirmationId});
-
-  /// The unique confirmation ID for the payment.
-  final String confirmationId;
-
-  @override
-  List<Object?> get props => [confirmationId];
-}
-
-/// Payment failed with an error.
-final class PaymentError extends PaymentState {
-  const PaymentError({required this.message});
-
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
+  const factory PaymentState.error({required String message}) = PaymentError;
 }

@@ -1,38 +1,15 @@
 part of 'auth_bloc.dart';
 
-/// Events for the authentication BLoC.
-sealed class AuthEvent extends Equatable {
-  const AuthEvent();
+@freezed
+sealed class AuthEvent with _$AuthEvent {
+  const factory AuthEvent.loginRequested({
+    required String dni,
+    required String password,
+  }) = LoginRequested;
 
-  @override
-  List<Object?> get props => [];
-}
+  const factory AuthEvent.logoutRequested() = LogoutRequested;
 
-/// Requested when the user submits login credentials.
-final class LoginRequested extends AuthEvent {
-  const LoginRequested({
-    required this.dni,
-    required this.password,
-  });
+  const factory AuthEvent.biometricLoginRequested() = BiometricLoginRequested;
 
-  final String dni;
-  final String password;
-
-  @override
-  List<Object?> get props => [dni, password];
-}
-
-/// Requested when the user taps logout.
-final class LogoutRequested extends AuthEvent {
-  const LogoutRequested();
-}
-
-/// Requested when the user taps biometric login.
-final class BiometricLoginRequested extends AuthEvent {
-  const BiometricLoginRequested();
-}
-
-/// Requested to check the current authentication status on app start.
-final class CheckAuthStatus extends AuthEvent {
-  const CheckAuthStatus();
+  const factory AuthEvent.checkAuthStatus() = CheckAuthStatus;
 }

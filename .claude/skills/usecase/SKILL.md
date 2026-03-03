@@ -44,7 +44,7 @@ class <Name>UseCase extends UseCase<ReturnType, ParamsType> {
 ### Reglas
 
 - Si no requiere parámetros, usar `NoParams` de `package:common/usecases/usecase.dart`
-- Si requiere parámetros complejos, crear una clase `Equatable` en `domain/entities/`
+- Si requiere parámetros complejos, crear una clase `@freezed` en `domain/entities/` o junto al usecase
 - El UseCase SOLO delega al repository — NO contiene lógica de negocio compleja
 - Si necesita orquestar múltiples repositories, inyectar ambos por constructor
 

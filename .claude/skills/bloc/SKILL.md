@@ -23,11 +23,12 @@ El nombre se recibe en: $ARGUMENTS
 ```dart
 import 'package:<feature>/domain/usecases/<usecase>.dart';
 import 'package:common/usecases/usecase.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part '<name>_event.dart';
 part '<name>_state.dart';
+part 'generated/<name>_bloc.freezed.dart';
 
 class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
   <Name>Bloc({
@@ -54,15 +55,9 @@ class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
 ```dart
 part of '<name>_bloc.dart';
 
-sealed class <Name>Event extends Equatable {
-  const <Name>Event();
-
-  @override
-  List<Object?> get props => [];
-}
-
-final class <Name>LoadRequested extends <Name>Event {
-  const <Name>LoadRequested();
+@freezed
+sealed class <Name>Event with _$<Name>Event {
+  const factory <Name>Event.loadRequested() = <Name>LoadRequested;
 }
 ```
 
@@ -70,29 +65,17 @@ final class <Name>LoadRequested extends <Name>Event {
 ```dart
 part of '<name>_bloc.dart';
 
-sealed class <Name>State extends Equatable {
-  const <Name>State();
-
-  @override
-  List<Object?> get props => [];
-}
-
-final class <Name>Initial extends <Name>State {
-  const <Name>Initial();
-}
-
-final class <Name>Loading extends <Name>State {
-  const <Name>Loading();
-}
-
-final class <Name>Error extends <Name>State {
-  const <Name>Error({required this.message});
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
+@freezed
+sealed class <Name>State with _$<Name>State {
+  const factory <Name>State.initial() = <Name>Initial;
+  const factory <Name>State.loading() = <Name>Loading;
+  const factory <Name>State.error({required String message}) = <Name>Error;
 }
 ```
+
+## Post-creación
+
+Ejecutar `melos run build:runner` para generar los archivos `.freezed.dart` en `generated/`.
 
 ## Referencia
 

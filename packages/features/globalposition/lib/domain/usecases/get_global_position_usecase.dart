@@ -2,22 +2,18 @@ import 'package:common/error/failures.dart';
 import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/account.dart';
 import 'package:domain/entities/transaction.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:globalposition/domain/repositories/global_position_repository.dart';
 
-/// The result data of the global position use case.
-class GlobalPositionData extends Equatable {
-  const GlobalPositionData({
-    required this.accounts,
-    required this.recentTransactions,
-  });
+part 'generated/get_global_position_usecase.freezed.dart';
 
-  final List<Account> accounts;
-  final List<Transaction> recentTransactions;
-
-  @override
-  List<Object?> get props => [accounts, recentTransactions];
+@freezed
+abstract class GlobalPositionData with _$GlobalPositionData {
+  const factory GlobalPositionData({
+    required List<Account> accounts,
+    required List<Transaction> recentTransactions,
+  }) = _GlobalPositionData;
 }
 
 /// Fetches the global position: all accounts and recent transactions.

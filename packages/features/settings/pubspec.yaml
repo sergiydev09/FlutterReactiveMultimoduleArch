@@ -10,16 +10,18 @@ resolution: workspace
 dependencies:
   common:
     path: ../../core/common
-  equatable:
   flutter:
     sdk: flutter
   flutter_bloc:
+  freezed_annotation:
   security:
     path: ../../core/security
   ui:
     path: ../../core/ui
 
 dev_dependencies:
+  build_runner:
   flutter_test:
     sdk: flutter
+  freezed:
   very_good_analysis:

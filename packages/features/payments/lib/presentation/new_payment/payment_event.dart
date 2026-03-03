@@ -1,34 +1,13 @@
 part of 'payment_bloc.dart';
 
-/// Events for the payment BLoC.
-sealed class PaymentEvent extends Equatable {
-  const PaymentEvent();
+@freezed
+sealed class PaymentEvent with _$PaymentEvent {
+  const factory PaymentEvent.submitPayment({required Payment payment}) =
+      SubmitPayment;
 
-  @override
-  List<Object?> get props => [];
-}
+  const factory PaymentEvent.confirmPayment() = ConfirmPayment;
 
-/// Submitted the payment form for review.
-final class SubmitPayment extends PaymentEvent {
-  const SubmitPayment({required this.payment});
+  const factory PaymentEvent.retryPayment() = RetryPayment;
 
-  final Payment payment;
-
-  @override
-  List<Object?> get props => [payment];
-}
-
-/// User confirmed the payment after review.
-final class ConfirmPayment extends PaymentEvent {
-  const ConfirmPayment();
-}
-
-/// User wants to retry after an error.
-final class RetryPayment extends PaymentEvent {
-  const RetryPayment();
-}
-
-/// Resets the payment flow to the initial state.
-final class ResetPayment extends PaymentEvent {
-  const ResetPayment();
+  const factory PaymentEvent.resetPayment() = ResetPayment;
 }

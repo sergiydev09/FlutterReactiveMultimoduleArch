@@ -3,11 +3,12 @@ import 'package:authentication/domain/usecases/login_usecase.dart';
 import 'package:authentication/domain/usecases/logout_usecase.dart';
 import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/user.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
+part 'generated/auth_bloc.freezed.dart';
 
 /// BLoC responsible for managing authentication state.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {

@@ -1,10 +1,11 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:payments/domain/entities/payment.dart';
 import 'package:payments/domain/usecases/execute_payment_usecase.dart';
 
 part 'payment_event.dart';
 part 'payment_state.dart';
+part 'generated/payment_bloc.freezed.dart';
 
 /// BLoC for the payment flow.
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {

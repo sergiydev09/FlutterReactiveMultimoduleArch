@@ -1,43 +1,19 @@
 part of 'notifications_bloc.dart';
 
-/// States for the notifications BLoC.
-sealed class NotificationsState extends Equatable {
-  const NotificationsState();
+@freezed
+sealed class NotificationsState with _$NotificationsState {
+  const factory NotificationsState.initial() = NotificationsInitial;
 
-  @override
-  List<Object?> get props => [];
+  const factory NotificationsState.loading() = NotificationsLoading;
+
+  const factory NotificationsState.loaded({
+    required List<NotificationEntity> notifications,
+  }) = NotificationsLoaded;
+
+  const factory NotificationsState.error({required String message}) =
+      NotificationsError;
 }
 
-/// Initial state before loading.
-final class NotificationsInitial extends NotificationsState {
-  const NotificationsInitial();
-}
-
-/// Notifications are being loaded.
-final class NotificationsLoading extends NotificationsState {
-  const NotificationsLoading();
-}
-
-/// Notifications loaded successfully.
-final class NotificationsLoaded extends NotificationsState {
-  const NotificationsLoaded({required this.notifications});
-
-  /// List of notifications.
-  final List<NotificationEntity> notifications;
-
-  /// Number of unread notifications.
+extension NotificationsLoadedX on NotificationsLoaded {
   int get unreadCount => notifications.where((n) => !n.isRead).length;
-
-  @override
-  List<Object?> get props => [notifications];
-}
-
-/// Error loading notifications.
-final class NotificationsError extends NotificationsState {
-  const NotificationsError({required this.message});
-
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
 }

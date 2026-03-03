@@ -1,26 +1,13 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Represents a payment to be executed.
-class Payment extends Equatable {
-  const Payment({
-    required this.fromAccount,
-    required this.toIban,
-    required this.amount,
-    required this.concept,
-  });
+part 'generated/payment.freezed.dart';
 
-  /// Source account ID.
-  final String fromAccount;
-
-  /// Destination IBAN.
-  final String toIban;
-
-  /// Amount to transfer.
-  final double amount;
-
-  /// Payment concept / description.
-  final String concept;
-
-  @override
-  List<Object?> get props => [fromAccount, toIban, amount, concept];
+@freezed
+abstract class Payment with _$Payment {
+  const factory Payment({
+    required String fromAccount,
+    required String toIban,
+    required double amount,
+    required String concept,
+  }) = _Payment;
 }

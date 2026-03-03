@@ -1,40 +1,13 @@
 part of 'cards_bloc.dart';
 
-/// States for the cards BLoC.
-sealed class CardsState extends Equatable {
-  const CardsState();
+@freezed
+sealed class CardsState with _$CardsState {
+  const factory CardsState.initial() = CardsInitial;
 
-  @override
-  List<Object?> get props => [];
-}
+  const factory CardsState.loading() = CardsLoading;
 
-/// Initial state before loading.
-final class CardsInitial extends CardsState {
-  const CardsInitial();
-}
+  const factory CardsState.loaded({required List<CardEntity> cards}) =
+      CardsLoaded;
 
-/// Cards are being loaded.
-final class CardsLoading extends CardsState {
-  const CardsLoading();
-}
-
-/// Cards loaded successfully.
-final class CardsLoaded extends CardsState {
-  const CardsLoaded({required this.cards});
-
-  /// List of user's cards.
-  final List<CardEntity> cards;
-
-  @override
-  List<Object?> get props => [cards];
-}
-
-/// Error loading cards.
-final class CardsError extends CardsState {
-  const CardsError({required this.message});
-
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
+  const factory CardsState.error({required String message}) = CardsError;
 }

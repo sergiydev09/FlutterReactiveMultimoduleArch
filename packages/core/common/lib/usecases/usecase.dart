@@ -1,6 +1,8 @@
 import 'package:common/error/failures.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'generated/usecase.freezed.dart';
 
 /// Abstract use case contract.
 ///
@@ -16,9 +18,7 @@ abstract class UseCase<T, Params> {
 }
 
 /// Use this when a use case does not require any parameters.
-class NoParams extends Equatable {
-  const NoParams();
-
-  @override
-  List<Object?> get props => [];
+@freezed
+abstract class NoParams with _$NoParams {
+  const factory NoParams() = _NoParams;
 }

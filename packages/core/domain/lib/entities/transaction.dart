@@ -1,4 +1,6 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'generated/transaction.freezed.dart';
 
 /// Transaction status.
 enum TransactionStatus {
@@ -49,87 +51,25 @@ enum TransactionCategory {
 }
 
 /// Represents a financial transaction on an account.
-class Transaction extends Equatable {
-  const Transaction({
-    required this.id,
-    required this.accountId,
-    required this.amount,
-    required this.currency,
-    required this.description,
-    required this.category,
-    required this.status,
-    required this.createdAt,
-    this.merchant,
-  });
+@freezed
+abstract class Transaction with _$Transaction {
+  const factory Transaction({
+    required String id,
+    required String accountId,
+    required double amount,
+    required String currency,
+    required String description,
+    required TransactionCategory category,
+    required TransactionStatus status,
+    required DateTime createdAt,
+    String? merchant,
+  }) = _Transaction;
 
-  /// Unique transaction identifier.
-  final String id;
-
-  /// The account this transaction belongs to.
-  final String accountId;
-
-  /// Amount (positive = credit, negative = debit).
-  final double amount;
-
-  /// ISO 4217 currency code.
-  final String currency;
-
-  /// Human-readable description.
-  final String description;
-
-  /// Transaction category.
-  final TransactionCategory category;
-
-  /// Current status.
-  final TransactionStatus status;
-
-  /// When the transaction was created.
-  final DateTime createdAt;
-
-  /// Merchant name, if applicable.
-  final String? merchant;
+  const Transaction._();
 
   /// Whether this is an income (positive amount).
   bool get isIncome => amount >= 0;
 
   /// Whether this is an expense (negative amount).
   bool get isExpense => amount < 0;
-
-  /// Creates a copy with optionally overridden fields.
-  Transaction copyWith({
-    String? id,
-    String? accountId,
-    double? amount,
-    String? currency,
-    String? description,
-    TransactionCategory? category,
-    TransactionStatus? status,
-    DateTime? createdAt,
-    String? merchant,
-  }) {
-    return Transaction(
-      id: id ?? this.id,
-      accountId: accountId ?? this.accountId,
-      amount: amount ?? this.amount,
-      currency: currency ?? this.currency,
-      description: description ?? this.description,
-      category: category ?? this.category,
-      status: status ?? this.status,
-      createdAt: createdAt ?? this.createdAt,
-      merchant: merchant ?? this.merchant,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    id,
-    accountId,
-    amount,
-    currency,
-    description,
-    category,
-    status,
-    createdAt,
-    merchant,
-  ];
 }

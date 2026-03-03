@@ -1,18 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Credentials required for user login.
-class LoginCredentials extends Equatable {
-  const LoginCredentials({
-    required this.dni,
-    required this.password,
-  });
+part 'generated/login_credentials.freezed.dart';
 
-  /// National identification number.
-  final String dni;
-
-  /// User password.
-  final String password;
-
-  @override
-  List<Object?> get props => [dni, password];
+@freezed
+abstract class LoginCredentials with _$LoginCredentials {
+  const factory LoginCredentials({
+    required String dni,
+    required String password,
+  }) = _LoginCredentials;
 }

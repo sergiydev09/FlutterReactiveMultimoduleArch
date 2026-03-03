@@ -1,5 +1,5 @@
 import 'package:accounts/presentation/account_detail/account_detail_bloc.dart';
-import 'package:accounts/presentation/account_detail/account_transactions_bloc.dart';
+import 'package:accounts/presentation/account_transactions/account_transactions_bloc.dart';
 import 'package:accounts/presentation/widgets/account_info_header.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/transaction.dart';

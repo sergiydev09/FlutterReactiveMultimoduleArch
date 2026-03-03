@@ -1,25 +1,16 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Represents authentication tokens returned after a successful login.
-class AuthToken extends Equatable {
-  const AuthToken({
-    required this.accessToken,
-    required this.refreshToken,
-    required this.expiresAt,
-  });
+part 'generated/auth_token.freezed.dart';
 
-  /// JWT access token used for API requests.
-  final String accessToken;
+@freezed
+abstract class AuthToken with _$AuthToken {
+  const factory AuthToken({
+    required String accessToken,
+    required String refreshToken,
+    required DateTime expiresAt,
+  }) = _AuthToken;
+}
 
-  /// Refresh token used to obtain new access tokens.
-  final String refreshToken;
-
-  /// Timestamp when the access token expires.
-  final DateTime expiresAt;
-
-  /// Whether the access token has expired.
+extension AuthTokenX on AuthToken {
   bool get isExpired => DateTime.now().isAfter(expiresAt);
-
-  @override
-  List<Object?> get props => [accessToken, refreshToken, expiresAt];
 }

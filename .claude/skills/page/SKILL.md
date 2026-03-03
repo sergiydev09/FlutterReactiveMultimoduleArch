@@ -32,11 +32,12 @@ presentation/<screen_name>/
 
 ### <screen_name>_bloc.dart
 ```dart
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part '<screen_name>_event.dart';
 part '<screen_name>_state.dart';
+part 'generated/<screen_name>_bloc.freezed.dart';
 
 class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
   <Name>Bloc({
@@ -59,15 +60,9 @@ class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
 ```dart
 part of '<screen_name>_bloc.dart';
 
-sealed class <Name>Event extends Equatable {
-  const <Name>Event();
-
-  @override
-  List<Object?> get props => [];
-}
-
-final class <Name>LoadRequested extends <Name>Event {
-  const <Name>LoadRequested();
+@freezed
+sealed class <Name>Event with _$<Name>Event {
+  const factory <Name>Event.loadRequested() = <Name>LoadRequested;
 }
 ```
 
@@ -75,27 +70,11 @@ final class <Name>LoadRequested extends <Name>Event {
 ```dart
 part of '<screen_name>_bloc.dart';
 
-sealed class <Name>State extends Equatable {
-  const <Name>State();
-
-  @override
-  List<Object?> get props => [];
-}
-
-final class <Name>Initial extends <Name>State {
-  const <Name>Initial();
-}
-
-final class <Name>Loading extends <Name>State {
-  const <Name>Loading();
-}
-
-final class <Name>Error extends <Name>State {
-  const <Name>Error({required this.message});
-  final String message;
-
-  @override
-  List<Object?> get props => [message];
+@freezed
+sealed class <Name>State with _$<Name>State {
+  const factory <Name>State.initial() = <Name>Initial;
+  const factory <Name>State.loading() = <Name>Loading;
+  const factory <Name>State.error({required String message}) = <Name>Error;
 }
 ```
 
@@ -143,7 +122,9 @@ class <Name>Page extends StatelessWidget {
    - Añadir `GoRoute` con el path correspondiente
    - Crear `BlocProvider` en el `builder` de la ruta (NUNCA en la page)
 
-5. **Informar al usuario** qué archivos se crearon y qué falta por completar (use cases, providers, etc.)
+5. **Ejecutar** `melos run build:runner` para generar los archivos `.freezed.dart` en `generated/`
+
+6. **Informar al usuario** qué archivos se crearon y qué falta por completar (use cases, providers, etc.)
 
 ## Reglas
 

@@ -11,7 +11,6 @@ dependencies:
   dio:
   dio_cache_interceptor:
   easy_localization:
-  equatable:
   flutter:
     sdk: flutter
   fpdart:
