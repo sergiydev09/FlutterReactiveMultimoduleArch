@@ -3,6 +3,8 @@ library;
 
 // Configuration
 export 'config/environment.dart';
+// DI
+export 'di/common_providers.dart';
 // Error handling
 export 'error/failures.dart';
 // Extensions

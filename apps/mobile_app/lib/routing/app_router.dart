@@ -15,62 +15,39 @@ final routerProvider = Provider<GoRouter>((ref) {
   final isLoggedIn = ref.watch(isLoggedInProvider);
   final hasSeenOnboarding = ref.watch(hasSeenOnboardingProvider);
 
-  final auth = authRoutes(
-    environmentProvider: environmentProvider,
-    onLoginSuccess: (user) {
-      ref.read(isLoggedInProvider.notifier).set(value: true);
-      ref.read(currentUserNameProvider.notifier).set(user.fullName);
-    },
-    onEnvironmentChanged: (env) {
-      ref.read(environmentProvider.notifier).set(env);
-    },
-    showEnvironmentSelector: true,
-  );
-  final onboarding = onboardingRoutes(
-    onComplete: () {
-      ref.read(hasSeenOnboardingProvider.notifier).set(value: true);
-    },
-    redirectTo: GlobalPositionPaths.home,
-  );
-  final gp = globalPositionRoutes();
-  final payment = paymentRoutes();
-  final notification = notificationRoutes();
-  final account = accountRoutes();
-  final card = cardRoutes();
-  final settings = settingsRoutes(
-    onLogout: () {
-      ref.read(isLoggedInProvider.notifier).set(value: false);
-    },
-  );
-
   return GoRouter(
-    initialLocation: AuthPaths.login,
+    initialLocation: AuthRoutes.login,
     redirect: (context, state) {
       final loggingIn =
-          state.matchedLocation == AuthPaths.login ||
-          state.matchedLocation == AuthPaths.forgotPassword;
+          state.matchedLocation == AuthRoutes.login ||
+          state.matchedLocation == AuthRoutes.forgotPassword;
 
-      if (!isLoggedIn && !loggingIn) return AuthPaths.login;
+      if (!isLoggedIn && !loggingIn) return AuthRoutes.login;
 
       if (isLoggedIn &&
           !hasSeenOnboarding &&
-          state.matchedLocation != OnboardingPaths.onboarding) {
-        return OnboardingPaths.onboarding;
+          state.matchedLocation != OnboardingRoutes.onboarding) {
+        return OnboardingRoutes.onboarding;
       }
 
-      if (isLoggedIn && loggingIn) return GlobalPositionPaths.home;
+      if (isLoggedIn &&
+          hasSeenOnboarding &&
+          state.matchedLocation == OnboardingRoutes.onboarding) {
+        return GlobalPositionRoutes.home;
+      }
+
+      if (isLoggedIn && loggingIn) return GlobalPositionRoutes.home;
 
       return null;
     },
     routes: [
-      ...auth.fullScreenRoutes,
-      ...onboarding.fullScreenRoutes,
+      ...AuthRoutes.routes.fullScreenRoutes,
+      ...OnboardingRoutes.routes.fullScreenRoutes,
       ShellRoute(
         builder: (context, state, child) {
           final container = ProviderScope.containerOf(context);
-          final userName = container.read(currentUserNameProvider);
           return MainShell(
-            userName: userName,
+            userName: container.read(currentUserNameProvider),
             onLogout: () {
               container.read(isLoggedInProvider.notifier).set(value: false);
             },
@@ -78,15 +55,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
         routes: [
-          ...gp.shellRoutes,
-          ...payment.shellRoutes,
-          ...notification.shellRoutes,
+          ...GlobalPositionRoutes.routes.shellRoutes,
+          ...PaymentRoutes.routes.shellRoutes,
+          ...NotificationRoutes.routes.shellRoutes,
         ],
       ),
-      ...account.fullScreenRoutes,
-      ...card.fullScreenRoutes,
-      ...payment.fullScreenRoutes,
-      ...settings.fullScreenRoutes,
+      ...AccountRoutes.routes.fullScreenRoutes,
+      ...CardRoutes.routes.fullScreenRoutes,
+      ...PaymentRoutes.routes.fullScreenRoutes,
+      ...SettingsRoutes.routes.fullScreenRoutes,
     ],
   );
 });

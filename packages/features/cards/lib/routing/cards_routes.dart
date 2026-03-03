@@ -10,21 +10,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Route path constants for the cards feature.
-abstract final class CardPaths {
+/// Route paths and route definitions for the cards feature.
+abstract final class CardRoutes {
   static const cards = '/cards';
   static const _idSegment = ':id';
 
   /// Returns the path for a specific card detail.
   static String cardById(String id) => '/cards/$id';
-}
 
-/// Builds the cards feature routes.
-FeatureRoutes cardRoutes() {
-  return FeatureRoutes(
+  static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: CardPaths.cards,
+        path: cards,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           final cardRepo = container.read(CardProviders.repository);
@@ -38,7 +35,7 @@ FeatureRoutes cardRoutes() {
         },
         routes: [
           GoRoute(
-            path: CardPaths._idSegment,
+            path: _idSegment,
             builder: (context, state) {
               final card = state.extra as CardEntity?;
               if (card != null) {

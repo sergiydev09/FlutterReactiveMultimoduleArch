@@ -1,3 +1,4 @@
+import 'package:authentication/routing/auth_routes.dart';
 import 'package:common/config/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
+        AuthRoutes.showEnvironmentSelector.overrideWithValue(true),
         AuthProviders.remoteDataSource.overrideWith((ref) {
           final env = ref.watch(environmentProvider);
           return env == Environment.mock
@@ -36,7 +38,7 @@ void main() async {
           MockProviders.mockPromotionsDataSource,
         ),
       ],
-      child: const BankingApp(showEnvironmentSelector: true),
+      child: const BankingApp(),
     ),
   );
 }

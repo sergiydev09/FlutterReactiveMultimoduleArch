@@ -1,27 +1,31 @@
 import 'package:common/routing/feature_routes.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:security/security.dart';
 import 'package:settings_feature/presentation/settings/settings_bloc.dart';
 import 'package:settings_feature/presentation/settings/settings_page.dart';
 
-/// Route path constants for the settings feature.
-abstract final class SettingsPaths {
+/// Route paths and route definitions for settings.
+abstract final class SettingsRoutes {
+  // -- Paths --
   static const settings = '/settings';
-}
 
-/// Builds the settings feature routes.
-///
-/// [onLogout] is called when the user logs out from settings.
-FeatureRoutes settingsRoutes({required VoidCallback onLogout}) {
-  return FeatureRoutes(
+  // -- Routes --
+
+  static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: SettingsPaths.settings,
+        path: settings,
         builder: (context, state) {
+          final container = ProviderScope.containerOf(context);
           return BlocProvider(
             create: (_) => SettingsBloc(),
-            child: SettingsPage(onLogout: onLogout),
+            child: SettingsPage(
+              onLogout: () {
+                container.read(isLoggedInProvider.notifier).set(value: false);
+              },
+            ),
           );
         },
       ),

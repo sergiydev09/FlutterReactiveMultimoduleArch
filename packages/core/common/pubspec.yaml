@@ -13,6 +13,7 @@ dependencies:
   easy_localization:
   flutter:
     sdk: flutter
+  flutter_riverpod:
   fpdart:
   freezed_annotation:
   go_router:

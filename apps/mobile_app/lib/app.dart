@@ -4,11 +4,7 @@ import 'package:mobile_app/routing/app_router.dart';
 import 'package:ui/theme/banking_theme.dart';
 
 class BankingApp extends ConsumerWidget {
-  const BankingApp({
-    this.showEnvironmentSelector = false,
-    super.key,
-  });
-  final bool showEnvironmentSelector;
+  const BankingApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

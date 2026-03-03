@@ -15,8 +15,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Route path constants for the accounts feature.
-abstract final class AccountPaths {
+/// Route paths and route definitions for the accounts feature.
+abstract final class AccountRoutes {
   static const accounts = '/accounts';
   static const _idSegment = ':id';
   static const _transactionsSegment = 'transactions/:txId';
@@ -29,14 +29,11 @@ abstract final class AccountPaths {
     required String accountId,
     required String txId,
   }) => '/accounts/$accountId/transactions/$txId';
-}
 
-/// Builds the accounts feature routes.
-FeatureRoutes accountRoutes() {
-  return FeatureRoutes(
+  static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: AccountPaths.accounts,
+        path: accounts,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           final accountRepo = container.read(AccountProviders.repository);
@@ -49,7 +46,7 @@ FeatureRoutes accountRoutes() {
         },
         routes: [
           GoRoute(
-            path: AccountPaths._idSegment,
+            path: _idSegment,
             builder: (context, state) {
               final container = ProviderScope.containerOf(context);
               final accountRepo = container.read(AccountProviders.repository);
@@ -77,7 +74,7 @@ FeatureRoutes accountRoutes() {
             },
             routes: [
               GoRoute(
-                path: AccountPaths._transactionsSegment,
+                path: _transactionsSegment,
                 builder: (context, state) {
                   final transaction = state.extra as Transaction?;
                   if (transaction != null) {

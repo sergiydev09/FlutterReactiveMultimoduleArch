@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc:
+  flutter_riverpod:
   freezed_annotation:
   go_router:
   security:

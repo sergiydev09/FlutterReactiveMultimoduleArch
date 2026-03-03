@@ -24,16 +24,16 @@ class MainShell extends StatelessWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith(GlobalPositionPaths.home)) return 0;
-    if (location.startsWith(PaymentPaths.base)) return 1;
-    if (location.startsWith(NotificationPaths.notifications)) return 2;
+    if (location.startsWith(GlobalPositionRoutes.home)) return 0;
+    if (location.startsWith(PaymentRoutes.base)) return 1;
+    if (location.startsWith(NotificationRoutes.notifications)) return 2;
     return 0;
   }
 
   String _titleForLocation(String location) {
-    if (location.startsWith(GlobalPositionPaths.home)) return 'Inicio';
-    if (location.startsWith(PaymentPaths.base)) return 'Pagos';
-    if (location.startsWith(NotificationPaths.notifications)) return 'Avisos';
+    if (location.startsWith(GlobalPositionRoutes.home)) return 'Inicio';
+    if (location.startsWith(PaymentRoutes.base)) return 'Pagos';
+    if (location.startsWith(NotificationRoutes.notifications)) return 'Avisos';
     return 'BankApp';
   }
 
@@ -55,10 +55,10 @@ class MainShell extends StatelessWidget {
       appBar: AppBar(
         title: Text(_titleForLocation(location)),
         actions: [
-          if (location.startsWith(GlobalPositionPaths.home))
+          if (location.startsWith(GlobalPositionRoutes.home))
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
-              onPressed: () => context.go(NotificationPaths.notifications),
+              onPressed: () => context.go(NotificationRoutes.notifications),
             ),
         ],
       ),
@@ -91,7 +91,7 @@ class MainShell extends StatelessWidget {
               title: const Text('Cuentas'),
               onTap: () {
                 Navigator.pop(context);
-                unawaited(context.push(AccountPaths.accounts));
+                unawaited(context.push(AccountRoutes.accounts));
               },
             ),
             ListTile(
@@ -99,7 +99,7 @@ class MainShell extends StatelessWidget {
               title: const Text('Tarjetas'),
               onTap: () {
                 Navigator.pop(context);
-                unawaited(context.push(CardPaths.cards));
+                unawaited(context.push(CardRoutes.cards));
               },
             ),
             ListTile(
@@ -107,7 +107,7 @@ class MainShell extends StatelessWidget {
               title: const Text('Ajustes'),
               onTap: () {
                 Navigator.pop(context);
-                unawaited(context.push(SettingsPaths.settings));
+                unawaited(context.push(SettingsRoutes.settings));
               },
             ),
             const Divider(),
@@ -181,11 +181,11 @@ class MainShell extends StatelessWidget {
         onDestinationSelected: (index) {
           switch (index) {
             case 0:
-              context.go(GlobalPositionPaths.home);
+              context.go(GlobalPositionRoutes.home);
             case 1:
-              context.go(PaymentPaths.newPayment);
+              context.go(PaymentRoutes.newPayment);
             case 2:
-              context.go(NotificationPaths.notifications);
+              context.go(NotificationRoutes.notifications);
           }
         },
         destinations: const [

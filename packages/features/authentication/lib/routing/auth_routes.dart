@@ -6,54 +6,52 @@ import 'package:authentication/domain/usecases/logout_usecase.dart';
 import 'package:authentication/presentation/forgot_password/forgot_password_page.dart';
 import 'package:authentication/presentation/login/auth_bloc.dart';
 import 'package:authentication/presentation/login/login_page.dart';
-import 'package:common/config/environment.dart';
-import 'package:common/routing/feature_routes.dart';
-import 'package:domain/entities/user.dart';
+import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
 import 'package:go_router/go_router.dart';
+import 'package:security/security.dart';
 
-/// Route path constants for the authentication feature.
-abstract final class AuthPaths {
+/// Route paths, callback providers, and route definitions for authentication.
+abstract final class AuthRoutes {
+  // -- Paths --
   static const login = '/login';
   static const _forgotPasswordSegment = 'forgot-password';
   static const forgotPassword = '/login/$_forgotPasswordSegment';
-}
 
-/// Builds the authentication feature routes.
-///
-/// [environmentProvider] is a generic listenable that triggers AuthBloc
-/// recreation when the environment changes, keeping the feature decoupled
-/// from the app-level provider type.
-/// [onLoginSuccess] is called after successful authentication.
-/// [onEnvironmentChanged] is called when the user selects a different env.
-/// [showEnvironmentSelector] controls visibility of the env selector (dev).
-FeatureRoutes authRoutes({
-  required ProviderListenable<Object?> environmentProvider,
-  required ValueChanged<User> onLoginSuccess,
-  required ValueChanged<Environment> onEnvironmentChanged,
-  bool showEnvironmentSelector = false,
-}) {
-  return FeatureRoutes(
+  // -- Config providers (overridden per entry point) --
+
+  /// Controls visibility of the environment selector (dev only).
+  static final showEnvironmentSelector = Provider<bool>((_) => false);
+
+  // -- Routes --
+
+  static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: AuthPaths.login,
+        path: login,
         builder: (context, state) {
+          final container = ProviderScope.containerOf(context);
           return LoginBlocScope(
-            environmentProvider: environmentProvider,
             child: LoginPage(
-              showEnvironmentSelector: showEnvironmentSelector,
-              onEnvironmentChanged: onEnvironmentChanged,
-              onLoginSuccess: onLoginSuccess,
-              onForgotPassword: () => context.go(AuthPaths.forgotPassword),
+              showEnvironmentSelector: container.read(showEnvironmentSelector),
+              onEnvironmentChanged: (env) {
+                container.read(environmentProvider.notifier).set(env);
+              },
+              onLoginSuccess: (user) {
+                container.read(isLoggedInProvider.notifier).set(value: true);
+                container
+                    .read(currentUserNameProvider.notifier)
+                    .set(user.fullName);
+              },
+              onForgotPassword: () => context.go(forgotPassword),
             ),
           );
         },
         routes: [
           GoRoute(
-            path: AuthPaths._forgotPasswordSegment,
+            path: _forgotPasswordSegment,
             builder: (context, state) => const ForgotPasswordPage(),
           ),
         ],
@@ -68,13 +66,10 @@ FeatureRoutes authRoutes({
 /// repository while keeping [LoginPage] (and its text fields) intact.
 class LoginBlocScope extends ConsumerStatefulWidget {
   const LoginBlocScope({
-    required this.environmentProvider,
     required this.child,
     super.key,
   });
 
-  /// Provider to listen for environment changes.
-  final ProviderListenable<Object?> environmentProvider;
   final Widget child;
 
   @override
@@ -106,7 +101,7 @@ class _LoginBlocScopeState extends ConsumerState<LoginBlocScope> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(widget.environmentProvider, (_, _) {
+    ref.listen(environmentProvider, (_, _) {
       final oldBloc = _bloc;
       setState(() {
         _bloc = _createBloc();

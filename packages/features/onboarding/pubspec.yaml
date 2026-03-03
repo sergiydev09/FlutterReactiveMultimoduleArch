@@ -13,8 +13,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc:
+  flutter_riverpod:
   freezed_annotation:
   go_router:
+  security:
+    path: ../../core/security
   ui:
     path: ../../core/ui
 

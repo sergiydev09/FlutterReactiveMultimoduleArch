@@ -10,21 +10,18 @@ import 'package:payments/presentation/new_payment/payment_bloc.dart';
 import 'package:payments/presentation/payment_confirm/payment_confirm_page.dart';
 import 'package:payments/presentation/payment_result/payment_result_page.dart';
 
-/// Route path constants for the payments feature.
-abstract final class PaymentPaths {
+/// Route paths and route definitions for the payments feature.
+abstract final class PaymentRoutes {
   /// Base path for matching any payment route in navigation.
   static const base = '/payments';
   static const newPayment = '/payments/new';
   static const confirm = '/payments/confirm';
   static const result = '/payments/result';
-}
 
-/// Builds the payments feature routes.
-FeatureRoutes paymentRoutes() {
-  return FeatureRoutes(
+  static final routes = FeatureRoutes(
     shellRoutes: [
       GoRoute(
-        path: PaymentPaths.newPayment,
+        path: newPayment,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           final paymentRepo = container.read(PaymentProviders.repository);
@@ -41,7 +38,7 @@ FeatureRoutes paymentRoutes() {
     ],
     fullScreenRoutes: [
       GoRoute(
-        path: PaymentPaths.confirm,
+        path: confirm,
         builder: (context, state) {
           final payment = state.extra! as Payment;
           final container = ProviderScope.containerOf(context);
@@ -57,7 +54,7 @@ FeatureRoutes paymentRoutes() {
         },
       ),
       GoRoute(
-        path: PaymentPaths.result,
+        path: result,
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>?;
           return PaymentResultPage(

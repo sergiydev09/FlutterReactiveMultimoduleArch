@@ -7,17 +7,14 @@ import 'package:globalposition/presentation/global_position/global_position_bloc
 import 'package:globalposition/presentation/global_position/global_position_page.dart';
 import 'package:go_router/go_router.dart';
 
-/// Route path constants for the global position feature.
-abstract final class GlobalPositionPaths {
+/// Route paths and route definitions for the global position feature.
+abstract final class GlobalPositionRoutes {
   static const home = '/globalposition';
-}
 
-/// Builds the global position (home screen) feature routes.
-FeatureRoutes globalPositionRoutes() {
-  return FeatureRoutes(
+  static final routes = FeatureRoutes(
     shellRoutes: [
       GoRoute(
-        path: GlobalPositionPaths.home,
+        path: home,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           final gpRepo = container.read(GlobalPositionProviders.repository);
