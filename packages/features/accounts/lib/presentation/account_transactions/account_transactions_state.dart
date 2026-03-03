@@ -2,11 +2,9 @@ part of 'account_transactions_bloc.dart';
 
 @freezed
 sealed class AccountTransactionsState with _$AccountTransactionsState {
-  const factory AccountTransactionsState.initial() =
-      AccountTransactionsInitial;
+  const factory AccountTransactionsState.initial() = AccountTransactionsInitial;
 
-  const factory AccountTransactionsState.loading() =
-      AccountTransactionsLoading;
+  const factory AccountTransactionsState.loading() = AccountTransactionsLoading;
 
   const factory AccountTransactionsState.loaded({
     required List<Transaction> transactions,

@@ -12,6 +12,7 @@ dependencies:
     path: ../../core/common
   flutter:
     sdk: flutter
+  flutter_riverpod:
   freezed_annotation:
   ui:
     path: ../../core/ui

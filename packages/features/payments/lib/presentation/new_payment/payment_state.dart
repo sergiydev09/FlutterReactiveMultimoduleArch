@@ -4,8 +4,7 @@ part of 'payment_bloc.dart';
 sealed class PaymentState with _$PaymentState {
   const factory PaymentState.initial() = PaymentInitial;
 
-  const factory PaymentState.review({required Payment payment}) =
-      PaymentReview;
+  const factory PaymentState.review({required Payment payment}) = PaymentReview;
 
   const factory PaymentState.processing() = PaymentProcessing;
 

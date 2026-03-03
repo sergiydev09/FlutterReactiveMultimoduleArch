@@ -123,9 +123,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     controller: _pageController,
                     itemCount: _slides.length,
                     onPageChanged: (index) {
-                      context
-                          .read<OnboardingBloc>()
-                          .add(PageChanged(page: index));
+                      context.read<OnboardingBloc>().add(
+                        PageChanged(page: index),
+                      );
                     },
                     itemBuilder: (context, index) {
                       final slide = _slides[index];

@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   flutter_bloc:
   freezed_annotation:
+  go_router:
   security:
     path: ../../core/security
   ui:

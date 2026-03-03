@@ -12,6 +12,18 @@ class MockAccountDataSource implements RemoteAccountDataSource {
   final MockConfig config;
 
   @override
+  Future<List<AccountModel>> getAccounts() async {
+    await MockDelay.simulate(config);
+    final jsonString = await rootBundle.loadString(
+      'packages/mock/assets/fixtures/accounts.json',
+    );
+    final list = json.decode(jsonString) as List<dynamic>;
+    return list
+        .map((e) => AccountModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
   Future<AccountModel> getAccountDetail(String id) async {
     await MockDelay.simulate(config);
     final jsonString = await rootBundle.loadString(

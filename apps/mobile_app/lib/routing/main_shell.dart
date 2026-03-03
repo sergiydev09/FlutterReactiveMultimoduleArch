@@ -1,7 +1,13 @@
 import 'dart:async';
 
+import 'package:accounts/routing/accounts_routes.dart';
+import 'package:cards/routing/cards_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:globalposition/routing/globalposition_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notifications_feature/routing/notifications_routes.dart';
+import 'package:payments/routing/payments_routes.dart';
+import 'package:settings_feature/routing/settings_routes.dart';
 import 'package:ui/tokens/colors.dart';
 
 class MainShell extends StatelessWidget {
@@ -18,16 +24,16 @@ class MainShell extends StatelessWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/globalposition')) return 0;
-    if (location.startsWith('/payments')) return 1;
-    if (location.startsWith('/notifications')) return 2;
+    if (location.startsWith(GlobalPositionPaths.home)) return 0;
+    if (location.startsWith(PaymentPaths.base)) return 1;
+    if (location.startsWith(NotificationPaths.notifications)) return 2;
     return 0;
   }
 
   String _titleForLocation(String location) {
-    if (location.startsWith('/globalposition')) return 'Inicio';
-    if (location.startsWith('/payments')) return 'Pagos';
-    if (location.startsWith('/notifications')) return 'Avisos';
+    if (location.startsWith(GlobalPositionPaths.home)) return 'Inicio';
+    if (location.startsWith(PaymentPaths.base)) return 'Pagos';
+    if (location.startsWith(NotificationPaths.notifications)) return 'Avisos';
     return 'BankApp';
   }
 
@@ -49,10 +55,10 @@ class MainShell extends StatelessWidget {
       appBar: AppBar(
         title: Text(_titleForLocation(location)),
         actions: [
-          if (location.startsWith('/globalposition'))
+          if (location.startsWith(GlobalPositionPaths.home))
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
-              onPressed: () => context.go('/notifications'),
+              onPressed: () => context.go(NotificationPaths.notifications),
             ),
         ],
       ),
@@ -85,7 +91,7 @@ class MainShell extends StatelessWidget {
               title: const Text('Cuentas'),
               onTap: () {
                 Navigator.pop(context);
-                unawaited(context.push('/accounts'));
+                unawaited(context.push(AccountPaths.accounts));
               },
             ),
             ListTile(
@@ -93,7 +99,7 @@ class MainShell extends StatelessWidget {
               title: const Text('Tarjetas'),
               onTap: () {
                 Navigator.pop(context);
-                unawaited(context.push('/cards'));
+                unawaited(context.push(CardPaths.cards));
               },
             ),
             ListTile(
@@ -101,7 +107,7 @@ class MainShell extends StatelessWidget {
               title: const Text('Ajustes'),
               onTap: () {
                 Navigator.pop(context);
-                unawaited(context.push('/settings'));
+                unawaited(context.push(SettingsPaths.settings));
               },
             ),
             const Divider(),
@@ -175,11 +181,11 @@ class MainShell extends StatelessWidget {
         onDestinationSelected: (index) {
           switch (index) {
             case 0:
-              context.go('/globalposition');
+              context.go(GlobalPositionPaths.home);
             case 1:
-              context.go('/payments/new');
+              context.go(PaymentPaths.newPayment);
             case 2:
-              context.go('/notifications');
+              context.go(NotificationPaths.notifications);
           }
         },
         destinations: const [

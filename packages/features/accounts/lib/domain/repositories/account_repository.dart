@@ -5,6 +5,9 @@ import 'package:fpdart/fpdart.dart';
 
 /// Repository contract for account operations.
 abstract class AccountRepository {
+  /// Fetches all accounts for the current user.
+  Future<Either<Failure, List<Account>>> getAccounts();
+
   /// Fetches the detail of an account by its [id].
   Future<Either<Failure, Account>> getAccountDetail(String id);
 

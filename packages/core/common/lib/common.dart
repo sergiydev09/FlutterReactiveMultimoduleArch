@@ -12,6 +12,8 @@ export 'network/auth_interceptor.dart';
 export 'network/cache_config.dart';
 export 'network/dio_factory.dart';
 export 'network/logging_interceptor.dart';
+// Routing
+export 'routing/feature_routes.dart';
 // Use cases
 export 'usecases/usecase.dart';
 // Utilities

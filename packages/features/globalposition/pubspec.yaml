@@ -17,8 +17,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc:
+  flutter_riverpod:
   fpdart:
   freezed_annotation:
+  go_router:
   promotions:
     path: ../../libs/promotions
   ui:

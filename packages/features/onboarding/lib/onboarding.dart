@@ -3,3 +3,4 @@ library;
 
 export 'presentation/onboarding/onboarding_bloc.dart';
 export 'presentation/onboarding/onboarding_page.dart';
+export 'routing/onboarding_routes.dart';

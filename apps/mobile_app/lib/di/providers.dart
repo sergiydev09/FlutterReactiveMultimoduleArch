@@ -1,26 +1,16 @@
-import 'package:accounts/data/datasources/remote_account_datasource.dart';
-import 'package:accounts/data/repositories/account_repository_impl.dart';
-import 'package:accounts/domain/repositories/account_repository.dart';
-import 'package:authentication/data/datasources/remote_auth_datasource.dart';
-import 'package:authentication/data/repositories/auth_repository_impl.dart';
-import 'package:authentication/domain/repositories/auth_repository.dart';
-import 'package:cards/data/datasources/remote_card_datasource.dart';
-import 'package:cards/data/repositories/card_repository_impl.dart';
-import 'package:cards/domain/repositories/card_repository.dart';
 import 'package:common/config/environment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:globalposition/data/datasources/remote_globalposition_datasource.dart';
-import 'package:globalposition/data/repositories/global_position_repository_impl.dart';
-import 'package:globalposition/domain/repositories/global_position_repository.dart';
-import 'package:notifications_feature/data/datasources/remote_notification_datasource.dart';
-import 'package:notifications_feature/data/repositories/notification_repository_impl.dart';
-import 'package:notifications_feature/domain/repositories/notification_repository.dart';
-import 'package:payments/data/datasources/remote_payment_datasource.dart';
-import 'package:payments/data/repositories/payment_repository_impl.dart';
-import 'package:payments/domain/repositories/payment_repository.dart';
-import 'package:promotions/data/promotions_datasource.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:security/storage/secure_storage_service.dart';
+
+// Re-export feature providers so main_dev.dart keeps compiling.
+export 'package:accounts/di/accounts_providers.dart';
+export 'package:authentication/di/auth_providers.dart';
+export 'package:cards/di/cards_providers.dart';
+export 'package:globalposition/di/globalposition_providers.dart';
+export 'package:notifications_feature/di/notifications_providers.dart';
+export 'package:payments/di/payments_providers.dart';
+export 'package:promotions/di/promotions_providers.dart';
 
 // Environment
 class EnvironmentNotifier extends Notifier<Environment> {
@@ -44,87 +34,6 @@ final secureStorageProvider = Provider<SecureStorageService>((ref) {
 final sessionManagerProvider = Provider<SessionManager>((ref) {
   return SessionManager(secureStorage: ref.watch(secureStorageProvider));
 });
-
-// Auth
-final remoteAuthDataSourceProvider = Provider<RemoteAuthDataSource>((ref) {
-  throw UnimplementedError('Must be overridden');
-});
-
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl(
-    remoteDataSource: ref.watch(remoteAuthDataSourceProvider),
-  );
-});
-
-// Accounts
-final remoteAccountDataSourceProvider = Provider<RemoteAccountDataSource>((
-  ref,
-) {
-  throw UnimplementedError('Must be overridden');
-});
-
-final accountRepositoryProvider = Provider<AccountRepository>((ref) {
-  return AccountRepositoryImpl(
-    remoteDataSource: ref.watch(remoteAccountDataSourceProvider),
-  );
-});
-
-// Global Position
-final remoteGlobalPositionDataSourceProvider =
-    Provider<RemoteGlobalPositionDataSource>((ref) {
-      throw UnimplementedError('Must be overridden');
-    });
-
-final globalPositionRepositoryProvider = Provider<GlobalPositionRepository>((
-  ref,
-) {
-  return GlobalPositionRepositoryImpl(
-    remoteDataSource: ref.watch(remoteGlobalPositionDataSourceProvider),
-  );
-});
-
-// Payments
-final remotePaymentDataSourceProvider = Provider<RemotePaymentDataSource>((
-  ref,
-) {
-  throw UnimplementedError('Must be overridden');
-});
-
-final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
-  return PaymentRepositoryImpl(
-    remoteDataSource: ref.watch(remotePaymentDataSourceProvider),
-  );
-});
-
-// Cards
-final remoteCardDataSourceProvider = Provider<RemoteCardDataSource>((ref) {
-  throw UnimplementedError('Must be overridden');
-});
-
-final cardRepositoryProvider = Provider<CardRepository>((ref) {
-  return CardRepositoryImpl(
-    remoteDataSource: ref.watch(remoteCardDataSourceProvider),
-  );
-});
-
-// Notifications
-final remoteNotificationDataSourceProvider =
-    Provider<RemoteNotificationDataSource>((ref) {
-      throw UnimplementedError('Must be overridden');
-    });
-
-final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
-  return NotificationRepositoryImpl(
-    remoteDataSource: ref.watch(remoteNotificationDataSourceProvider),
-  );
-});
-
-// Promotions
-final remotePromotionsDataSourceProvider = Provider<RemotePromotionsDataSource>(
-  (ref) {
-    throw UnimplementedError('Must be overridden');
-  },
-);
 
 // Auth state
 class IsLoggedInNotifier extends Notifier<bool> {

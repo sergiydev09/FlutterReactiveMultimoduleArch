@@ -17,15 +17,15 @@
 
 ```
 apps/mobile_app/              # Composition root (3 entry points: dev/staging/prod)
-packages/core/common/         # Networking (Dio), config, errors, UseCase base, formatters
+packages/core/common/         # Networking (Dio), config, errors, UseCase base, formatters, FeatureRoutes
 packages/core/ui/             # Design system: tokens, theme, atoms, molecules, organisms
 packages/core/domain/         # Entidades compartidas (User, Account, Transaction, CardEntity)
 packages/core/security/       # SecureStorage, biometrics, SessionManager
 packages/core/mock/           # Mock datasources + JSON fixtures (SOLO DEV)
 packages/libs/otp/            # OTP verification (interceptor Dio + flow widget)
 packages/libs/webview/        # BankingWebView (InAppWebView wrapper)
-packages/libs/promotions/     # PromoBanner, PromoCarousel
-packages/features/<feature>/  # 8 features independientes
+packages/libs/promotions/     # PromoBanner, PromoCarousel + di/promotions_providers.dart
+packages/features/<feature>/  # 8 features independientes (cada uno con di/ y routing/)
 ```
 
 ## Reglas de dependencia (ESTRICTAS)
@@ -44,6 +44,10 @@ Cada feature sigue EXACTAMENTE esta estructura:
 
 ```
 packages/features/<name>/lib/
+├── di/
+│   └── <name>_providers.dart       # Providers Riverpod (datasource + repository)
+├── routing/
+│   └── <name>_routes.dart          # Retorna FeatureRoutes (shellRoutes + fullScreenRoutes)
 ├── presentation/
 │   ├── <screen_name>/              # Carpeta por pantalla
 │   │   ├── <screen_name>_page.dart       # Page (StatefulWidget)
@@ -91,13 +95,17 @@ packages/features/<name>/lib/
 - La conversión ocurre en el repository, NUNCA en la UI
 
 ### DI (Riverpod)
-- Providers definidos en `apps/mobile_app/lib/di/providers.dart`
+- Providers de cada feature en su propio módulo: `<feature>/lib/di/<feature>_providers.dart`
+- `providers.dart` del app re-exporta todos los feature providers para compatibilidad
 - DataSources como `Provider` con `throw UnimplementedError('Must be overridden')`
 - Override en `main_dev.dart` con mocks, en `main_staging/prod.dart` con implementaciones reales
 - Acceso en router: `ProviderScope.containerOf(context)`
 
 ### Routing
-- BlocProviders se instancian en `app_router.dart` PER ROUTE (NUNCA en páginas)
+- Cada feature expone `FeatureRoutes` desde `<feature>/lib/routing/<feature>_routes.dart`
+- `FeatureRoutes` tiene `shellRoutes` (dentro del ShellRoute) y `fullScreenRoutes`
+- `app_router.dart` compone las rutas de todos los features
+- BlocProviders se instancian en la función de routing del feature PER ROUTE (NUNCA en páginas)
 - Auth guard en `GoRouter.redirect` (NO en páginas individuales)
 - Comunicación entre features: `context.go()` / `context.push()` + `extra`
 
@@ -136,7 +144,7 @@ melos deps:upgrade     # Actualizar dependencias
 1. **NUNCA** importar un feature desde otro feature
 2. **NUNCA** lanzar excepciones en repositories/usecases — usar Either
 3. **NUNCA** usar StateProvider — usar Notifier
-4. **NUNCA** crear BlocProvider dentro de una página — se hace en app_router.dart
+4. **NUNCA** crear BlocProvider dentro de una página — se hace en la función de routing del feature
 5. **NUNCA** hacer lógica de negocio en widgets — pertenece al BLoC o UseCase
 6. **NUNCA** importar `core/mock` fuera de `main_dev.dart`
 7. **NUNCA** editar archivos generados (`*.g.dart`, `*.freezed.dart`) — usar build_runner
@@ -163,9 +171,12 @@ melos deps:upgrade     # Actualizar dependencias
 ## Al crear un nuevo feature
 
 1. Crear paquete en `packages/features/<name>/` con la estructura Clean Architecture completa
-2. Crear `pubspec.yaml` con `resolution: workspace` y dependencias de core
-3. Registrar providers en `apps/mobile_app/lib/di/providers.dart`
-4. Añadir rutas en `apps/mobile_app/lib/routing/app_router.dart`
-5. Crear mock datasource en `packages/core/mock/lib/datasources/`
-6. Override del mock en `main_dev.dart`
-7. Ejecutar `melos bootstrap` para resolver dependencias
+2. Crear `pubspec.yaml` con `resolution: workspace` y dependencias de core + `flutter_riverpod` + `go_router`
+3. Crear `di/<name>_providers.dart` con datasource y repository providers
+4. Crear `routing/<name>_routes.dart` que retorne `FeatureRoutes`
+5. Exportar `di/` y `routing/` en el barrel file del feature
+6. Añadir re-export en `apps/mobile_app/lib/di/providers.dart`
+7. Componer rutas en `apps/mobile_app/lib/routing/app_router.dart`
+8. Crear mock datasource en `packages/core/mock/lib/datasources/`
+9. Override del mock en `main_dev.dart`
+10. Ejecutar `melos bootstrap` para resolver dependencias

@@ -3,6 +3,9 @@ import 'package:accounts/data/models/transaction_model.dart';
 
 /// Remote data source contract for account operations.
 abstract class RemoteAccountDataSource {
+  /// Fetches all accounts for the current user.
+  Future<List<AccountModel>> getAccounts();
+
   /// Fetches account detail by [id].
   Future<AccountModel> getAccountDetail(String id);
 

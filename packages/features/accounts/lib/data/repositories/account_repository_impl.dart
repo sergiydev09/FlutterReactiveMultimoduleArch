@@ -13,6 +13,23 @@ class AccountRepositoryImpl implements AccountRepository {
   final RemoteAccountDataSource remoteDataSource;
 
   @override
+  Future<Either<Failure, List<Account>>> getAccounts() async {
+    try {
+      final models = await remoteDataSource.getAccounts();
+      return Right(models.map((m) => m.toEntity()).toList());
+    } on DioException catch (e) {
+      return Left(
+        ServerFailure(
+          message: e.message ?? 'Error al obtener cuentas',
+          statusCode: e.response?.statusCode,
+        ),
+      );
+    } on Exception catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, Account>> getAccountDetail(String id) async {
     try {
       final model = await remoteDataSource.getAccountDetail(id);

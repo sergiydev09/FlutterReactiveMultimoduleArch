@@ -11,28 +11,28 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        remoteAuthDataSourceProvider.overrideWith((ref) {
+        AuthProviders.remoteDataSource.overrideWith((ref) {
           final env = ref.watch(environmentProvider);
           return env == Environment.mock
               ? MockProviders.mockAuthDataSource
               : UnimplementedAuthDataSource();
         }),
-        remoteAccountDataSourceProvider.overrideWithValue(
+        AccountProviders.remoteDataSource.overrideWithValue(
           MockProviders.mockAccountDataSource,
         ),
-        remoteGlobalPositionDataSourceProvider.overrideWithValue(
+        GlobalPositionProviders.remoteDataSource.overrideWithValue(
           MockProviders.mockGlobalPositionDataSource,
         ),
-        remotePaymentDataSourceProvider.overrideWithValue(
+        PaymentProviders.remoteDataSource.overrideWithValue(
           MockProviders.mockPaymentDataSource,
         ),
-        remoteCardDataSourceProvider.overrideWithValue(
+        CardProviders.remoteDataSource.overrideWithValue(
           MockProviders.mockCardDataSource,
         ),
-        remoteNotificationDataSourceProvider.overrideWithValue(
+        NotificationProviders.remoteDataSource.overrideWithValue(
           MockProviders.mockNotificationDataSource,
         ),
-        remotePromotionsDataSourceProvider.overrideWithValue(
+        PromotionProviders.remoteDataSource.overrideWithValue(
           MockProviders.mockPromotionsDataSource,
         ),
       ],
