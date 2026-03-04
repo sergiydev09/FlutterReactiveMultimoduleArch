@@ -1,7 +1,3 @@
-import 'package:authentication/data/datasources/remote_auth_datasource.dart';
-import 'package:authentication/domain/entities/login_credentials.dart';
-import 'package:authentication/domain/entities/login_result.dart';
-import 'package:authentication/domain/repositories/auth_repository.dart';
 import 'package:common/error/failures.dart';
 import 'package:common/extensions/either_extensions.dart';
 import 'package:common/network/safe_api_call.dart';
@@ -10,6 +6,10 @@ import 'package:fpdart/fpdart.dart';
 import 'package:security/biometric/biometric_service.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:security/storage/secure_storage_service.dart';
+import '../../domain/entities/login_credentials.dart';
+import '../../domain/entities/login_result.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../datasources/remote_auth_datasource.dart';
 
 /// Concrete implementation of [AuthRepository].
 class AuthRepositoryImpl implements AuthRepository {

@@ -1,5 +1,5 @@
-import 'package:cards/data/datasources/cards_api_client.dart';
-import 'package:cards/data/models/card_dto.dart';
+import '../models/card_dto.dart';
+import './cards_api_client.dart';
 
 /// Remote data source for card operations.
 class RemoteCardDataSource {

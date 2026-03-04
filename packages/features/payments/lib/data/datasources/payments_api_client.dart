@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:payments/data/models/payment_request_dto.dart';
-import 'package:payments/data/models/payment_response_dto.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/payment_request_dto.dart';
+import '../models/payment_response_dto.dart';
 
 part 'generated/payments_api_client.g.dart';
 

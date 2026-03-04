@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
-import 'package:ui/theme/banking_color_extension.dart';
-import 'package:ui/tokens/radii.dart';
+import '../theme/banking_color_extension.dart';
+import '../tokens/radii.dart';
 
 /// A shimmer loading placeholder that displays an animated gradient sweep
 /// to indicate content is loading.

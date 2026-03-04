@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-
 import 'package:dio/dio.dart';
 
 /// A simple interceptor that logs HTTP request and response details

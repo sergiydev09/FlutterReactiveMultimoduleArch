@@ -1,11 +1,11 @@
-import 'package:authentication/data/datasources/auth_api_client.dart';
-import 'package:authentication/data/datasources/remote_auth_datasource.dart';
-import 'package:authentication/data/repositories/auth_repository_impl.dart';
-import 'package:authentication/domain/repositories/auth_repository.dart';
-import 'package:authentication/domain/usecases/biometric_login_usecase.dart';
 import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:security/security.dart';
+import '../data/datasources/auth_api_client.dart';
+import '../data/datasources/remote_auth_datasource.dart';
+import '../data/repositories/auth_repository_impl.dart';
+import '../domain/repositories/auth_repository.dart';
+import '../domain/usecases/biometric_login_usecase.dart';
 
 /// Riverpod providers for the authentication feature.
 abstract final class AuthProviders {

@@ -1,5 +1,5 @@
-import 'package:common/error/failures.dart';
 import 'package:fpdart/fpdart.dart';
+import '../error/failures.dart';
 
 /// Wraps any value as [Right].
 extension RightExtension<T> on T {

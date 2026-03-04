@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:accounts/routing/accounts_routes.dart';
 import 'package:cards/routing/cards_routes.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:globalposition/routing/globalposition_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notifications_feature/routing/notifications_routes.dart';
 import 'package:payments/routing/payments_routes.dart';
-import 'package:settings_feature/routing/settings_routes.dart';
+import 'package:settings/routing/settings_routes.dart';
 import 'package:ui/tokens/colors.dart';
 
 class MainShell extends StatelessWidget {

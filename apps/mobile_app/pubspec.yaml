@@ -44,7 +44,7 @@ dependencies:
   riverpod_annotation:
   security:
     path: ../../packages/core/security
-  settings_feature:
+  settings:
     path: ../../packages/features/settings
   ui:
     path: ../../packages/core/ui

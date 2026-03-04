@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:ui/tokens/typography.dart';
+import '../tokens/typography.dart';
 
 /// A styled app bar consistent with the banking design system.
 ///

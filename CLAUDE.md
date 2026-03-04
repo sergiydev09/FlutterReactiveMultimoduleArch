@@ -50,10 +50,13 @@ packages/features/<name>/lib/
 │   └── <name>_routes.dart          # Retorna FeatureRoutes (shellRoutes + fullScreenRoutes)
 ├── presentation/
 │   ├── <screen_name>/              # Carpeta por pantalla
-│   │   ├── <screen_name>_page.dart       # Page (StatefulWidget)
-│   │   ├── <screen_name>_bloc.dart       # extends Bloc<Event, State>
-│   │   ├── <screen_name>_event.dart      # sealed class + final class per event
-│   │   ├── <screen_name>_state.dart      # sealed class + final class per state
+│   │   ├── bloc/                         # BLoC + Freezed files
+│   │   │   ├── <screen_name>_bloc.dart       # extends Bloc<Event, State>
+│   │   │   ├── <screen_name>_event.dart      # sealed class + final class per event
+│   │   │   ├── <screen_name>_state.dart      # sealed class + final class per state
+│   │   │   └── generated/                    # Archivos generados por Freezed
+│   │   ├── page/                         # Widget de presentación
+│   │   │   └── <screen_name>_page.dart       # Page (StatefulWidget)
 │   │   └── widgets/                      # (opcional) Widgets propios de esta pantalla
 │   ├── <another_screen>/           # Otra pantalla del feature
 │   │   └── ...
@@ -74,7 +77,7 @@ packages/features/<name>/lib/
 - Events y States son **`@freezed sealed class`** (exhaustive pattern matching)
 - Usan mixin `_$<Name>` generado por Freezed (NO Equatable)
 - Usan `part` / `part of` (event y state en archivos separados)
-- Archivos generados (`.freezed.dart`) van en subcarpeta `generated/` junto al fuente
+- Archivos generados (`.freezed.dart`) van en subcarpeta `bloc/generated/` junto al fuente
 - Handlers se nombran `_on<EventName>`
 - Siempre emitir al menos un estado
 - Inyección por constructor (NUNCA service locator)

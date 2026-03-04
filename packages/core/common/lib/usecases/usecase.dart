@@ -1,6 +1,6 @@
-import 'package:common/error/failures.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../error/failures.dart';
 
 part 'generated/usecase.freezed.dart';
 

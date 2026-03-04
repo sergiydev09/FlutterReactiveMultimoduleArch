@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:otp/otp_config.dart';
-import 'package:otp/otp_result.dart';
 import 'package:ui/tokens/colors.dart';
+import './otp_config.dart';
+import './otp_result.dart';
 
 /// A bottom sheet widget that implements the OTP verification flow.
 ///

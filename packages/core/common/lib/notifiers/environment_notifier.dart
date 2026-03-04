@@ -1,5 +1,5 @@
-import 'package:common/config/environment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../config/environment.dart';
 
 class EnvironmentNotifier extends Notifier<Environment> {
   @override

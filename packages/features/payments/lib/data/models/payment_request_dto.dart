@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payments/domain/entities/payment.dart';
+import '../../domain/entities/payment.dart';
 
 part 'generated/payment_request_dto.g.dart';
 

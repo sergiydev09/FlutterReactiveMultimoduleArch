@@ -1,14 +1,14 @@
-import 'package:cards/di/cards_providers.dart';
-import 'package:cards/domain/usecases/get_cards_usecase.dart';
-import 'package:cards/presentation/card_detail/card_detail_page.dart';
-import 'package:cards/presentation/cards_list/cards_bloc.dart';
-import 'package:cards/presentation/cards_list/cards_list_page.dart';
 import 'package:common/routing/feature_routes.dart';
 import 'package:domain/entities/card_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../di/cards_providers.dart';
+import '../domain/usecases/get_cards_usecase.dart';
+import '../presentation/card_detail/page/card_detail_page.dart';
+import '../presentation/cards_list/bloc/cards_list_bloc.dart';
+import '../presentation/cards_list/page/cards_list_page.dart';
 
 /// Route paths and route definitions for the cards feature.
 abstract final class CardRoutes {
@@ -26,7 +26,7 @@ abstract final class CardRoutes {
           final container = ProviderScope.containerOf(context);
           final cardRepo = container.read(CardProviders.repository);
           return BlocProvider(
-            create: (_) => CardsBloc(
+            create: (_) => CardsListBloc(
               getCardsUseCase: GetCardsUseCase(repository: cardRepo),
               cardRepository: cardRepo,
             )..add(const LoadCards()),
@@ -42,7 +42,7 @@ abstract final class CardRoutes {
                 final container = ProviderScope.containerOf(context);
                 final cardRepo = container.read(CardProviders.repository);
                 return BlocProvider(
-                  create: (_) => CardsBloc(
+                  create: (_) => CardsListBloc(
                     getCardsUseCase: GetCardsUseCase(repository: cardRepo),
                     cardRepository: cardRepo,
                   )..add(const LoadCards()),

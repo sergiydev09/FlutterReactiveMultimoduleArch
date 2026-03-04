@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:promotions/domain/promo_banner.dart';
-import 'package:promotions/presentation/promo_banner_card.dart';
 import 'package:ui/tokens/colors.dart';
+import '../domain/promo_banner.dart';
+import './promo_banner_card.dart';
 
 /// A horizontal PageView carousel of promotional banners with page indicators.
 class PromoCarousel extends StatefulWidget {

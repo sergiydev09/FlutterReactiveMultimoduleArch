@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
-import 'package:mock/config/mock_config.dart';
-import 'package:mock/config/mock_delay.dart';
 import 'package:notifications_feature/data/datasources/remote_notification_datasource.dart';
 import 'package:notifications_feature/data/models/notification_dto.dart';
+import '../config/mock_config.dart';
+import '../config/mock_delay.dart';
 
 class MockNotificationDataSource implements RemoteNotificationDataSource {
   MockNotificationDataSource({this.config = MockConfig.standard});

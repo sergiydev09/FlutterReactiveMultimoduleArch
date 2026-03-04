@@ -1,5 +1,5 @@
-import 'package:promotions/data/datasources/promotions_api_client.dart';
-import 'package:promotions/data/models/promo_banner_dto.dart';
+import '../models/promo_banner_dto.dart';
+import './promotions_api_client.dart';
 
 /// Remote data source for fetching promotional content.
 class RemotePromotionsDataSource {

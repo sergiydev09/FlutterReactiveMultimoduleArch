@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:otp/otp_config.dart';
-import 'package:otp/otp_flow.dart';
-import 'package:otp/otp_result.dart';
+import './otp_config.dart';
+import './otp_flow.dart';
+import './otp_result.dart';
 
 /// Dio interceptor that detects OTP-required responses and triggers the
 /// OTP verification flow before retrying the original request.

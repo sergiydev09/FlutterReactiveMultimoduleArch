@@ -3,8 +3,8 @@ import 'package:common/network/safe_api_call.dart';
 import 'package:domain/entities/account.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:globalposition/data/datasources/remote_globalposition_datasource.dart';
-import 'package:globalposition/domain/repositories/global_position_repository.dart';
+import '../../domain/repositories/global_position_repository.dart';
+import '../datasources/remote_globalposition_datasource.dart';
 
 /// Concrete implementation of [GlobalPositionRepository].
 class GlobalPositionRepositoryImpl implements GlobalPositionRepository {

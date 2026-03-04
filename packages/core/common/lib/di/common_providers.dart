@@ -1,8 +1,8 @@
-import 'package:common/config/environment.dart';
-import 'package:common/network/dio_factory.dart';
-import 'package:common/notifiers/environment_notifier.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../config/environment.dart';
+import '../network/dio_factory.dart';
+import '../notifiers/environment_notifier.dart';
 
 /// Riverpod providers for the common/networking module.
 abstract final class CommonProviders {

@@ -1,11 +1,11 @@
 import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:globalposition/di/globalposition_providers.dart';
-import 'package:globalposition/domain/usecases/get_global_position_usecase.dart';
-import 'package:globalposition/presentation/global_position/global_position_bloc.dart';
-import 'package:globalposition/presentation/global_position/global_position_page.dart';
 import 'package:go_router/go_router.dart';
+import '../di/globalposition_providers.dart';
+import '../domain/usecases/get_global_position_usecase.dart';
+import '../presentation/global_position/bloc/global_position_bloc.dart';
+import '../presentation/global_position/page/global_position_page.dart';
 
 /// Route paths and route definitions for the global position feature.
 abstract final class GlobalPositionRoutes {

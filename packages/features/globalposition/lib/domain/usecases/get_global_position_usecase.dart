@@ -5,7 +5,7 @@ import 'package:domain/entities/account.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:globalposition/domain/repositories/global_position_repository.dart';
+import '../repositories/global_position_repository.dart';
 
 part 'generated/get_global_position_usecase.freezed.dart';
 

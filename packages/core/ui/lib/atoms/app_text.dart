@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:ui/tokens/typography.dart';
+import '../tokens/typography.dart';
 
 /// Predefined text style variants.
 enum AppTextVariant {

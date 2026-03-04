@@ -1,6 +1,6 @@
-import 'package:authentication/data/models/login_response_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/login_response_dto.dart';
 
 part 'generated/auth_api_client.g.dart';
 

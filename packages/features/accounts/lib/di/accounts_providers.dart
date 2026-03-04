@@ -1,9 +1,9 @@
-import 'package:accounts/data/datasources/accounts_api_client.dart';
-import 'package:accounts/data/datasources/remote_account_datasource.dart';
-import 'package:accounts/data/repositories/account_repository_impl.dart';
-import 'package:accounts/domain/repositories/account_repository.dart';
 import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/datasources/accounts_api_client.dart';
+import '../data/datasources/remote_account_datasource.dart';
+import '../data/repositories/account_repository_impl.dart';
+import '../domain/repositories/account_repository.dart';
 
 /// Riverpod providers for the accounts feature.
 abstract final class AccountProviders {

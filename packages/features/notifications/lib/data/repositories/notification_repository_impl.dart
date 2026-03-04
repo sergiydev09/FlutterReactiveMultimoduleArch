@@ -2,8 +2,8 @@ import 'package:common/error/failures.dart';
 import 'package:common/network/safe_api_call.dart';
 import 'package:domain/entities/notification_entity.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:notifications_feature/data/datasources/remote_notification_datasource.dart';
-import 'package:notifications_feature/domain/repositories/notification_repository.dart';
+import '../../domain/repositories/notification_repository.dart';
+import '../datasources/remote_notification_datasource.dart';
 
 /// Concrete implementation of [NotificationRepository].
 class NotificationRepositoryImpl implements NotificationRepository {

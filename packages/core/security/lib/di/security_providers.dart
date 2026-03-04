@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:security/biometric/biometric_service.dart';
-import 'package:security/notifiers/biometric_enabled_notifier.dart';
-import 'package:security/notifiers/current_user_name_notifier.dart';
-import 'package:security/notifiers/has_seen_onboarding_notifier.dart';
-import 'package:security/notifiers/is_logged_in_notifier.dart';
-import 'package:security/session/session_manager.dart';
-import 'package:security/storage/secure_storage_service.dart';
+import '../biometric/biometric_service.dart';
+import '../notifiers/biometric_enabled_notifier.dart';
+import '../notifiers/current_user_name_notifier.dart';
+import '../notifiers/has_seen_onboarding_notifier.dart';
+import '../notifiers/is_logged_in_notifier.dart';
+import '../session/session_manager.dart';
+import '../storage/secure_storage_service.dart';
 
 /// Riverpod providers for the security module.
 abstract final class SecurityProviders {

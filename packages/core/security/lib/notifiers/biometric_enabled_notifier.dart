@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:security/di/security_providers.dart';
-import 'package:security/storage/secure_storage_service.dart';
+import '../di/security_providers.dart';
+import '../storage/secure_storage_service.dart';
 
 /// Persists and exposes the user's biometric login preference.
 class BiometricEnabledNotifier extends AsyncNotifier<bool> {

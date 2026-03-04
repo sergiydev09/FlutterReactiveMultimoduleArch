@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:promotions/data/models/promo_banner_dto.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/promo_banner_dto.dart';
 
 part 'generated/promotions_api_client.g.dart';
 

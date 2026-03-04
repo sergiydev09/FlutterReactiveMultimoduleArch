@@ -2,13 +2,13 @@ import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:payments/di/payments_providers.dart';
-import 'package:payments/domain/entities/payment.dart';
-import 'package:payments/domain/usecases/execute_payment_usecase.dart';
-import 'package:payments/presentation/new_payment/new_payment_page.dart';
-import 'package:payments/presentation/new_payment/payment_bloc.dart';
-import 'package:payments/presentation/payment_confirm/payment_confirm_page.dart';
-import 'package:payments/presentation/payment_result/payment_result_page.dart';
+import '../di/payments_providers.dart';
+import '../domain/entities/payment.dart';
+import '../domain/usecases/execute_payment_usecase.dart';
+import '../presentation/new_payment/bloc/new_payment_bloc.dart';
+import '../presentation/new_payment/page/new_payment_page.dart';
+import '../presentation/payment_confirm/page/payment_confirm_page.dart';
+import '../presentation/payment_result/page/payment_result_page.dart';
 
 /// Route paths and route definitions for the payments feature.
 abstract final class PaymentRoutes {
@@ -26,7 +26,7 @@ abstract final class PaymentRoutes {
           final container = ProviderScope.containerOf(context);
           final paymentRepo = container.read(PaymentProviders.repository);
           return BlocProvider(
-            create: (_) => PaymentBloc(
+            create: (_) => NewPaymentBloc(
               executePaymentUseCase: ExecutePaymentUseCase(
                 repository: paymentRepo,
               ),
@@ -44,7 +44,7 @@ abstract final class PaymentRoutes {
           final container = ProviderScope.containerOf(context);
           final paymentRepo = container.read(PaymentProviders.repository);
           return BlocProvider(
-            create: (_) => PaymentBloc(
+            create: (_) => NewPaymentBloc(
               executePaymentUseCase: ExecutePaymentUseCase(
                 repository: paymentRepo,
               ),

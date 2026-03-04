@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:ui/theme/banking_color_extension.dart';
-import 'package:ui/tokens/typography.dart';
+import '../theme/banking_color_extension.dart';
+import '../tokens/typography.dart';
 
 /// Displays a formatted currency amount with sign-aware coloring.
 ///

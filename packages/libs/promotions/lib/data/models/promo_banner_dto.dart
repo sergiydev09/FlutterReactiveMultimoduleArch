@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:promotions/domain/promo_banner.dart';
+import '../../domain/promo_banner.dart';
 
 part 'generated/promo_banner_dto.g.dart';
 

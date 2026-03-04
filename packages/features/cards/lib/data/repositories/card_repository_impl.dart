@@ -1,9 +1,9 @@
-import 'package:cards/data/datasources/remote_card_datasource.dart';
-import 'package:cards/domain/repositories/card_repository.dart';
 import 'package:common/error/failures.dart';
 import 'package:common/network/safe_api_call.dart';
 import 'package:domain/entities/card_entity.dart';
 import 'package:fpdart/fpdart.dart';
+import '../../domain/repositories/card_repository.dart';
+import '../datasources/remote_card_datasource.dart';
 
 /// Concrete implementation of [CardRepository].
 class CardRepositoryImpl implements CardRepository {

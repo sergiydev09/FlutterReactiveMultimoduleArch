@@ -1,5 +1,5 @@
-import 'package:notifications_feature/data/datasources/notifications_api_client.dart';
-import 'package:notifications_feature/data/models/notification_dto.dart';
+import '../models/notification_dto.dart';
+import './notifications_api_client.dart';
 
 /// Remote data source for notification operations.
 class RemoteNotificationDataSource {

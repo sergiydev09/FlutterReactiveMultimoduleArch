@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-
 import 'package:local_auth/local_auth.dart';
 
 /// Service for handling biometric authentication (Face ID, Touch ID,

@@ -1,10 +1,10 @@
-import 'package:accounts/data/datasources/remote_account_datasource.dart';
-import 'package:accounts/domain/repositories/account_repository.dart';
 import 'package:common/error/failures.dart';
 import 'package:common/network/safe_api_call.dart';
 import 'package:domain/entities/account.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:fpdart/fpdart.dart';
+import '../../domain/repositories/account_repository.dart';
+import '../datasources/remote_account_datasource.dart';
 
 /// Concrete implementation of [AccountRepository].
 class AccountRepositoryImpl implements AccountRepository {

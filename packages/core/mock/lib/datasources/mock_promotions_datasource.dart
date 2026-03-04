@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
-import 'package:mock/config/mock_config.dart';
-import 'package:mock/config/mock_delay.dart';
 import 'package:promotions/data/datasources/remote_promotions_datasource.dart';
 import 'package:promotions/data/models/promo_banner_dto.dart';
+import '../config/mock_config.dart';
+import '../config/mock_delay.dart';
 
 class MockPromotionsDataSource implements RemotePromotionsDataSource {
   MockPromotionsDataSource({this.config = MockConfig.standard});

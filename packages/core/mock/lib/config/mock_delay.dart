@@ -1,6 +1,5 @@
 import 'dart:math';
-
-import 'package:mock/config/mock_config.dart';
+import './mock_config.dart';
 
 class MockDelay {
   static Future<void> simulate(MockConfig config) async {

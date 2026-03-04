@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:ui/tokens/spacing.dart';
-import 'package:ui/tokens/typography.dart';
+import '../tokens/spacing.dart';
+import '../tokens/typography.dart';
 
 /// Button variant types.
 enum AppButtonVariant {

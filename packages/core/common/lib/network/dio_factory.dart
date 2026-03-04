@@ -1,9 +1,9 @@
-import 'package:common/config/environment.dart';
-import 'package:common/network/auth_interceptor.dart';
-import 'package:common/network/cache_config.dart';
-import 'package:common/network/logging_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import '../config/environment.dart';
+import './auth_interceptor.dart';
+import './cache_config.dart';
+import './logging_interceptor.dart';
 
 /// Factory responsible for creating and configuring the [Dio] HTTP client.
 class DioFactory {

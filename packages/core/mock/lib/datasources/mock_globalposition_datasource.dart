@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
 import 'package:globalposition/data/datasources/remote_globalposition_datasource.dart';
 import 'package:globalposition/data/models/gp_account_dto.dart';
 import 'package:globalposition/data/models/gp_transaction_dto.dart';
-import 'package:mock/config/mock_config.dart';
-import 'package:mock/config/mock_delay.dart';
+import '../config/mock_config.dart';
+import '../config/mock_delay.dart';
 
 class MockGlobalPositionDataSource implements RemoteGlobalPositionDataSource {
   MockGlobalPositionDataSource({this.config = MockConfig.standard});

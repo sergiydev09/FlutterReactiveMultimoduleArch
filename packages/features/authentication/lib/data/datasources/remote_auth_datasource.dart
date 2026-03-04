@@ -1,5 +1,5 @@
-import 'package:authentication/data/datasources/auth_api_client.dart';
-import 'package:authentication/data/models/login_response_dto.dart';
+import '../models/login_response_dto.dart';
+import './auth_api_client.dart';
 
 /// Remote data source for authentication operations.
 class RemoteAuthDataSource {

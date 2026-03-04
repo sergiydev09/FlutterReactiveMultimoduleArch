@@ -1,4 +1,4 @@
-import 'package:domain/entities/user.dart';
+import '../entities/user.dart';
 
 /// Abstract contract for accessing and observing the authentication state.
 ///

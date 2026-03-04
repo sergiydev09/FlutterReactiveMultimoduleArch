@@ -4,12 +4,12 @@ import 'package:cards/routing/cards_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:globalposition/routing/globalposition_routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_app/di/providers.dart';
-import 'package:mobile_app/routing/main_shell.dart';
 import 'package:notifications_feature/routing/notifications_routes.dart';
 import 'package:onboarding/routing/onboarding_routes.dart';
 import 'package:payments/routing/payments_routes.dart';
-import 'package:settings_feature/routing/settings_routes.dart';
+import 'package:settings/routing/settings_routes.dart';
+import '../di/providers.dart';
+import './main_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final isLoggedIn = ref.watch(SecurityProviders.isLoggedIn);

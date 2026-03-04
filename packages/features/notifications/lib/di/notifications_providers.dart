@@ -1,9 +1,9 @@
 import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:notifications_feature/data/datasources/notifications_api_client.dart';
-import 'package:notifications_feature/data/datasources/remote_notification_datasource.dart';
-import 'package:notifications_feature/data/repositories/notification_repository_impl.dart';
-import 'package:notifications_feature/domain/repositories/notification_repository.dart';
+import '../data/datasources/notifications_api_client.dart';
+import '../data/datasources/remote_notification_datasource.dart';
+import '../data/repositories/notification_repository_impl.dart';
+import '../domain/repositories/notification_repository.dart';
 
 /// Riverpod providers for the notifications feature.
 abstract final class NotificationProviders {

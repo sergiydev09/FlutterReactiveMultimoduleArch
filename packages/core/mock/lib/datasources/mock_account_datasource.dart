@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:accounts/data/datasources/remote_account_datasource.dart';
 import 'package:accounts/data/models/account_dto.dart';
 import 'package:accounts/data/models/transaction_dto.dart';
 import 'package:flutter/services.dart';
-import 'package:mock/config/mock_config.dart';
-import 'package:mock/config/mock_delay.dart';
+import '../config/mock_config.dart';
+import '../config/mock_delay.dart';
 
 class MockAccountDataSource implements RemoteAccountDataSource {
   MockAccountDataSource({this.config = MockConfig.standard});

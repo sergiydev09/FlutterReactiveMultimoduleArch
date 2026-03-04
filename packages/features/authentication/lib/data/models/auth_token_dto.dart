@@ -1,5 +1,5 @@
-import 'package:authentication/domain/entities/auth_token.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../domain/entities/auth_token.dart';
 
 part 'generated/auth_token_dto.g.dart';
 

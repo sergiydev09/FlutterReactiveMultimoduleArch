@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:cards/data/datasources/remote_card_datasource.dart';
 import 'package:cards/data/models/card_dto.dart';
 import 'package:flutter/services.dart';
-import 'package:mock/config/mock_config.dart';
-import 'package:mock/config/mock_delay.dart';
+import '../config/mock_config.dart';
+import '../config/mock_delay.dart';
 
 class MockCardDataSource implements RemoteCardDataSource {
   MockCardDataSource({this.config = MockConfig.standard});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:promotions/domain/promo_banner.dart';
 import 'package:ui/tokens/colors.dart';
+import '../domain/promo_banner.dart';
 
 /// A card widget that displays a single promotional banner.
 class PromoBannerCard extends StatelessWidget {

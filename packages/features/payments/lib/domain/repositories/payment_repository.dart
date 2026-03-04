@@ -1,6 +1,6 @@
 import 'package:common/error/failures.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:payments/domain/entities/payment.dart';
+import '../entities/payment.dart';
 
 /// Repository contract for payment operations.
 abstract class PaymentRepository {

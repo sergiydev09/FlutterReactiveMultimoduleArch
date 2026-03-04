@@ -1,9 +1,9 @@
 import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:payments/data/datasources/payments_api_client.dart';
-import 'package:payments/data/datasources/remote_payment_datasource.dart';
-import 'package:payments/data/repositories/payment_repository_impl.dart';
-import 'package:payments/domain/repositories/payment_repository.dart';
+import '../data/datasources/payments_api_client.dart';
+import '../data/datasources/remote_payment_datasource.dart';
+import '../data/repositories/payment_repository_impl.dart';
+import '../domain/repositories/payment_repository.dart';
 
 /// Riverpod providers for the payments feature.
 abstract final class PaymentProviders {

@@ -1,10 +1,10 @@
 import 'package:common/error/failures.dart';
 import 'package:common/network/safe_api_call.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:payments/data/datasources/remote_payment_datasource.dart';
-import 'package:payments/data/models/payment_request_dto.dart';
-import 'package:payments/domain/entities/payment.dart';
-import 'package:payments/domain/repositories/payment_repository.dart';
+import '../../domain/entities/payment.dart';
+import '../../domain/repositories/payment_repository.dart';
+import '../datasources/remote_payment_datasource.dart';
+import '../models/payment_request_dto.dart';
 
 /// Concrete implementation of [PaymentRepository].
 class PaymentRepositoryImpl implements PaymentRepository {

@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-
 import 'package:dio/dio.dart';
 
 /// Interceptor that attaches the authorization token to every request

@@ -1,10 +1,10 @@
-import 'package:mock/datasources/mock_account_datasource.dart';
-import 'package:mock/datasources/mock_auth_datasource.dart';
-import 'package:mock/datasources/mock_card_datasource.dart';
-import 'package:mock/datasources/mock_globalposition_datasource.dart';
-import 'package:mock/datasources/mock_notification_datasource.dart';
-import 'package:mock/datasources/mock_payment_datasource.dart';
-import 'package:mock/datasources/mock_promotions_datasource.dart';
+import '../datasources/mock_account_datasource.dart';
+import '../datasources/mock_auth_datasource.dart';
+import '../datasources/mock_card_datasource.dart';
+import '../datasources/mock_globalposition_datasource.dart';
+import '../datasources/mock_notification_datasource.dart';
+import '../datasources/mock_payment_datasource.dart';
+import '../datasources/mock_promotions_datasource.dart';
 
 abstract final class MockProviders {
   static final mockAuthDataSource = MockAuthDataSource();

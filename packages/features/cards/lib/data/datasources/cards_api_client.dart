@@ -1,6 +1,6 @@
-import 'package:cards/data/models/card_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/card_dto.dart';
 
 part 'generated/cards_api_client.g.dart';
 

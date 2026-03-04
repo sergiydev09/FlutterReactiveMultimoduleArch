@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:notifications_feature/data/models/notification_dto.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/notification_dto.dart';
 
 part 'generated/notifications_api_client.g.dart';
 

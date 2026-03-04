@@ -1,5 +1,5 @@
-import 'package:common/error/failures.dart';
 import 'package:dio/dio.dart';
+import '../error/failures.dart';
 
 /// Maps a [DioException] to the appropriate [Failure] subtype.
 abstract final class DioExceptionMapper {

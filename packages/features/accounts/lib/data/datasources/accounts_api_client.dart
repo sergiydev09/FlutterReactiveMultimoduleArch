@@ -1,7 +1,7 @@
-import 'package:accounts/data/models/account_dto.dart';
-import 'package:accounts/data/models/transaction_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/account_dto.dart';
+import '../models/transaction_dto.dart';
 
 part 'generated/accounts_api_client.g.dart';
 

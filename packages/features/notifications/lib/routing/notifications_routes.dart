@@ -2,9 +2,9 @@ import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notifications_feature/di/notifications_providers.dart';
-import 'package:notifications_feature/presentation/notifications/notifications_bloc.dart';
-import 'package:notifications_feature/presentation/notifications/notifications_page.dart';
+import '../di/notifications_providers.dart';
+import '../presentation/notifications/bloc/notifications_bloc.dart';
+import '../presentation/notifications/page/notifications_page.dart';
 
 /// Route paths and route definitions for the notifications feature.
 abstract final class NotificationRoutes {

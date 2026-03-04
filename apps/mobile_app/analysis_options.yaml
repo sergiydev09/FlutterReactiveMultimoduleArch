@@ -6,3 +6,5 @@ linter:
     lines_longer_than_80_chars: false
     flutter_style_todos: false
     comment_references: false
+    always_use_package_imports: false
+    prefer_relative_imports: true

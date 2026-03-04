@@ -1,6 +1,6 @@
-import 'package:accounts/data/datasources/accounts_api_client.dart';
-import 'package:accounts/data/models/account_dto.dart';
-import 'package:accounts/data/models/transaction_dto.dart';
+import '../models/account_dto.dart';
+import '../models/transaction_dto.dart';
+import './accounts_api_client.dart';
 
 /// Remote data source for account operations.
 class RemoteAccountDataSource {

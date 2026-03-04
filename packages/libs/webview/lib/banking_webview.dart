@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:webview_lib/webview_config.dart';
-import 'package:webview_lib/webview_event.dart';
+import './webview_config.dart';
+import './webview_event.dart';
 
 /// A configurable WebView widget for banking-related web content.
 ///

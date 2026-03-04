@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:globalposition/data/models/gp_account_dto.dart';
-import 'package:globalposition/data/models/gp_transaction_dto.dart';
 import 'package:retrofit/retrofit.dart';
+import '../models/gp_account_dto.dart';
+import '../models/gp_transaction_dto.dart';
 
 part 'generated/globalposition_api_client.g.dart';
 

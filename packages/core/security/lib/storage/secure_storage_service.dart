@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Wrapper around [FlutterSecureStorage] for secure key-value storage.

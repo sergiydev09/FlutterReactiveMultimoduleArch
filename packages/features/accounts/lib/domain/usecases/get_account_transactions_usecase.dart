@@ -1,9 +1,9 @@
-import 'package:accounts/domain/repositories/account_repository.dart';
 import 'package:common/error/failures.dart';
 import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../repositories/account_repository.dart';
 
 part 'generated/get_account_transactions_usecase.freezed.dart';
 

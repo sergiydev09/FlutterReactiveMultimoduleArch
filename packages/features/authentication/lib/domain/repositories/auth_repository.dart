@@ -1,8 +1,8 @@
-import 'package:authentication/domain/entities/login_credentials.dart';
-import 'package:authentication/domain/entities/login_result.dart';
 import 'package:common/error/failures.dart';
 import 'package:domain/entities/user.dart';
 import 'package:fpdart/fpdart.dart';
+import '../entities/login_credentials.dart';
+import '../entities/login_result.dart';
 
 /// Repository contract for authentication operations.
 abstract class AuthRepository {

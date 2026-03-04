@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:ui/theme/banking_color_extension.dart';
-import 'package:ui/tokens/colors.dart';
-import 'package:ui/tokens/typography.dart';
+import '../tokens/colors.dart';
+import '../tokens/typography.dart';
+import './banking_color_extension.dart';
 
 /// Provides the light and dark [ThemeData] for the banking application.
 ///

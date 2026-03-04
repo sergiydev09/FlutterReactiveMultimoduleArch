@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:ui/tokens/colors.dart';
+import '../tokens/colors.dart';
 
 /// A [ThemeExtension] that provides custom banking-specific colors
 /// not covered by the standard Material [ColorScheme].

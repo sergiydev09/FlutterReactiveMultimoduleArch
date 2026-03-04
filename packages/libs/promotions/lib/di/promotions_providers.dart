@@ -1,7 +1,7 @@
 import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:promotions/data/datasources/promotions_api_client.dart';
-import 'package:promotions/data/datasources/remote_promotions_datasource.dart';
+import '../data/datasources/promotions_api_client.dart';
+import '../data/datasources/remote_promotions_datasource.dart';
 
 /// Riverpod providers for the promotions library.
 abstract final class PromotionProviders {

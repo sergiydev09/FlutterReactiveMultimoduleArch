@@ -1,8 +1,8 @@
-import 'package:common/error/failures.dart';
-import 'package:common/extensions/either_extensions.dart';
-import 'package:common/network/dio_exception_mapper.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
+import '../error/failures.dart';
+import '../extensions/either_extensions.dart';
+import './dio_exception_mapper.dart';
 
 /// Wraps an API call in a try/catch, mapping exceptions to [Failure].
 Future<Either<Failure, T>> safeApiCall<T>(Future<T> Function() call) async {

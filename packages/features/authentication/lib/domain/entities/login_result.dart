@@ -1,6 +1,6 @@
-import 'package:authentication/domain/entities/auth_token.dart';
 import 'package:domain/entities/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import './auth_token.dart';
 
 part 'generated/login_result.freezed.dart';
 
