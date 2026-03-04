@@ -1,6 +1,16 @@
 import 'package:common/error/failures.dart';
 import 'package:fpdart/fpdart.dart';
 
+/// Wraps any value as [Right].
+extension RightExtension<T> on T {
+  Either<L, T> toRight<L>() => Right(this);
+}
+
+/// Wraps a [Failure] as [Left].
+extension LeftExtension on Failure {
+  Either<Failure, R> toLeft<R>() => Left(this);
+}
+
 /// Convenience extensions on [Either<Failure, T>].
 extension EitherExtensions<T> on Either<Failure, T> {
   /// Returns the right value or throws a [StateError] if left.

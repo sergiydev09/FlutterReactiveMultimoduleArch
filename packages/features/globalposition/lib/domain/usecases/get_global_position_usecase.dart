@@ -1,4 +1,5 @@
 import 'package:common/error/failures.dart';
+import 'package:common/extensions/either_extensions.dart';
 import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/account.dart';
 import 'package:domain/entities/transaction.dart';
@@ -27,17 +28,15 @@ class GetGlobalPositionUseCase extends UseCase<GlobalPositionData, NoParams> {
     final accountsResult = await repository.getAccounts();
 
     return accountsResult.match(
-      Left.new,
+      (f) => f.toLeft(),
       (accounts) async {
         final transactionsResult = await repository.getRecentTransactions();
         return transactionsResult.match(
-          Left.new,
-          (transactions) => Right(
-            GlobalPositionData(
-              accounts: accounts,
-              recentTransactions: transactions,
-            ),
-          ),
+          (f) => f.toLeft(),
+          (transactions) => GlobalPositionData(
+            accounts: accounts,
+            recentTransactions: transactions,
+          ).toRight(),
         );
       },
     );

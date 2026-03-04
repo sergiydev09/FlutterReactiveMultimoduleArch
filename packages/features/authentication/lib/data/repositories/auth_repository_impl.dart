@@ -3,7 +3,7 @@ import 'package:authentication/domain/entities/login_credentials.dart';
 import 'package:authentication/domain/entities/login_result.dart';
 import 'package:authentication/domain/repositories/auth_repository.dart';
 import 'package:common/error/failures.dart';
-import 'package:dio/dio.dart';
+import 'package:common/network/safe_api_call.dart';
 import 'package:fpdart/fpdart.dart';
 
 /// Concrete implementation of [AuthRepository].
@@ -15,44 +15,19 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, LoginResult>> login(
     LoginCredentials credentials,
-  ) async {
-    try {
-      final response = await remoteDataSource.login(
-        credentials.dni,
-        credentials.password,
-      );
-      return Right(
-        LoginResult(
+  ) =>
+      safeApiCall(() async {
+        final response = await remoteDataSource.login(
+          credentials.dni,
+          credentials.password,
+        );
+        return LoginResult(
           token: response.token.toEntity(),
           user: response.user.toEntity(),
-        ),
-      );
-    } on DioException catch (e) {
-      return Left(
-        ServerFailure(
-          message: e.message ?? 'Error al iniciar sesión',
-          statusCode: e.response?.statusCode,
-        ),
-      );
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
+        );
+      });
 
   @override
-  Future<Either<Failure, void>> logout() async {
-    try {
-      await remoteDataSource.logout('');
-      return const Right(null);
-    } on DioException catch (e) {
-      return Left(
-        ServerFailure(
-          message: e.message ?? 'Error al cerrar sesión',
-          statusCode: e.response?.statusCode,
-        ),
-      );
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
+  Future<Either<Failure, void>> logout() =>
+      safeApiCall(() => remoteDataSource.logout(''));
 }

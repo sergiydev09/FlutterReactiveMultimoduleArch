@@ -1,7 +1,7 @@
 import 'package:cards/data/datasources/remote_card_datasource.dart';
 import 'package:cards/domain/repositories/card_repository.dart';
 import 'package:common/error/failures.dart';
-import 'package:dio/dio.dart';
+import 'package:common/network/safe_api_call.dart';
 import 'package:domain/entities/card_entity.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -12,53 +12,15 @@ class CardRepositoryImpl implements CardRepository {
   final RemoteCardDataSource remoteDataSource;
 
   @override
-  Future<Either<Failure, List<CardEntity>>> getCards() async {
-    try {
-      final models = await remoteDataSource.getCards();
-      return Right(models.map((m) => m.toEntity()).toList());
-    } on DioException catch (e) {
-      return Left(
-        ServerFailure(
-          message: e.message ?? 'Error al obtener tarjetas',
-          statusCode: e.response?.statusCode,
-        ),
-      );
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
+  Future<Either<Failure, List<CardEntity>>> getCards() =>
+      safeApiCall(() async =>
+          (await remoteDataSource.getCards()).map((m) => m.toEntity()).toList());
 
   @override
-  Future<Either<Failure, CardEntity>> getCardDetail(String id) async {
-    try {
-      final model = await remoteDataSource.getCardDetail(id);
-      return Right(model.toEntity());
-    } on DioException catch (e) {
-      return Left(
-        ServerFailure(
-          message: e.message ?? 'Error al obtener detalle de tarjeta',
-          statusCode: e.response?.statusCode,
-        ),
-      );
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
+  Future<Either<Failure, CardEntity>> getCardDetail(String id) =>
+      safeApiCall(() async => (await remoteDataSource.getCardDetail(id)).toEntity());
 
   @override
-  Future<Either<Failure, CardEntity>> toggleCardStatus(String id) async {
-    try {
-      final model = await remoteDataSource.toggleCardStatus(id);
-      return Right(model.toEntity());
-    } on DioException catch (e) {
-      return Left(
-        ServerFailure(
-          message: e.message ?? 'Error al cambiar estado de tarjeta',
-          statusCode: e.response?.statusCode,
-        ),
-      );
-    } on Exception catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
+  Future<Either<Failure, CardEntity>> toggleCardStatus(String id) =>
+      safeApiCall(() async => (await remoteDataSource.toggleCardStatus(id)).toEntity());
 }
