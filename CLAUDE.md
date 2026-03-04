@@ -90,8 +90,9 @@ packages/features/<name>/lib/
 - SIEMPRE retorna `Either<Failure, T>` — NUNCA lanza excepciones
 - Catch de `DioException` → `ServerFailure`, catch genérico → `ServerFailure`
 
-### Model → Entity
-- Models tienen `.toEntity()` y `factory .fromJson(Map<String, dynamic>)`
+### DTO → Entity
+- DTOs (data layer) tienen `.toEntity()` y `factory .fromJson(Map<String, dynamic>)`
+- DTOs son serializables (`@JsonSerializable`), entities de dominio NO
 - La conversión ocurre en el repository, NUNCA en la UI
 
 ### DI (Riverpod)
@@ -165,7 +166,7 @@ melos deps:upgrade     # Actualizar dependencias
 | UseCase | `<Acción>UseCase` | `GetAccountDetailUseCase` |
 | Repository | `<Feature>Repository` | `AuthRepository` (abstracto), `AuthRepositoryImpl` (concreto) |
 | DataSource | `Remote<Feature>DataSource` | `RemoteAuthDataSource` |
-| Model | `<Entity>Model` | `AuthTokenModel` |
+| DTO (data layer) | `<Entity>Dto` | `AuthTokenDto`, `AccountDto` |
 | Provider | `<tipo><feature>Provider` | `remoteAuthDataSourceProvider`, `authRepositoryProvider` |
 
 ## Al crear un nuevo feature

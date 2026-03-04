@@ -20,6 +20,8 @@ dependencies:
   fpdart:
   freezed_annotation:
   go_router:
+  json_annotation:
+  retrofit:
   ui:
     path: ../../core/ui
   webview_lib:
@@ -31,5 +33,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed:
+  json_serializable:
   mocktail:
+  retrofit_generator:
   very_good_analysis:

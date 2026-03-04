@@ -1,13 +1,25 @@
+import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:notifications_feature/data/datasources/notifications_api_client.dart';
 import 'package:notifications_feature/data/datasources/remote_notification_datasource.dart';
+import 'package:notifications_feature/data/datasources/remote_notification_datasource_impl.dart';
 import 'package:notifications_feature/data/repositories/notification_repository_impl.dart';
 import 'package:notifications_feature/domain/repositories/notification_repository.dart';
 
 /// Riverpod providers for the notifications feature.
 abstract final class NotificationProviders {
-  /// Remote data source. Must be overridden in each entry point.
-  static final remoteDataSource = Provider<RemoteNotificationDataSource>((ref) {
-    throw UnimplementedError('Must be overridden');
+  /// Retrofit API client.
+  static final apiClient = Provider<NotificationsApiClient>((ref) {
+    return NotificationsApiClient(ref.watch(dioProvider));
+  });
+
+  /// Remote data source. Defaults to Retrofit impl; overridden with mocks
+  /// in main_dev.dart.
+  static final remoteDataSource =
+      Provider<RemoteNotificationDataSource>((ref) {
+    return RemoteNotificationDataSourceImpl(
+      apiClient: ref.watch(NotificationProviders.apiClient),
+    );
   });
 
   /// Repository for notification operations.

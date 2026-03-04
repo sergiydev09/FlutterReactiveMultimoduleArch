@@ -8,7 +8,7 @@
     "category": "shopping",
     "status": "completed",
     "created_at": "2026-02-27T14:30:00Z",
-    "merchant": {"name": "Amazon", "logo_url": null}
+    "merchant": "Amazon"
   },
   {
     "id": "tx-002",
@@ -30,7 +30,7 @@
     "category": "restaurants",
     "status": "completed",
     "created_at": "2026-02-27T09:15:00Z",
-    "merchant": {"name": "Café Central", "logo_url": null}
+    "merchant": "Café Central"
   },
   {
     "id": "tx-004",
@@ -41,7 +41,7 @@
     "category": "groceries",
     "status": "completed",
     "created_at": "2026-02-26T18:45:00Z",
-    "merchant": {"name": "Mercadona", "logo_url": null}
+    "merchant": "Mercadona"
   },
   {
     "id": "tx-005",
@@ -52,7 +52,7 @@
     "category": "entertainment",
     "status": "completed",
     "created_at": "2026-02-24T00:00:00Z",
-    "merchant": {"name": "Spotify", "logo_url": null}
+    "merchant": "Spotify"
   },
   {
     "id": "tx-006",
@@ -63,7 +63,7 @@
     "category": "shopping",
     "status": "completed",
     "created_at": "2026-02-23T16:20:00Z",
-    "merchant": {"name": "Zara", "logo_url": null}
+    "merchant": "Zara"
   },
   {
     "id": "tx-007",
@@ -85,7 +85,7 @@
     "category": "transport",
     "status": "completed",
     "created_at": "2026-02-21T22:30:00Z",
-    "merchant": {"name": "Uber", "logo_url": null}
+    "merchant": "Uber"
   },
   {
     "id": "tx-009",
@@ -129,7 +129,7 @@
     "category": "entertainment",
     "status": "completed",
     "created_at": "2026-02-20T00:00:00Z",
-    "merchant": {"name": "Netflix", "logo_url": null}
+    "merchant": "Netflix"
   },
   {
     "id": "tx-013",
@@ -140,7 +140,7 @@
     "category": "transport",
     "status": "completed",
     "created_at": "2026-02-19T15:30:00Z",
-    "merchant": {"name": "Repsol", "logo_url": null}
+    "merchant": "Repsol"
   },
   {
     "id": "tx-014",
@@ -162,6 +162,6 @@
     "category": "health",
     "status": "completed",
     "created_at": "2026-02-18T12:00:00Z",
-    "merchant": {"name": "Farmacia Pérez", "logo_url": null}
+    "merchant": "Farmacia Pérez"
   }
 ]

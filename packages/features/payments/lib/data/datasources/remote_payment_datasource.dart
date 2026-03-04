@@ -1,10 +1,11 @@
-import 'package:payments/domain/entities/payment.dart';
+import 'package:payments/data/models/payment_request_dto.dart';
+import 'package:payments/data/models/payment_response_dto.dart';
 
 /// Remote data source contract for payment operations.
 abstract class RemotePaymentDataSource {
-  /// Executes the given [payment].
+  /// Executes the given [request].
   ///
-  /// Returns the payment confirmation ID on success.
+  /// Returns a [PaymentResponseDto] with the confirmation ID on success.
   /// Throws an exception on failure.
-  Future<String> executePayment(Payment payment);
+  Future<PaymentResponseDto> executePayment(PaymentRequestDto request);
 }

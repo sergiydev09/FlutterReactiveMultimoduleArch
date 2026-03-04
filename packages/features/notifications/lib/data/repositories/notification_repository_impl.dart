@@ -14,8 +14,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<Either<Failure, List<NotificationEntity>>> getNotifications() async {
     try {
-      final notifications = await remoteDataSource.getNotifications();
-      return Right(notifications);
+      final models = await remoteDataSource.getNotifications();
+      return Right(models.map((m) => m.toEntity()).toList());
     } on DioException catch (e) {
       return Left(
         ServerFailure(
@@ -36,7 +36,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
     } on DioException catch (e) {
       return Left(
         ServerFailure(
-          message: e.message ?? 'Error al marcar notificación como leída',
+          message: e.message ?? 'Error al marcar notificacion como leida',
           statusCode: e.response?.statusCode,
         ),
       );

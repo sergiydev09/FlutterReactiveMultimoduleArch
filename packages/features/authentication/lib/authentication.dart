@@ -1,10 +1,12 @@
 /// Authentication feature module.
 library;
 
+export 'data/datasources/auth_api_client.dart';
 export 'data/datasources/remote_auth_datasource.dart';
-export 'data/models/auth_token_model.dart';
-export 'data/models/login_response_model.dart';
-export 'data/models/user_model.dart';
+export 'data/datasources/remote_auth_datasource_impl.dart';
+export 'data/models/auth_token_dto.dart';
+export 'data/models/login_response_dto.dart';
+export 'data/models/user_dto.dart';
 export 'data/repositories/auth_repository_impl.dart';
 export 'di/auth_providers.dart';
 export 'domain/entities/auth_token.dart';

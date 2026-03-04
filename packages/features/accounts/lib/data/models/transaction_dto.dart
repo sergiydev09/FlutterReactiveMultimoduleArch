@@ -1,47 +1,39 @@
 import 'package:domain/entities/transaction.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-/// Data model for [Transaction] with JSON deserialization.
-class TransactionModel {
-  const TransactionModel({
+part 'generated/transaction_dto.g.dart';
+
+@JsonSerializable()
+class TransactionDto {
+  const TransactionDto({
     required this.id,
     required this.accountId,
     required this.amount,
-    required this.currency,
     required this.description,
-    required this.category,
-    required this.status,
     required this.createdAt,
+    this.currency = 'EUR',
+    this.category = 'other',
+    this.status = 'completed',
     this.merchant,
   });
 
-  /// Creates a [TransactionModel] from a JSON map.
-  factory TransactionModel.fromJson(Map<String, dynamic> json) {
-    return TransactionModel(
-      id: json['id'] as String,
-      accountId: json['account_id'] as String,
-      amount: (json['amount'] as num).toDouble(),
-      currency: json['currency'] as String? ?? 'EUR',
-      description: json['description'] as String,
-      category: _parseCategory(json['category'] as String? ?? 'other'),
-      status: _parseStatus(json['status'] as String? ?? 'completed'),
-      createdAt: DateTime.parse(json['created_at'] as String),
-      merchant: json['merchant'] is Map<String, dynamic>
-          ? (json['merchant'] as Map<String, dynamic>)['name'] as String?
-          : json['merchant'] as String?,
-    );
-  }
+  factory TransactionDto.fromJson(Map<String, dynamic> json) =>
+      _$TransactionDtoFromJson(json);
 
   final String id;
+  @JsonKey(name: 'account_id')
   final String accountId;
   final double amount;
   final String currency;
   final String description;
-  final TransactionCategory category;
-  final TransactionStatus status;
-  final DateTime createdAt;
+  final String category;
+  final String status;
+  @JsonKey(name: 'created_at')
+  final String createdAt;
   final String? merchant;
 
-  /// Converts this model to a domain entity.
+  Map<String, dynamic> toJson() => _$TransactionDtoToJson(this);
+
   Transaction toEntity() {
     return Transaction(
       id: id,
@@ -49,9 +41,9 @@ class TransactionModel {
       amount: amount,
       currency: currency,
       description: description,
-      category: category,
-      status: status,
-      createdAt: createdAt,
+      category: _parseCategory(category),
+      status: _parseStatus(status),
+      createdAt: DateTime.parse(createdAt),
       merchant: merchant,
     );
   }

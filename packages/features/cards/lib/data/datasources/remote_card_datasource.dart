@@ -1,14 +1,14 @@
-import 'package:domain/entities/card_entity.dart';
+import 'package:cards/data/models/card_dto.dart';
 
 /// Remote data source contract for card operations.
 abstract class RemoteCardDataSource {
   /// Fetches all cards.
-  Future<List<CardEntity>> getCards();
+  Future<List<CardDto>> getCards();
 
   /// Fetches detail of a card by [id].
-  Future<CardEntity> getCardDetail(String id);
+  Future<CardDto> getCardDetail(String id);
 
   /// Toggles the status of a card by [id].
   /// Returns the updated card.
-  Future<CardEntity> toggleCardStatus(String id);
+  Future<CardDto> toggleCardStatus(String id);
 }

@@ -6,3 +6,11 @@ targets:
         options:
           build_extensions:
             '^lib/{{path}}/{{file}}.dart': 'lib/{{path}}/generated/{{file}}.freezed.dart'
+      json_serializable:
+        enabled: true
+      retrofit_generator:
+        enabled: true
+      source_gen|combining_builder:
+        options:
+          build_extensions:
+            '^lib/{{path}}/{{file}}.dart': 'lib/{{path}}/generated/{{file}}.g.dart'

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:cards/data/datasources/remote_card_datasource.dart';
-import 'package:domain/entities/card_entity.dart';
+import 'package:cards/data/models/card_dto.dart';
 import 'package:flutter/services.dart';
 import 'package:mock/config/mock_config.dart';
 import 'package:mock/config/mock_delay.dart';
@@ -12,7 +12,7 @@ class MockCardDataSource implements RemoteCardDataSource {
   final Map<String, bool> _cardStatusOverrides = {};
 
   @override
-  Future<List<CardEntity>> getCards() async {
+  Future<List<CardDto>> getCards() async {
     await MockDelay.simulate(config);
     final jsonString = await rootBundle.loadString(
       'packages/mock/assets/fixtures/cards.json',
@@ -23,18 +23,14 @@ class MockCardDataSource implements RemoteCardDataSource {
       final id = map['id'] as String;
       final isActive =
           _cardStatusOverrides[id] ?? (map['is_active'] as bool? ?? true);
-      return CardEntity(
+      return CardDto(
         id: id,
-        type: (map['type'] as String) == 'debit'
-            ? CardType.debit
-            : CardType.credit,
+        type: map['type'] as String,
         lastFourDigits: map['last_four_digits'] as String,
         cardHolderName: map['card_holder_name'] as String,
         expiryDate: map['expiry_date'] as String,
         isActive: isActive,
-        brand: (map['brand'] as String) == 'visa'
-            ? CardBrand.visa
-            : CardBrand.mastercard,
+        brand: map['brand'] as String,
         availableLimit: (map['available_limit'] as num?)?.toDouble(),
         usedLimit: (map['used_limit'] as num?)?.toDouble(),
       );
@@ -42,16 +38,26 @@ class MockCardDataSource implements RemoteCardDataSource {
   }
 
   @override
-  Future<CardEntity> getCardDetail(String id) async {
+  Future<CardDto> getCardDetail(String id) async {
     final cards = await getCards();
     return cards.firstWhere((c) => c.id == id);
   }
 
   @override
-  Future<CardEntity> toggleCardStatus(String id) async {
+  Future<CardDto> toggleCardStatus(String id) async {
     await MockDelay.simulate(config);
     final card = await getCardDetail(id);
     _cardStatusOverrides[id] = !card.isActive;
-    return card.copyWith(isActive: !card.isActive);
+    return CardDto(
+      id: card.id,
+      type: card.type,
+      lastFourDigits: card.lastFourDigits,
+      cardHolderName: card.cardHolderName,
+      expiryDate: card.expiryDate,
+      isActive: !card.isActive,
+      brand: card.brand,
+      availableLimit: card.availableLimit,
+      usedLimit: card.usedLimit,
+    );
   }
 }

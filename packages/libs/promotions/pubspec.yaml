@@ -10,10 +10,13 @@ resolution: workspace
 dependencies:
   common:
     path: ../../core/common
+  dio:
   flutter:
     sdk: flutter
   flutter_riverpod:
   freezed_annotation:
+  json_annotation:
+  retrofit:
   ui:
     path: ../../core/ui
   webview_lib:
@@ -24,4 +27,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed:
+  json_serializable:
+  retrofit_generator:
   very_good_analysis:

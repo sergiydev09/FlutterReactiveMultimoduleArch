@@ -1,13 +1,24 @@
+import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:payments/data/datasources/payments_api_client.dart';
 import 'package:payments/data/datasources/remote_payment_datasource.dart';
+import 'package:payments/data/datasources/remote_payment_datasource_impl.dart';
 import 'package:payments/data/repositories/payment_repository_impl.dart';
 import 'package:payments/domain/repositories/payment_repository.dart';
 
 /// Riverpod providers for the payments feature.
 abstract final class PaymentProviders {
-  /// Remote data source. Must be overridden in each entry point.
+  /// Retrofit API client.
+  static final apiClient = Provider<PaymentsApiClient>((ref) {
+    return PaymentsApiClient(ref.watch(dioProvider));
+  });
+
+  /// Remote data source. Defaults to Retrofit impl; overridden with mocks
+  /// in main_dev.dart.
   static final remoteDataSource = Provider<RemotePaymentDataSource>((ref) {
-    throw UnimplementedError('Must be overridden');
+    return RemotePaymentDataSourceImpl(
+      apiClient: ref.watch(PaymentProviders.apiClient),
+    );
   });
 
   /// Repository for payment operations.

@@ -1,12 +1,12 @@
-import 'package:authentication/data/models/login_response_model.dart';
+import 'package:authentication/data/models/login_response_dto.dart';
 
 /// Remote data source contract for authentication operations.
 abstract class RemoteAuthDataSource {
   /// Authenticates the user with the given [dni] and [password].
   ///
-  /// Returns a [LoginResponseModel] on success.
+  /// Returns a [LoginResponseDto] on success.
   /// Throws an exception on failure.
-  Future<LoginResponseModel> login(String dni, String password);
+  Future<LoginResponseDto> login(String dni, String password);
 
   /// Invalidates the session for the given [token].
   ///

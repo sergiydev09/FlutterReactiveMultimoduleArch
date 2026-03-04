@@ -15,8 +15,8 @@ class GlobalPositionRepositoryImpl implements GlobalPositionRepository {
   @override
   Future<Either<Failure, List<Account>>> getAccounts() async {
     try {
-      final accounts = await remoteDataSource.getAccounts();
-      return Right(accounts);
+      final models = await remoteDataSource.getAccounts();
+      return Right(models.map((m) => m.toEntity()).toList());
     } on DioException catch (e) {
       return Left(
         ServerFailure(
@@ -32,8 +32,8 @@ class GlobalPositionRepositoryImpl implements GlobalPositionRepository {
   @override
   Future<Either<Failure, List<Transaction>>> getRecentTransactions() async {
     try {
-      final transactions = await remoteDataSource.getRecentTransactions();
-      return Right(transactions);
+      final models = await remoteDataSource.getRecentTransactions();
+      return Right(models.map((m) => m.toEntity()).toList());
     } on DioException catch (e) {
       return Left(
         ServerFailure(

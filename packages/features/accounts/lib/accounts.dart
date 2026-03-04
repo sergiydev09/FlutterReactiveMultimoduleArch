@@ -1,9 +1,11 @@
 /// Accounts feature module.
 library;
 
+export 'data/datasources/accounts_api_client.dart';
 export 'data/datasources/remote_account_datasource.dart';
-export 'data/models/account_model.dart';
-export 'data/models/transaction_model.dart';
+export 'data/datasources/remote_account_datasource_impl.dart';
+export 'data/models/account_dto.dart';
+export 'data/models/transaction_dto.dart';
 export 'data/repositories/account_repository_impl.dart';
 export 'di/accounts_providers.dart';
 export 'domain/repositories/account_repository.dart';

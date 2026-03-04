@@ -2,6 +2,7 @@ import 'package:common/error/failures.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:payments/data/datasources/remote_payment_datasource.dart';
+import 'package:payments/data/models/payment_request_dto.dart';
 import 'package:payments/domain/entities/payment.dart';
 import 'package:payments/domain/repositories/payment_repository.dart';
 
@@ -14,8 +15,9 @@ class PaymentRepositoryImpl implements PaymentRepository {
   @override
   Future<Either<Failure, String>> executePayment(Payment payment) async {
     try {
-      final confirmationId = await remoteDataSource.executePayment(payment);
-      return Right(confirmationId);
+      final request = PaymentRequestDto.fromEntity(payment);
+      final response = await remoteDataSource.executePayment(request);
+      return Right(response.confirmationId);
     } on DioException catch (e) {
       return Left(
         ServerFailure(
