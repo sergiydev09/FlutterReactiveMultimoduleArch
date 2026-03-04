@@ -2,7 +2,6 @@ import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:payments/data/datasources/payments_api_client.dart';
 import 'package:payments/data/datasources/remote_payment_datasource.dart';
-import 'package:payments/data/datasources/remote_payment_datasource_impl.dart';
 import 'package:payments/data/repositories/payment_repository_impl.dart';
 import 'package:payments/domain/repositories/payment_repository.dart';
 
@@ -16,7 +15,7 @@ abstract final class PaymentProviders {
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks
   /// in main_dev.dart.
   static final remoteDataSource = Provider<RemotePaymentDataSource>((ref) {
-    return RemotePaymentDataSourceImpl(
+    return RemotePaymentDataSource(
       apiClient: ref.watch(PaymentProviders.apiClient),
     );
   });

@@ -2,7 +2,6 @@ import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:globalposition/data/datasources/globalposition_api_client.dart';
 import 'package:globalposition/data/datasources/remote_globalposition_datasource.dart';
-import 'package:globalposition/data/datasources/remote_globalposition_datasource_impl.dart';
 import 'package:globalposition/data/repositories/global_position_repository_impl.dart';
 import 'package:globalposition/domain/repositories/global_position_repository.dart';
 
@@ -17,7 +16,7 @@ abstract final class GlobalPositionProviders {
   /// in main_dev.dart.
   static final remoteDataSource =
       Provider<RemoteGlobalPositionDataSource>((ref) {
-    return RemoteGlobalPositionDataSourceImpl(
+    return RemoteGlobalPositionDataSource(
       apiClient: ref.watch(GlobalPositionProviders.apiClient),
     );
   });

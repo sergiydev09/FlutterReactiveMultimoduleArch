@@ -2,7 +2,6 @@ import 'package:common/di/common_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notifications_feature/data/datasources/notifications_api_client.dart';
 import 'package:notifications_feature/data/datasources/remote_notification_datasource.dart';
-import 'package:notifications_feature/data/datasources/remote_notification_datasource_impl.dart';
 import 'package:notifications_feature/data/repositories/notification_repository_impl.dart';
 import 'package:notifications_feature/domain/repositories/notification_repository.dart';
 
@@ -17,7 +16,7 @@ abstract final class NotificationProviders {
   /// in main_dev.dart.
   static final remoteDataSource =
       Provider<RemoteNotificationDataSource>((ref) {
-    return RemoteNotificationDataSourceImpl(
+    return RemoteNotificationDataSource(
       apiClient: ref.watch(NotificationProviders.apiClient),
     );
   });

@@ -3,7 +3,6 @@ library;
 
 export 'data/datasources/globalposition_api_client.dart';
 export 'data/datasources/remote_globalposition_datasource.dart';
-export 'data/datasources/remote_globalposition_datasource_impl.dart';
 export 'data/models/gp_account_dto.dart';
 export 'data/models/gp_transaction_dto.dart';
 export 'data/repositories/global_position_repository_impl.dart';

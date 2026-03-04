@@ -1,11 +1,17 @@
+import 'package:globalposition/data/datasources/globalposition_api_client.dart';
 import 'package:globalposition/data/models/gp_account_dto.dart';
 import 'package:globalposition/data/models/gp_transaction_dto.dart';
 
-/// Remote data source contract for global position data.
-abstract class RemoteGlobalPositionDataSource {
-  /// Fetches all accounts for the authenticated user.
-  Future<List<GpAccountDto>> getAccounts();
+/// Remote data source for global position data.
+class RemoteGlobalPositionDataSource {
+  const RemoteGlobalPositionDataSource(
+      {required GlobalPositionApiClient apiClient})
+      : _apiClient = apiClient;
 
-  /// Fetches recent transactions across all accounts.
-  Future<List<GpTransactionDto>> getRecentTransactions();
+  final GlobalPositionApiClient _apiClient;
+
+  Future<List<GpAccountDto>> getAccounts() => _apiClient.getAccounts();
+
+  Future<List<GpTransactionDto>> getRecentTransactions() =>
+      _apiClient.getRecentTransactions();
 }

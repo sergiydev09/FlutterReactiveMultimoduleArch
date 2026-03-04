@@ -3,7 +3,6 @@ library;
 
 export 'data/datasources/accounts_api_client.dart';
 export 'data/datasources/remote_account_datasource.dart';
-export 'data/datasources/remote_account_datasource_impl.dart';
 export 'data/models/account_dto.dart';
 export 'data/models/transaction_dto.dart';
 export 'data/repositories/account_repository_impl.dart';

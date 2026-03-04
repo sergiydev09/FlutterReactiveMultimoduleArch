@@ -1,6 +1,5 @@
 import 'package:authentication/data/datasources/auth_api_client.dart';
 import 'package:authentication/data/datasources/remote_auth_datasource.dart';
-import 'package:authentication/data/datasources/remote_auth_datasource_impl.dart';
 import 'package:authentication/data/repositories/auth_repository_impl.dart';
 import 'package:authentication/domain/repositories/auth_repository.dart';
 import 'package:common/di/common_providers.dart';
@@ -16,7 +15,7 @@ abstract final class AuthProviders {
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks
   /// in main_dev.dart.
   static final remoteDataSource = Provider<RemoteAuthDataSource>((ref) {
-    return RemoteAuthDataSourceImpl(
+    return RemoteAuthDataSource(
       apiClient: ref.watch(AuthProviders.apiClient),
     );
   });

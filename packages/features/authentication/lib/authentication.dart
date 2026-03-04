@@ -3,7 +3,6 @@ library;
 
 export 'data/datasources/auth_api_client.dart';
 export 'data/datasources/remote_auth_datasource.dart';
-export 'data/datasources/remote_auth_datasource_impl.dart';
 export 'data/models/auth_token_dto.dart';
 export 'data/models/login_response_dto.dart';
 export 'data/models/user_dto.dart';

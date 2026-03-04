@@ -1,15 +1,15 @@
+import 'package:authentication/data/datasources/auth_api_client.dart';
 import 'package:authentication/data/models/login_response_dto.dart';
 
-/// Remote data source contract for authentication operations.
-abstract class RemoteAuthDataSource {
-  /// Authenticates the user with the given [dni] and [password].
-  ///
-  /// Returns a [LoginResponseDto] on success.
-  /// Throws an exception on failure.
-  Future<LoginResponseDto> login(String dni, String password);
+/// Remote data source for authentication operations.
+class RemoteAuthDataSource {
+  const RemoteAuthDataSource({required AuthApiClient apiClient})
+      : _apiClient = apiClient;
 
-  /// Invalidates the session for the given [token].
-  ///
-  /// Throws an exception on failure.
-  Future<void> logout(String token);
+  final AuthApiClient _apiClient;
+
+  Future<LoginResponseDto> login(String dni, String password) =>
+      _apiClient.login({'dni': dni, 'password': password});
+
+  Future<void> logout(String token) => _apiClient.logout(token);
 }

@@ -3,7 +3,6 @@ library;
 
 export 'data/datasources/payments_api_client.dart';
 export 'data/datasources/remote_payment_datasource.dart';
-export 'data/datasources/remote_payment_datasource_impl.dart';
 export 'data/models/payment_request_dto.dart';
 export 'data/models/payment_response_dto.dart';
 export 'data/repositories/payment_repository_impl.dart';

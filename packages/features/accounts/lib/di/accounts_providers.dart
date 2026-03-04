@@ -1,6 +1,5 @@
 import 'package:accounts/data/datasources/accounts_api_client.dart';
 import 'package:accounts/data/datasources/remote_account_datasource.dart';
-import 'package:accounts/data/datasources/remote_account_datasource_impl.dart';
 import 'package:accounts/data/repositories/account_repository_impl.dart';
 import 'package:accounts/domain/repositories/account_repository.dart';
 import 'package:common/di/common_providers.dart';
@@ -16,7 +15,7 @@ abstract final class AccountProviders {
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks
   /// in main_dev.dart.
   static final remoteDataSource = Provider<RemoteAccountDataSource>((ref) {
-    return RemoteAccountDataSourceImpl(
+    return RemoteAccountDataSource(
       apiClient: ref.watch(AccountProviders.apiClient),
     );
   });

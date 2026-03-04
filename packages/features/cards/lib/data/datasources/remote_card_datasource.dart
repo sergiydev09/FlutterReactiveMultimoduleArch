@@ -1,14 +1,17 @@
+import 'package:cards/data/datasources/cards_api_client.dart';
 import 'package:cards/data/models/card_dto.dart';
 
-/// Remote data source contract for card operations.
-abstract class RemoteCardDataSource {
-  /// Fetches all cards.
-  Future<List<CardDto>> getCards();
+/// Remote data source for card operations.
+class RemoteCardDataSource {
+  const RemoteCardDataSource({required CardsApiClient apiClient})
+      : _apiClient = apiClient;
 
-  /// Fetches detail of a card by [id].
-  Future<CardDto> getCardDetail(String id);
+  final CardsApiClient _apiClient;
 
-  /// Toggles the status of a card by [id].
-  /// Returns the updated card.
-  Future<CardDto> toggleCardStatus(String id);
+  Future<List<CardDto>> getCards() => _apiClient.getCards();
+
+  Future<CardDto> getCardDetail(String id) => _apiClient.getCardDetail(id);
+
+  Future<CardDto> toggleCardStatus(String id) =>
+      _apiClient.toggleCardStatus(id);
 }
