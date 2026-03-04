@@ -9,7 +9,7 @@ import 'package:globalposition/domain/repositories/global_position_repository.da
 abstract final class GlobalPositionProviders {
   /// Retrofit API client.
   static final apiClient = Provider<GlobalPositionApiClient>((ref) {
-    return GlobalPositionApiClient(ref.watch(dioProvider));
+    return GlobalPositionApiClient(ref.watch(CommonProviders.dio));
   });
 
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks

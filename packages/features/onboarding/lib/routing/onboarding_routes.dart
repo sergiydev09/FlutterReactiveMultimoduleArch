@@ -21,7 +21,7 @@ abstract final class OnboardingRoutes {
             child: OnboardingPage(
               onComplete: () {
                 container
-                    .read(hasSeenOnboardingProvider.notifier)
+                    .read(SecurityProviders.hasSeenOnboarding.notifier)
                     .set(value: true);
               },
             ),

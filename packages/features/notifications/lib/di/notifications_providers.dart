@@ -9,7 +9,7 @@ import 'package:notifications_feature/domain/repositories/notification_repositor
 abstract final class NotificationProviders {
   /// Retrofit API client.
   static final apiClient = Provider<NotificationsApiClient>((ref) {
-    return NotificationsApiClient(ref.watch(dioProvider));
+    return NotificationsApiClient(ref.watch(CommonProviders.dio));
   });
 
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks

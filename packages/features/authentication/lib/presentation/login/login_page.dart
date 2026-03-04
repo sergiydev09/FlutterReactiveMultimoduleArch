@@ -14,6 +14,7 @@ class LoginPage extends StatefulWidget {
   const LoginPage({
     super.key,
     this.showEnvironmentSelector = false,
+    this.isBiometricEnabled = false,
     this.onForgotPassword,
     this.onLoginSuccess,
     this.onEnvironmentChanged,
@@ -21,6 +22,9 @@ class LoginPage extends StatefulWidget {
 
   /// Whether to show the environment selector (MOCK/PRE/PRO).
   final bool showEnvironmentSelector;
+
+  /// Whether to show the biometric login button.
+  final bool isBiometricEnabled;
 
   /// Callback when the user taps "Forgot password".
   final VoidCallback? onForgotPassword;
@@ -227,25 +231,27 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                     ),
-                    const SizedBox(height: 16),
-                    // Biometric login.
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        context.read<AuthBloc>().add(
-                          const BiometricLoginRequested(),
-                        );
-                      },
-                      icon: const Icon(Icons.fingerprint),
-                      label: const Text('Acceder con biometría'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: BankingColors.primary,
-                        side: const BorderSide(color: BankingColors.primary),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    if (widget.isBiometricEnabled) ...[
+                      const SizedBox(height: 16),
+                      // Biometric login.
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(
+                            const BiometricLoginRequested(),
+                          );
+                        },
+                        icon: const Icon(Icons.fingerprint),
+                        label: const Text('Acceder con biometría'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: BankingColors.primary,
+                          side: const BorderSide(color: BankingColors.primary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          minimumSize: const Size(double.infinity, 48),
                         ),
-                        minimumSize: const Size(double.infinity, 48),
                       ),
-                    ),
+                    ],
                     if (widget.showEnvironmentSelector) ...[
                       const SizedBox(height: 32),
                       EnvironmentSelector(

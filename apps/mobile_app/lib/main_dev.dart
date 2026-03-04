@@ -14,7 +14,7 @@ void main() async {
       overrides: [
         AuthRoutes.showEnvironmentSelector.overrideWithValue(true),
         AuthProviders.remoteDataSource.overrideWith((ref) {
-          final env = ref.watch(environmentProvider);
+          final env = ref.watch(CommonProviders.environment);
           return env == Environment.mock
               ? MockProviders.mockAuthDataSource
               : UnimplementedAuthDataSource();

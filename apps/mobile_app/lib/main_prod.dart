@@ -10,7 +10,7 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        environmentProvider.overrideWithBuild(
+        CommonProviders.environment.overrideWithBuild(
           (ref, notifier) => Environment.pro,
         ),
       ],

@@ -9,7 +9,7 @@ import 'package:payments/domain/repositories/payment_repository.dart';
 abstract final class PaymentProviders {
   /// Retrofit API client.
   static final apiClient = Provider<PaymentsApiClient>((ref) {
-    return PaymentsApiClient(ref.watch(dioProvider));
+    return PaymentsApiClient(ref.watch(CommonProviders.dio));
   });
 
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks

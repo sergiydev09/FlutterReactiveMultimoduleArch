@@ -1,4 +1,5 @@
 import 'package:authentication/domain/entities/login_credentials.dart';
+import 'package:authentication/domain/usecases/biometric_login_usecase.dart';
 import 'package:authentication/domain/usecases/login_usecase.dart';
 import 'package:authentication/domain/usecases/logout_usecase.dart';
 import 'package:common/usecases/usecase.dart';
@@ -15,8 +16,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required LoginUseCase loginUseCase,
     required LogoutUseCase logoutUseCase,
+    required BiometricLoginUseCase biometricLoginUseCase,
   }) : _loginUseCase = loginUseCase,
        _logoutUseCase = logoutUseCase,
+       _biometricLoginUseCase = biometricLoginUseCase,
        super(const AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
@@ -26,6 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   final LoginUseCase _loginUseCase;
   final LogoutUseCase _logoutUseCase;
+  final BiometricLoginUseCase _biometricLoginUseCase;
 
   Future<void> _onLoginRequested(
     LoginRequested event,
@@ -62,9 +66,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
-    // Biometric login would be handled here by verifying biometrics
-    // and then using stored credentials.
-    emit(const AuthError(message: 'Autenticación biométrica no disponible'));
+
+    final result = await _biometricLoginUseCase(const NoParams());
+
+    result.match(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) => emit(AuthAuthenticated(user: user)),
+    );
   }
 
   Future<void> _onCheckAuthStatus(

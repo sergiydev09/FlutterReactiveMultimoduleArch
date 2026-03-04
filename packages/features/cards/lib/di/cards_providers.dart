@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 abstract final class CardProviders {
   /// Retrofit API client.
   static final apiClient = Provider<CardsApiClient>((ref) {
-    return CardsApiClient(ref.watch(dioProvider));
+    return CardsApiClient(ref.watch(CommonProviders.dio));
   });
 
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks

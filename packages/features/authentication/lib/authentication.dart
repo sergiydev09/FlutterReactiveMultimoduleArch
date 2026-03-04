@@ -12,6 +12,7 @@ export 'domain/entities/auth_token.dart';
 export 'domain/entities/login_credentials.dart';
 export 'domain/entities/login_result.dart';
 export 'domain/repositories/auth_repository.dart';
+export 'domain/usecases/biometric_login_usecase.dart';
 export 'domain/usecases/login_usecase.dart';
 export 'domain/usecases/logout_usecase.dart';
 export 'presentation/forgot_password/forgot_password_page.dart';

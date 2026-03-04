@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,11 +21,25 @@ abstract final class SettingsRoutes {
         path: settings,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
+          final initialBiometricEnabled =
+              container.read(SecurityProviders.biometricEnabled).value ?? false;
+
           return BlocProvider(
-            create: (_) => SettingsBloc(),
+            create: (_) => SettingsBloc(
+              initialBiometricEnabled: initialBiometricEnabled,
+              onBiometricToggle: () {
+                unawaited(
+                  container
+                      .read(SecurityProviders.biometricEnabled.notifier)
+                      .toggle(),
+                );
+              },
+            ),
             child: SettingsPage(
               onLogout: () {
-                container.read(isLoggedInProvider.notifier).set(value: false);
+                container
+                    .read(SecurityProviders.isLoggedIn.notifier)
+                    .set(value: false);
               },
             ),
           );

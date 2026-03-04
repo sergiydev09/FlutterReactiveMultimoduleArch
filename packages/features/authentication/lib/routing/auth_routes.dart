@@ -7,6 +7,7 @@ import 'package:authentication/presentation/forgot_password/forgot_password_page
 import 'package:authentication/presentation/login/auth_bloc.dart';
 import 'package:authentication/presentation/login/login_page.dart';
 import 'package:common/common.dart';
+import 'package:domain/entities/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,19 +35,19 @@ abstract final class AuthRoutes {
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           return LoginBlocScope(
-            child: LoginPage(
-              showEnvironmentSelector: container.read(showEnvironmentSelector),
-              onEnvironmentChanged: (env) {
-                container.read(environmentProvider.notifier).set(env);
-              },
-              onLoginSuccess: (user) {
-                container.read(isLoggedInProvider.notifier).set(value: true);
-                container
-                    .read(currentUserNameProvider.notifier)
-                    .set(user.fullName);
-              },
-              onForgotPassword: () => context.go(forgotPassword),
-            ),
+            showEnvironmentSelector: container.read(showEnvironmentSelector),
+            onEnvironmentChanged: (env) {
+              container.read(CommonProviders.environment.notifier).set(env);
+            },
+            onLoginSuccess: (user) {
+              container
+                  .read(SecurityProviders.isLoggedIn.notifier)
+                  .set(value: true);
+              container
+                  .read(SecurityProviders.currentUserName.notifier)
+                  .set(user.fullName);
+            },
+            onForgotPassword: () => context.go(forgotPassword),
           );
         },
         routes: [
@@ -60,17 +61,27 @@ abstract final class AuthRoutes {
   );
 }
 
-/// Manages [AuthBloc] lifecycle reacting to environment changes.
+/// Manages [AuthBloc] lifecycle and builds [LoginPage] with reactive values.
+///
+/// Watches [SecurityProviders.biometricEnabled] so the biometric button
+/// appears as soon as the async provider loads — without requiring a
+/// navigation round-trip.
 ///
 /// When the environment switches, a new BLoC is created with the updated
 /// repository while keeping [LoginPage] (and its text fields) intact.
 class LoginBlocScope extends ConsumerStatefulWidget {
   const LoginBlocScope({
-    required this.child,
     super.key,
+    this.showEnvironmentSelector = false,
+    this.onForgotPassword,
+    this.onLoginSuccess,
+    this.onEnvironmentChanged,
   });
 
-  final Widget child;
+  final bool showEnvironmentSelector;
+  final VoidCallback? onForgotPassword;
+  final ValueChanged<User>? onLoginSuccess;
+  final ValueChanged<Environment>? onEnvironmentChanged;
 
   @override
   ConsumerState<LoginBlocScope> createState() => _LoginBlocScopeState();
@@ -90,6 +101,7 @@ class _LoginBlocScopeState extends ConsumerState<LoginBlocScope> {
     return AuthBloc(
       loginUseCase: LoginUseCase(repository: authRepo),
       logoutUseCase: LogoutUseCase(repository: authRepo),
+      biometricLoginUseCase: ref.read(AuthProviders.biometricLoginUseCase),
     );
   }
 
@@ -101,7 +113,7 @@ class _LoginBlocScopeState extends ConsumerState<LoginBlocScope> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(environmentProvider, (_, _) {
+    ref.listen(CommonProviders.environment, (_, _) {
       final oldBloc = _bloc;
       setState(() {
         _bloc = _createBloc();
@@ -109,6 +121,18 @@ class _LoginBlocScopeState extends ConsumerState<LoginBlocScope> {
       unawaited(oldBloc.close());
     });
 
-    return BlocProvider.value(value: _bloc, child: widget.child);
+    final isBiometricEnabled =
+        ref.watch(SecurityProviders.biometricEnabled).value ?? false;
+
+    return BlocProvider.value(
+      value: _bloc,
+      child: LoginPage(
+        showEnvironmentSelector: widget.showEnvironmentSelector,
+        isBiometricEnabled: isBiometricEnabled,
+        onForgotPassword: widget.onForgotPassword,
+        onLoginSuccess: widget.onLoginSuccess,
+        onEnvironmentChanged: widget.onEnvironmentChanged,
+      ),
+    );
   }
 }

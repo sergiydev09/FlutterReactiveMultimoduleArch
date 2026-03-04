@@ -16,6 +16,8 @@ export 'network/dio_exception_mapper.dart';
 export 'network/dio_factory.dart';
 export 'network/logging_interceptor.dart';
 export 'network/safe_api_call.dart';
+// Notifiers
+export 'notifiers/environment_notifier.dart';
 // Routing
 export 'routing/feature_routes.dart';
 // Use cases

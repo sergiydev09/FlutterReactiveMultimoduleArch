@@ -12,8 +12,8 @@ import 'package:payments/routing/payments_routes.dart';
 import 'package:settings_feature/routing/settings_routes.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final isLoggedIn = ref.watch(isLoggedInProvider);
-  final hasSeenOnboarding = ref.watch(hasSeenOnboardingProvider);
+  final isLoggedIn = ref.watch(SecurityProviders.isLoggedIn);
+  final hasSeenOnboarding = ref.watch(SecurityProviders.hasSeenOnboarding);
 
   return GoRouter(
     initialLocation: AuthRoutes.login,
@@ -47,9 +47,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state, child) {
           final container = ProviderScope.containerOf(context);
           return MainShell(
-            userName: container.read(currentUserNameProvider),
+            userName: container.read(SecurityProviders.currentUserName),
             onLogout: () {
-              container.read(isLoggedInProvider.notifier).set(value: false);
+              container
+                  .read(SecurityProviders.isLoggedIn.notifier)
+                  .set(value: false);
             },
             child: child,
           );

@@ -7,7 +7,7 @@ import 'package:promotions/data/datasources/remote_promotions_datasource.dart';
 abstract final class PromotionProviders {
   /// Retrofit API client.
   static final apiClient = Provider<PromotionsApiClient>((ref) {
-    return PromotionsApiClient(ref.watch(dioProvider));
+    return PromotionsApiClient(ref.watch(CommonProviders.dio));
   });
 
   /// Remote data source. Defaults to Retrofit impl; overridden with mocks

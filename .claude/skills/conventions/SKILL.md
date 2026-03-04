@@ -32,6 +32,11 @@ Claude DEBE aplicar estas reglas automáticamente al escribir o modificar códig
 - Repositories retornan `Future<Either<Failure, T>>` — NUNCA lanzan excepciones
 - En BLoC handlers usar `result.match()` para manejar Left/Right
 - Failure types: `ServerFailure`, `CacheFailure`, `AuthFailure`, `NetworkFailure`
+- **Usar SIEMPRE `.toLeft()` y `.toRight()`** en vez de `Left()` y `Right()` directamente
+  - ✅ `const AuthFailure(message: '...').toLeft()`
+  - ✅ `user.toRight()`
+  - ❌ `Left(AuthFailure(message: '...'))`
+  - ❌ `Right(user)`
 
 ## Riverpod
 

@@ -1,54 +1,51 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:security/biometric/biometric_service.dart';
+import 'package:security/notifiers/biometric_enabled_notifier.dart';
+import 'package:security/notifiers/current_user_name_notifier.dart';
+import 'package:security/notifiers/has_seen_onboarding_notifier.dart';
+import 'package:security/notifiers/is_logged_in_notifier.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:security/storage/secure_storage_service.dart';
 
-// -- Infrastructure --
+/// Riverpod providers for the security module.
+abstract final class SecurityProviders {
+  /// Secure key-value storage.
+  static final secureStorage = Provider<SecureStorageService>((ref) {
+    return SecureStorageService();
+  });
 
-final secureStorageProvider = Provider<SecureStorageService>((ref) {
-  return SecureStorageService();
-});
-
-final sessionManagerProvider = Provider<SessionManager>((ref) {
-  return SessionManager(secureStorage: ref.watch(secureStorageProvider));
-});
-
-// -- Session state --
-
-class IsLoggedInNotifier extends Notifier<bool> {
-  @override
-  bool build() => false;
-
-  // Method used to update state from outside the notifier.
-  // ignore: use_setters_to_change_properties
-  void set({required bool value}) => state = value;
-}
-
-class CurrentUserNameNotifier extends Notifier<String> {
-  @override
-  String build() => '';
-
-  // Method used to update state from outside the notifier.
-  // ignore: use_setters_to_change_properties
-  void set(String value) => state = value;
-}
-
-class HasSeenOnboardingNotifier extends Notifier<bool> {
-  @override
-  bool build() => true;
-
-  // Method used to update state from outside the notifier.
-  // ignore: use_setters_to_change_properties
-  void set({required bool value}) => state = value;
-}
-
-final isLoggedInProvider = NotifierProvider<IsLoggedInNotifier, bool>(
-  IsLoggedInNotifier.new,
-);
-final currentUserNameProvider =
-    NotifierProvider<CurrentUserNameNotifier, String>(
-      CurrentUserNameNotifier.new,
+  /// Session manager backed by [secureStorage].
+  static final sessionManager = Provider<SessionManager>((ref) {
+    return SessionManager(
+      secureStorage: ref.watch(SecurityProviders.secureStorage),
     );
-final hasSeenOnboardingProvider =
-    NotifierProvider<HasSeenOnboardingNotifier, bool>(
-      HasSeenOnboardingNotifier.new,
-    );
+  });
+
+  /// Biometric authentication service.
+  static final biometricService = Provider<BiometricService>((ref) {
+    return BiometricService();
+  });
+
+  /// User biometric login preference, persisted in [secureStorage].
+  static final biometricEnabled =
+      AsyncNotifierProvider<BiometricEnabledNotifier, bool>(
+    BiometricEnabledNotifier.new,
+  );
+
+  /// Whether the user is currently logged in.
+  static final isLoggedIn = NotifierProvider<IsLoggedInNotifier, bool>(
+    IsLoggedInNotifier.new,
+  );
+
+  /// Display name of the currently logged-in user.
+  static final currentUserName =
+      NotifierProvider<CurrentUserNameNotifier, String>(
+    CurrentUserNameNotifier.new,
+  );
+
+  /// Whether the user has completed the onboarding flow.
+  static final hasSeenOnboarding =
+      NotifierProvider<HasSeenOnboardingNotifier, bool>(
+    HasSeenOnboardingNotifier.new,
+  );
+}
