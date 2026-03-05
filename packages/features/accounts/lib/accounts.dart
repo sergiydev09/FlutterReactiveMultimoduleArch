@@ -17,5 +17,6 @@ export 'presentation/account_transactions/bloc/account_transactions_bloc.dart';
 export 'presentation/accounts_list/bloc/accounts_list_bloc.dart';
 export 'presentation/accounts_list/page/accounts_list_page.dart';
 export 'presentation/transaction_detail/page/transaction_detail_page.dart';
+export 'presentation/transaction_detail/page/transaction_web_detail_page.dart';
 export 'presentation/widgets/account_info_header.dart';
 export 'routing/accounts_routes.dart';

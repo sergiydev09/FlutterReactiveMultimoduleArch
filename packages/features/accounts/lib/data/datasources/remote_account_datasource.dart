@@ -28,4 +28,10 @@ class RemoteAccountDataSource {
         page: page,
         pageSize: pageSize,
       );
+
+  /// Returns the URL for the transaction detail WebView.
+  Future<String> getTransactionDetailUrl(String transactionId) async {
+    // In production, this would be built from the API base URL.
+    throw UnimplementedError('Not yet implemented for production');
+  }
 }

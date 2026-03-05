@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +26,11 @@ abstract final class GlobalPositionRoutes {
                 repository: gpRepo,
               ),
             )..add(const LoadGlobalPosition()),
-            child: const GlobalPositionPage(),
+            child: GlobalPositionPage(
+              onAccountTap: (accountId) {
+                unawaited(context.push('/accounts/$accountId'));
+              },
+            ),
           );
         },
       ),

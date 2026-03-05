@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle del movimiento</title>
+  <style>
+    :root {
+      --primary: #1A3A5C;
+      --primary-light: #2A5A8C;
+      --accent: #4CAF50;
+      --danger: #E53935;
+      --warning: #FF9800;
+      --grey: #9E9E9E;
+      --bg: #F5F5F5;
+      --card: #FFFFFF;
+      --text: #212121;
+      --text-secondary: #757575;
+      --divider: #E0E0E0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 32px 16px;
+      text-align: center;
+    }
+
+    .header .icon {
+      font-size: 32px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .header .amount {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .status-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-completed { background: rgba(76,175,80,0.2); color: var(--accent); }
+    .status-pending { background: rgba(255,152,0,0.2); color: var(--warning); }
+    .status-failed { background: rgba(229,57,53,0.2); color: var(--danger); }
+    .status-cancelled { background: rgba(158,158,158,0.2); color: var(--grey); }
+
+    .card {
+      background: var(--card);
+      margin: 16px;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--divider);
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 12px 0;
+    }
+
+    .row + .row { border-top: 1px solid var(--divider); }
+
+    .row .label {
+      color: var(--text-secondary);
+      font-size: 13px;
+      flex-shrink: 0;
+      width: 100px;
+    }
+
+    .row .value {
+      font-size: 14px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .session-info {
+      margin: 0 16px;
+      padding: 12px 16px;
+      background: var(--primary-light);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.9);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .session-info .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .actions {
+      margin: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn:active { opacity: 0.7; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: var(--danger);
+      border: 2px solid var(--danger);
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    #content { display: none; }
+  </style>
+</head>
+<body>
+
+<div id="loading" class="loading">Cargando detalle...</div>
+
+<div id="content">
+  <div class="header">
+    <div class="icon" id="txIcon"></div>
+    <div class="amount" id="txAmount"></div>
+    <span class="status-badge" id="txStatus"></span>
+  </div>
+
+  <div class="session-info">
+    <span class="dot"></span>
+    <span id="sessionText">Sesion activa</span>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <span class="label">Concepto</span>
+      <span class="value" id="txDescription"></span>
+    </div>
+    <div class="row">
+      <span class="label">Fecha</span>
+      <span class="value" id="txDate"></span>
+    </div>
+    <div class="row">
+      <span class="label">Categoria</span>
+      <span class="value" id="txCategory"></span>
+    </div>
+    <div class="row" id="merchantRow" style="display:none">
+      <span class="label">Comercio</span>
+      <span class="value" id="txMerchant"></span>
+    </div>
+    <div class="row">
+      <span class="label">Referencia</span>
+      <span class="value" id="txId"></span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="sendAction('share_receipt')">
+      Compartir recibo
+    </button>
+    <button class="btn btn-outline" onclick="sendAction('download_pdf')">
+      Descargar PDF
+    </button>
+    <button class="btn btn-danger-outline" onclick="sendAction('dispute')">
+      Disputar cargo
+    </button>
+  </div>
+</div>
+
+<script>
+  const statusLabels = {
+    completed: 'Completado',
+    pending: 'Pendiente',
+    failed: 'Fallido',
+    cancelled: 'Cancelado'
+  };
+
+  const categoryLabels = {
+    salary: 'Nomina',
+    transfer: 'Transferencia',
+    shopping: 'Compras',
+    food: 'Alimentacion',
+    transport: 'Transporte',
+    entertainment: 'Ocio',
+    bills: 'Facturas',
+    health: 'Salud',
+    atm: 'Cajero',
+    other: 'Otros'
+  };
+
+  function formatCurrency(amount, currency) {
+    const sign = amount >= 0 ? '+' : '';
+    const formatted = Math.abs(amount).toFixed(2).replace('.', ',');
+    const symbol = currency === 'EUR' ? ' EUR' : ' ' + currency;
+    return sign + formatted + symbol;
+  }
+
+  function formatDate(isoString) {
+    const d = new Date(isoString);
+    return d.toLocaleDateString('es-ES', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  // Called by Flutter via JS bridge
+  window.onFlutterData = function(jsonString) {
+    try {
+      const data = JSON.parse(jsonString);
+      renderTransaction(data.transaction);
+      renderSession(data.token);
+    } catch (e) {
+      console.error('Error parsing Flutter data:', e);
+    }
+  };
+
+  function renderTransaction(tx) {
+    document.getElementById('txIcon').textContent = tx.amount >= 0 ? '↓' : '↑';
+    document.getElementById('txAmount').textContent = formatCurrency(tx.amount, tx.currency);
+
+    const statusEl = document.getElementById('txStatus');
+    statusEl.textContent = statusLabels[tx.status] || tx.status;
+    statusEl.className = 'status-badge status-' + tx.status;
+
+    document.getElementById('txDescription').textContent = tx.description;
+    document.getElementById('txDate').textContent = formatDate(tx.createdAt);
+    document.getElementById('txCategory').textContent = categoryLabels[tx.category] || tx.category;
+    document.getElementById('txId').textContent = tx.id;
+
+    if (tx.merchant) {
+      document.getElementById('merchantRow').style.display = 'flex';
+      document.getElementById('txMerchant').textContent = tx.merchant;
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  }
+
+  function renderSession(token) {
+    const el = document.getElementById('sessionText');
+    if (token) {
+      const masked = token.substring(0, 8) + '...' + token.substring(token.length - 4);
+      el.textContent = 'Sesion activa — Token: ' + masked;
+    } else {
+      el.textContent = 'Sin sesion';
+      document.querySelector('.session-info .dot').style.background = '#E53935';
+    }
+  }
+
+  // Send actions back to Flutter
+  function sendAction(action) {
+    if (window.flutter_inappwebview) {
+      window.flutter_inappwebview.callHandler('FlutterBridge', {
+        action: action,
+        data: { timestamp: new Date().toISOString() }
+      });
+    }
+  }
+</script>
+
+</body>
+</html>

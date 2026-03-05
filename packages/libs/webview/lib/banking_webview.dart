@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import './js_bridge.dart';
 import './webview_config.dart';
 import './webview_event.dart';
 
 /// A configurable WebView widget for banking-related web content.
 ///
-/// Shows a loading indicator while the page loads and enforces
-/// domain restrictions via [WebViewConfig].
+/// Loads a remote [url] and optionally communicates with the page
+/// via a bidirectional [JsBridge].
+///
+/// When [initialData] is provided, its result is sent to the web page
+/// via the JS bridge once the page finishes loading.
 class BankingWebView extends StatefulWidget {
   const BankingWebView({
     required this.url,
     super.key,
-    this.isAuthenticated = false,
     this.config = const WebViewConfig(),
     this.onEvent,
+    this.initialData,
   });
 
   /// The URL to load.
   final String url;
-
-  /// Whether the user is currently authenticated.
-  final bool isAuthenticated;
 
   /// WebView configuration.
   final WebViewConfig config;
 
   /// Callback for WebView events.
   final void Function(WebViewEvent event)? onEvent;
+
+  /// Async function that provides initial data to send to the web page
+  /// via the JS bridge once the page loads.
+  final Future<Map<String, dynamic>> Function()? initialData;
 
   @override
   State<BankingWebView> createState() => _BankingWebViewState();
@@ -35,27 +40,50 @@ class BankingWebView extends StatefulWidget {
 class _BankingWebViewState extends State<BankingWebView> {
   bool _isLoading = true;
   double _progress = 0;
+  late final JsBridge? _bridge;
+
+  @override
+  void initState() {
+    super.initState();
+    _bridge = widget.onEvent != null
+        ? JsBridge(onEvent: widget.onEvent!)
+        : null;
+  }
+
+  void _onWebViewCreated(InAppWebViewController controller) {
+    _bridge?.register(controller);
+  }
+
+  Future<void> _onLoadStop(InAppWebViewController controller, WebUri? url) async {
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (widget.initialData != null && _bridge != null) {
+      final data = await widget.initialData!();
+      await _bridge.sendToWeb(controller, data);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         InAppWebView(
-          initialUrlRequest: URLRequest(
-            url: WebUri(widget.url),
-          ),
+          initialUrlRequest: URLRequest(url: WebUri(widget.url)),
           initialSettings: InAppWebViewSettings(
             javaScriptEnabled: widget.config.enableJavaScript,
             supportZoom: widget.config.enableZoom,
             userAgent: widget.config.userAgent,
             useShouldOverrideUrlLoading: true,
           ),
+          onWebViewCreated: _onWebViewCreated,
           shouldOverrideUrlLoading: (controller, navigationAction) async {
-            final url = navigationAction.request.url?.toString() ?? '';
-            if (!widget.config.isAllowedUrl(url)) {
+            final navUrl = navigationAction.request.url?.toString() ?? '';
+            if (!widget.config.isAllowedUrl(navUrl)) {
               return NavigationActionPolicy.CANCEL;
             }
-            widget.onEvent?.call(WebViewNavigateEvent(url: url));
+            widget.onEvent?.call(WebViewNavigateEvent(url: navUrl));
             return NavigationActionPolicy.ALLOW;
           },
           onLoadStart: (controller, url) {
@@ -63,11 +91,7 @@ class _BankingWebViewState extends State<BankingWebView> {
               _isLoading = true;
             });
           },
-          onLoadStop: (controller, url) {
-            setState(() {
-              _isLoading = false;
-            });
-          },
+          onLoadStop: _onLoadStop,
           onProgressChanged: (controller, progress) {
             setState(() {
               _progress = progress / 100;

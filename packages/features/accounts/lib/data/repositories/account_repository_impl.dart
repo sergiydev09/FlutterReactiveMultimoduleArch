@@ -37,4 +37,12 @@ class AccountRepositoryImpl implements AccountRepository {
             page: page,
             pageSize: pageSize,
           )).map((m) => m.toEntity()).toList());
+
+  @override
+  Future<Either<Failure, String>> getTransactionDetailUrl(
+    String transactionId,
+  ) =>
+      safeApiCall(
+        () => remoteDataSource.getTransactionDetailUrl(transactionId),
+      );
 }

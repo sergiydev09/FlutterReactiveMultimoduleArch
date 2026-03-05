@@ -21,4 +21,9 @@ abstract class AccountRepository {
     int page = 0,
     int pageSize = 20,
   });
+
+  /// Returns the URL for the transaction detail WebView.
+  Future<Either<Failure, String>> getTransactionDetailUrl(
+    String transactionId,
+  );
 }

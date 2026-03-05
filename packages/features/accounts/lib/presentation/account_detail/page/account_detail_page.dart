@@ -51,7 +51,7 @@ class AccountDetailPage extends StatelessWidget {
             AccountDetailLoaded(:final account) => CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  expandedHeight: 220,
+                  expandedHeight: 280,
                   pinned: true,
                   backgroundColor: BankingColors.primary,
                   foregroundColor: Colors.white,

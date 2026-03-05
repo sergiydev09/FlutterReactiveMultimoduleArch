@@ -59,4 +59,5 @@ dev_dependencies:
   very_good_analysis:
 
 flutter:
+  default-flavor: dev
   uses-material-design: true

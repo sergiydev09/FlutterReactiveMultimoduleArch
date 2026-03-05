@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:accounts/data/datasources/remote_account_datasource.dart';
 import 'package:accounts/data/models/account_dto.dart';
 import 'package:accounts/data/models/transaction_dto.dart';
 import 'package:flutter/services.dart';
+
 import '../config/mock_config.dart';
 import '../config/mock_delay.dart';
 
@@ -57,5 +59,18 @@ class MockAccountDataSource implements RemoteAccountDataSource {
     if (start >= allTransactions.length) return [];
     final end = (start + pageSize).clamp(0, allTransactions.length);
     return allTransactions.sublist(start, end);
+  }
+
+  String? _cachedDetailUrl;
+
+  @override
+  Future<String> getTransactionDetailUrl(String transactionId) async {
+    if (_cachedDetailUrl != null) return _cachedDetailUrl!;
+    final html = await rootBundle.loadString(
+      'packages/mock/assets/webviews/transaction_detail.html',
+    );
+    _cachedDetailUrl =
+        'data:text/html;base64,${base64Encode(utf8.encode(html))}';
+    return _cachedDetailUrl!;
   }
 }
