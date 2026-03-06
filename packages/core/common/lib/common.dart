@@ -4,6 +4,7 @@ library;
 // Configuration
 export 'config/environment.dart';
 export 'di/common_providers.dart';
+export 'localization/locale_change_notifier.dart';
 export 'error/failures.dart';
 export 'extensions/either_extensions.dart';
 export 'network/auth_interceptor.dart';

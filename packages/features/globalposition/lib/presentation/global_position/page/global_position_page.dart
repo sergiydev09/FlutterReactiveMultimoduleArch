@@ -1,4 +1,5 @@
 import 'package:common/utils/formatters.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:promotions/domain/promo_banner.dart';
@@ -93,7 +94,7 @@ class GlobalPositionPage extends StatelessWidget {
                 backgroundColor: BankingColors.primary,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Reintentar'),
+              child: Text('common.retry'.tr()),
             ),
           ],
         ),
@@ -128,11 +129,11 @@ class GlobalPositionPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             // Accounts section.
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Mis cuentas',
-                style: TextStyle(
+                'global_position.accounts_section'.tr(),
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: BankingColors.onBackgroundLight,
@@ -154,11 +155,11 @@ class GlobalPositionPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             // Recent transactions section.
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Últimos movimientos',
-                style: TextStyle(
+                'global_position.transactions_section'.tr(),
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: BankingColors.onBackgroundLight,
@@ -167,11 +168,11 @@ class GlobalPositionPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             if (state.transactions.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16),
+              Padding(
+                padding: const EdgeInsets.all(16),
                 child: Text(
-                  'No hay movimientos recientes',
-                  style: TextStyle(
+                  'global_position.no_transactions'.tr(),
+                  style: const TextStyle(
                     color: BankingColors.onBackgroundLightSecondary,
                   ),
                 ),
@@ -186,11 +187,11 @@ class GlobalPositionPage extends StatelessWidget {
             const SizedBox(height: 24),
             // Promotional carousel.
             if (promoBanners.isNotEmpty) ...[
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'Promociones',
-                  style: TextStyle(
+                  'global_position.promotions_section'.tr(),
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: BankingColors.onBackgroundLight,
@@ -243,7 +244,7 @@ class _TotalBalanceCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Saldo total',
+            'global_position.total_balance'.tr(),
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,

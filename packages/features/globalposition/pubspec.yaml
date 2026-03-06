@@ -14,6 +14,7 @@ dependencies:
   dio:
   domain:
     path: ../../core/domain
+  easy_localization:
   flutter:
     sdk: flutter
   flutter_bloc:

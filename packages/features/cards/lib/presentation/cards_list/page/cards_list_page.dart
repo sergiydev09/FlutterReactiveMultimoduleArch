@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -19,7 +20,7 @@ class CardsListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Mis tarjetas'),
+        title: Text('cards.list.title'.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -52,17 +53,17 @@ class CardsListPage extends StatelessWidget {
                       backgroundColor: BankingColors.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Reintentar'),
+                    child: Text('common.retry'.tr()),
                   ),
                 ],
               ),
             ),
             CardsListLoaded(:final cards) =>
               cards.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        'No tienes tarjetas',
-                        style: TextStyle(
+                        'cards.list.empty'.tr(),
+                        style: const TextStyle(
                           fontSize: 16,
                           color: BankingColors.onBackgroundLightSecondary,
                         ),

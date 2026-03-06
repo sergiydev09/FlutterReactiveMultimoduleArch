@@ -1,5 +1,8 @@
+import 'package:common/di/common_providers.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ui/tokens/colors.dart';
 import '../bloc/settings_bloc.dart';
 
@@ -22,7 +25,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Ajustes'),
+        title: Text('settings.title'.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -33,11 +36,13 @@ class SettingsPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
               // Appearance section.
-              const _SectionHeader(title: 'Apariencia'),
+              _SectionHeader(title: 'settings.section.appearance'.tr()),
               _SettingsTile(
                 icon: Icons.dark_mode_outlined,
-                title: 'Modo oscuro',
-                subtitle: state.isDarkMode ? 'Activado' : 'Desactivado',
+                title: 'settings.dark_mode.title'.tr(),
+                subtitle: state.isDarkMode
+                    ? 'settings.dark_mode.enabled'.tr()
+                    : 'settings.dark_mode.disabled'.tr(),
                 trailing: Switch.adaptive(
                   value: state.isDarkMode,
                   onChanged: (_) {
@@ -48,13 +53,13 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(indent: 56, height: 1),
               // Security section.
-              const _SectionHeader(title: 'Seguridad'),
+              _SectionHeader(title: 'settings.section.security'.tr()),
               _SettingsTile(
                 icon: Icons.fingerprint,
-                title: 'Autenticación biométrica',
+                title: 'settings.biometrics.title'.tr(),
                 subtitle: state.isBiometricsEnabled
-                    ? 'Activada'
-                    : 'Desactivada',
+                    ? 'settings.biometrics.enabled'.tr()
+                    : 'settings.biometrics.disabled'.tr(),
                 trailing: Switch.adaptive(
                   value: state.isBiometricsEnabled,
                   onChanged: (_) {
@@ -65,13 +70,13 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(indent: 56, height: 1),
               // Notifications section.
-              const _SectionHeader(title: 'Notificaciones'),
+              _SectionHeader(title: 'settings.section.notifications'.tr()),
               _SettingsTile(
                 icon: Icons.notifications_outlined,
-                title: 'Notificaciones push',
+                title: 'settings.push_notifications.title'.tr(),
                 subtitle: state.areNotificationsEnabled
-                    ? 'Activadas'
-                    : 'Desactivadas',
+                    ? 'settings.push_notifications.enabled'.tr()
+                    : 'settings.push_notifications.disabled'.tr(),
                 trailing: Switch.adaptive(
                   value: state.areNotificationsEnabled,
                   onChanged: (_) {
@@ -84,24 +89,22 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(indent: 56, height: 1),
               // General section.
-              const _SectionHeader(title: 'General'),
+              _SectionHeader(title: 'settings.section.general'.tr()),
               _SettingsTile(
                 icon: Icons.language,
-                title: 'Idioma',
-                subtitle: 'Español',
+                title: 'settings.language.title'.tr(),
+                subtitle: 'settings.language.value'.tr(),
                 trailing: const Icon(
                   Icons.chevron_right,
                   color: BankingColors.onBackgroundLightSecondary,
                 ),
-                onTap: () {
-                  // Language selection.
-                },
+                onTap: () => _showLanguagePicker(context),
               ),
               const Divider(indent: 56, height: 1),
               _SettingsTile(
                 icon: Icons.info_outline,
-                title: 'Acerca de',
-                subtitle: 'Versión 1.0.0',
+                title: 'settings.about.title'.tr(),
+                subtitle: 'settings.about.version'.tr(),
                 trailing: const Icon(
                   Icons.chevron_right,
                   color: BankingColors.onBackgroundLightSecondary,
@@ -119,7 +122,7 @@ class SettingsPage extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onLogout,
                     icon: const Icon(Icons.logout),
-                    label: const Text('Cerrar sesión'),
+                    label: Text('settings.logout'.tr()),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: BankingColors.error,
                       side: const BorderSide(color: BankingColors.error),
@@ -135,6 +138,113 @@ class SettingsPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  void _showLanguagePicker(BuildContext context) {
+    final currentLocale = context.locale;
+
+    Future<void> onLanguageSelected(Locale locale, BuildContext sheetContext) async {
+      if (locale.languageCode == currentLocale.languageCode) {
+        Navigator.of(sheetContext).pop();
+        return;
+      }
+      Navigator.of(sheetContext).pop();
+      await context.setLocale(locale);
+      if (context.mounted) {
+        ProviderScope.containerOf(context)
+            .read(CommonProviders.localeChangeNotifier.notifier)
+            .rebuild();
+      }
+    }
+
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                _LanguageOption(
+                  flag: '🇪🇸',
+                  label: 'Español',
+                  locale: const Locale('es'),
+                  isSelected: currentLocale.languageCode == 'es',
+                  onTap: () =>
+                      onLanguageSelected(const Locale('es'), sheetContext),
+                ),
+                _LanguageOption(
+                  flag: '🇬🇧',
+                  label: 'English',
+                  locale: const Locale('en'),
+                  isSelected: currentLocale.languageCode == 'en',
+                  onTap: () =>
+                      onLanguageSelected(const Locale('en'), sheetContext),
+                ),
+                _LanguageOption(
+                  flag: '🇵🇹',
+                  label: 'Português',
+                  locale: const Locale('pt'),
+                  isSelected: currentLocale.languageCode == 'pt',
+                  onTap: () =>
+                      onLanguageSelected(const Locale('pt'), sheetContext),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LanguageOption extends StatelessWidget {
+  const _LanguageOption({
+    required this.flag,
+    required this.label,
+    required this.locale,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String flag;
+  final String label;
+  final Locale locale;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: onTap,
+      leading: Text(flag, style: const TextStyle(fontSize: 28)),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          color: isSelected
+              ? BankingColors.primary
+              : BankingColors.onBackgroundLight,
+        ),
+      ),
+      trailing: isSelected
+          ? const Icon(Icons.check, color: BankingColors.primary)
+          : null,
     );
   }
 }

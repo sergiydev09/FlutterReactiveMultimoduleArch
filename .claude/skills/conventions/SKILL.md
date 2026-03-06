@@ -13,7 +13,7 @@ Claude DEBE aplicar estas reglas automáticamente al escribir o modificar códig
 - Cada feature es un paquete Dart independiente en `packages/features/`
 - Cada feature sigue Clean Architecture: `presentation/` → `domain/` → `data/`
 - **Presentation organizada por pantalla**: `presentation/<screen_name>/` contiene page + bloc + event + state juntos
-- Widgets propios de una pantalla van en `presentation/<screen_name>/widgets/`
+- Widgets propios de una pantalla van en `presentation/<screen_name>/page/widgets/`
 - Widgets compartidos entre varias pantallas del feature van en `presentation/widgets/`
 - Las features NUNCA importan otras features
 - Comunicación entre features SOLO vía go_router (`context.go()`, `context.push()`)

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
 
@@ -33,7 +34,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Recuperar contraseña'),
+        title: Text('forgot_password.title'.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -55,7 +56,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         children: [
           const SizedBox(height: 16),
           Text(
-            '¿Olvidaste tu contraseña?',
+            'forgot_password.headline'.tr(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: BankingColors.onBackgroundLight,
@@ -63,7 +64,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Introduce tu DNI y te enviaremos instrucciones para restablecer tu contraseña.',
+            'forgot_password.description'.tr(),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: BankingColors.onBackgroundLightSecondary,
             ),
@@ -75,7 +76,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _onSubmit(),
             decoration: InputDecoration(
-              labelText: 'DNI / NIF',
+              labelText: 'login.dni_label'.tr(),
               prefixIcon: const Icon(Icons.person_outline),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -85,7 +86,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'Introduce tu DNI';
+                return 'login.dni_required'.tr();
               }
               return null;
             },
@@ -103,9 +104,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Enviar instrucciones',
-                style: TextStyle(
+              child: Text(
+                'forgot_password.submit'.tr(),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -136,14 +137,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
         const SizedBox(height: 24),
         Text(
-          'Instrucciones enviadas',
+          'forgot_password.success_title'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 12),
         Text(
-          'Si el DNI introducido existe en nuestro sistema, recibirás un correo con instrucciones para restablecer tu contraseña.',
+          'forgot_password.success_message'.tr(),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: BankingColors.onBackgroundLightSecondary,
@@ -162,7 +163,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('Volver al inicio'),
+            child: Text('forgot_password.back'.tr()),
           ),
         ),
       ],

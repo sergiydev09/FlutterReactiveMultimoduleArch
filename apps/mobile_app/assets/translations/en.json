@@ -1,0 +1,259 @@
+{
+  "app_name": "BankApp",
+
+  "common": {
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "go_home": "Back to home",
+    "logout": "Log out"
+  },
+
+  "login": {
+    "subtitle": "Access your digital banking",
+    "dni_label": "ID / NIF",
+    "dni_required": "Enter your ID",
+    "password_label": "Password",
+    "password_required": "Enter your password",
+    "forgot_password": "Forgot your password?",
+    "submit": "Log in",
+    "biometric": "Log in with biometrics"
+  },
+
+  "forgot_password": {
+    "title": "Recover password",
+    "headline": "Forgot your password?",
+    "description": "Enter your ID and we will send you instructions to reset your password.",
+    "submit": "Send instructions",
+    "success_title": "Instructions sent",
+    "success_message": "If the ID entered exists in our system, you will receive an email with instructions to reset your password.",
+    "back": "Back to login"
+  },
+
+  "environment_selector": {
+    "label": "Environment"
+  },
+
+  "nav": {
+    "home": "Home",
+    "payments": "Payments",
+    "notifications": "Alerts"
+  },
+
+  "shell": {
+    "default_user": "User",
+    "default_email": "customer@bankapp.com",
+    "drawer": {
+      "accounts": "Accounts",
+      "cards": "Cards",
+      "settings": "Settings",
+      "investments": "Investments",
+      "insurance": "Insurance",
+      "loans": "Loans",
+      "offers": "Offers",
+      "coming_soon": "Coming soon"
+    }
+  },
+
+  "global_position": {
+    "total_balance": "Total balance",
+    "accounts_section": "My accounts",
+    "transactions_section": "Recent transactions",
+    "no_transactions": "No recent transactions",
+    "promotions_section": "Promotions"
+  },
+
+  "quick_actions": {
+    "transfer": "Transfer",
+    "pay": "Pay",
+    "bizum": "Bizum",
+    "cards": "Cards"
+  },
+
+  "accounts": {
+    "list": {
+      "title": "My accounts"
+    },
+    "detail": {
+      "transactions_section": "Transactions"
+    },
+    "balance": {
+      "available": "Available balance"
+    },
+    "badge": {
+      "main": "Main"
+    },
+    "type": {
+      "current": "Current Account",
+      "savings": "Savings Account",
+      "investment": "Investment"
+    }
+  },
+
+  "transactions": {
+    "detail": {
+      "title": "Transaction detail",
+      "concept": "Concept",
+      "date": "Date",
+      "category": "Category",
+      "merchant": "Merchant",
+      "reference": "Reference"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "category": {
+      "salary": "Salary",
+      "transfer": "Transfer",
+      "shopping": "Shopping",
+      "food": "Food",
+      "transport": "Transport",
+      "entertainment": "Entertainment",
+      "bills": "Bills",
+      "health": "Health",
+      "atm": "ATM",
+      "other": "Other"
+    }
+  },
+
+  "cards": {
+    "list": {
+      "title": "My cards",
+      "empty": "You have no cards"
+    },
+    "detail": {
+      "title": "Card detail",
+      "type": "Type",
+      "number": "Number",
+      "holder": "Holder",
+      "expiry": "Expiry",
+      "status": "Status",
+      "available_limit": "Available limit",
+      "credit": "Credit Card",
+      "debit": "Debit Card",
+      "active": "Active",
+      "blocked": "Blocked",
+      "block_action": "Block card",
+      "unblock_action": "Unblock card",
+      "change_pin": "Change PIN"
+    }
+  },
+
+  "notifications": {
+    "empty": "You have no notifications"
+  },
+
+  "payments": {
+    "new": {
+      "source_account": "Source account",
+      "iban": "Destination IBAN",
+      "amount": "Amount",
+      "concept": "Concept",
+      "concept_hint": "E.g.: March rent",
+      "account_required": "Select an account",
+      "iban_required": "Enter the destination IBAN",
+      "iban_invalid": "IBAN is not valid",
+      "amount_required": "Enter the amount",
+      "amount_invalid": "Amount must be greater than 0",
+      "concept_required": "Enter a concept",
+      "submit": "Continue"
+    },
+    "confirm": {
+      "title": "Confirm transfer",
+      "amount_label": "Amount",
+      "source_account": "Source account",
+      "iban": "Destination IBAN",
+      "concept": "Concept",
+      "submit": "Confirm transfer",
+      "cancel": "Cancel"
+    },
+    "result": {
+      "success_title": "Transfer completed",
+      "error_title": "Transfer error",
+      "success_message": "Your transfer has been processed successfully.",
+      "error_message": "An error occurred. Please try again.",
+      "reference_label": "Reference: ",
+      "go_home": "Back to home",
+      "retry": "Retry",
+      "cancel": "Cancel"
+    }
+  },
+
+  "settings": {
+    "title": "Settings",
+    "section": {
+      "appearance": "Appearance",
+      "security": "Security",
+      "notifications": "Notifications",
+      "general": "General"
+    },
+    "dark_mode": {
+      "title": "Dark mode",
+      "enabled": "On",
+      "disabled": "Off"
+    },
+    "biometrics": {
+      "title": "Biometric authentication",
+      "enabled": "On",
+      "disabled": "Off"
+    },
+    "push_notifications": {
+      "title": "Push notifications",
+      "enabled": "On",
+      "disabled": "Off"
+    },
+    "language": {
+      "title": "Language",
+      "value": "English",
+      "change_dialog": {
+        "title": "Change language",
+        "message": "To apply the language change you will need to log out. Do you want to continue?"
+      }
+    },
+    "about": {
+      "title": "About",
+      "version": "Version 1.0.0"
+    },
+    "logout": "Log out"
+  },
+
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get started",
+    "slide1": {
+      "title": "Welcome to BankApp",
+      "description": "Your bank, always with you. Manage your finances simply and securely from anywhere."
+    },
+    "slide2": {
+      "title": "Your accounts at a glance",
+      "description": "Check your balances, transactions and cards on a single screen. Everything you need, instantly."
+    },
+    "slide3": {
+      "title": "Secure payments",
+      "description": "Make transfers and payments with the highest security. We protect your transactions with the latest technology."
+    }
+  },
+
+  "otp": {
+    "title": "Security verification",
+    "description": "We have sent a {length}-digit code via {delivery}",
+    "timer": "Code valid for {time}",
+    "delivery": {
+      "sms": "SMS",
+      "email": "email",
+      "push": "push notification"
+    },
+    "validation": {
+      "incomplete": "Enter the complete code",
+      "incorrect": "Incorrect code. Please try again."
+    },
+    "verify": "Verify",
+    "cancel": "Cancel"
+  }
+}

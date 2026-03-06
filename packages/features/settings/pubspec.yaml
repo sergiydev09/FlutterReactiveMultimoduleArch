@@ -10,6 +10,7 @@ resolution: workspace
 dependencies:
   common:
     path: ../../core/common
+  easy_localization:
   flutter:
     sdk: flutter
   flutter_bloc:

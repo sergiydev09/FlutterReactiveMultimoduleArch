@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ui/tokens/colors.dart';
@@ -97,7 +98,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
     final code = _enteredCode;
     if (code.length != widget.config.length) {
       setState(() {
-        _errorMessage = 'Introduce el código completo';
+        _errorMessage = 'otp.validation.incomplete'.tr();
       });
       return;
     }
@@ -118,7 +119,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
     } else {
       setState(() {
         _isVerifying = false;
-        _errorMessage = 'Código incorrecto. Inténtalo de nuevo.';
+        _errorMessage = 'otp.validation.incorrect'.tr();
       });
     }
   }
@@ -139,14 +140,16 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
     super.dispose();
   }
 
+  String _deliveryLabel() {
+    return switch (widget.config.deliveryType) {
+      OtpDeliveryType.sms => 'otp.delivery.sms'.tr(),
+      OtpDeliveryType.email => 'otp.delivery.email'.tr(),
+      OtpDeliveryType.push => 'otp.delivery.push'.tr(),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    final deliveryLabel = switch (widget.config.deliveryType) {
-      OtpDeliveryType.sms => 'SMS',
-      OtpDeliveryType.email => 'correo electrónico',
-      OtpDeliveryType.push => 'notificación push',
-    };
-
     return Padding(
       padding: EdgeInsets.only(
         left: 24,
@@ -173,14 +176,19 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Verificación de seguridad',
+            'otp.title'.tr(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Hemos enviado un código de ${widget.config.length} dígitos por $deliveryLabel',
+            'otp.description'.tr(
+              namedArgs: {
+                'length': widget.config.length.toString(),
+                'delivery': _deliveryLabel(),
+              },
+            ),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.grey.shade600,
@@ -232,7 +240,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           const SizedBox(height: 16),
           // Timer.
           Text(
-            'Código válido durante $_formattedTime',
+            'otp.timer'.tr(namedArgs: {'time': _formattedTime}),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: _remainingSeconds < 30
                   ? BankingColors.error
@@ -274,9 +282,9 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
-                  : const Text(
-                      'Verificar',
-                      style: TextStyle(
+                  : Text(
+                      'otp.verify'.tr(),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -287,7 +295,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           TextButton(
             onPressed: _cancel,
             child: Text(
-              'Cancelar',
+              'otp.cancel'.tr(),
               style: TextStyle(
                 color: Colors.grey.shade600,
                 fontSize: 14,

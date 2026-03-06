@@ -1,4 +1,5 @@
 import 'package:domain/entities/card_entity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -20,7 +21,7 @@ class CardDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Detalle de tarjeta'),
+        title: Text('cards.detail.title'.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -53,30 +54,32 @@ class CardDetailPage extends StatelessWidget {
                   child: Column(
                     children: [
                       _InfoRow(
-                        label: 'Tipo',
+                        label: 'cards.detail.type'.tr(),
                         value: currentCard.isCredit
-                            ? 'Tarjeta de Crédito'
-                            : 'Tarjeta de Débito',
+                            ? 'cards.detail.credit'.tr()
+                            : 'cards.detail.debit'.tr(),
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'Número',
+                        label: 'cards.detail.number'.tr(),
                         value: currentCard.maskedNumber,
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'Titular',
+                        label: 'cards.detail.holder'.tr(),
                         value: currentCard.cardHolderName,
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'Caducidad',
+                        label: 'cards.detail.expiry'.tr(),
                         value: currentCard.expiryDate,
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'Estado',
-                        value: currentCard.isActive ? 'Activa' : 'Bloqueada',
+                        label: 'cards.detail.status'.tr(),
+                        value: currentCard.isActive
+                            ? 'cards.detail.active'.tr()
+                            : 'cards.detail.blocked'.tr(),
                         valueColor: currentCard.isActive
                             ? BankingColors.success
                             : BankingColors.error,
@@ -84,7 +87,7 @@ class CardDetailPage extends StatelessWidget {
                       if (currentCard.availableLimit != null) ...[
                         const Divider(height: 24),
                         _InfoRow(
-                          label: 'Límite disponible',
+                          label: 'cards.detail.available_limit'.tr(),
                           value:
                               '${currentCard.availableLimit!.toStringAsFixed(2)} EUR',
                         ),
@@ -114,8 +117,8 @@ class CardDetailPage extends StatelessWidget {
                           ),
                           label: Text(
                             currentCard.isActive
-                                ? 'Bloquear tarjeta'
-                                : 'Desbloquear tarjeta',
+                                ? 'cards.detail.block_action'.tr()
+                                : 'cards.detail.unblock_action'.tr(),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: currentCard.isActive
@@ -137,7 +140,7 @@ class CardDetailPage extends StatelessWidget {
                             // PIN change action.
                           },
                           icon: const Icon(Icons.pin_outlined),
-                          label: const Text('Cambiar PIN'),
+                          label: Text('cards.detail.change_pin'.tr()),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: BankingColors.primary,
                             side: const BorderSide(

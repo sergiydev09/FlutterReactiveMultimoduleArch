@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,7 +71,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
           children: [
             // Source account dropdown.
             Text(
-              'Cuenta de origen',
+              'payments.new.source_account'.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -104,7 +105,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Selecciona una cuenta';
+                  return 'payments.new.account_required'.tr();
                 }
                 return null;
               },
@@ -112,7 +113,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             const SizedBox(height: 20),
             // IBAN field.
             Text(
-              'IBAN destino',
+              'payments.new.iban'.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -132,10 +133,10 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Introduce el IBAN de destino';
+                  return 'payments.new.iban_required'.tr();
                 }
                 if (value.trim().replaceAll(' ', '').length < 16) {
-                  return 'El IBAN no es válido';
+                  return 'payments.new.iban_invalid'.tr();
                 }
                 return null;
               },
@@ -143,7 +144,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             const SizedBox(height: 20),
             // Amount field.
             Text(
-              'Importe',
+              'payments.new.amount'.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -169,11 +170,11 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Introduce el importe';
+                  return 'payments.new.amount_required'.tr();
                 }
                 final amount = double.tryParse(value.replaceAll(',', '.'));
                 if (amount == null || amount <= 0) {
-                  return 'El importe debe ser mayor que 0';
+                  return 'payments.new.amount_invalid'.tr();
                 }
                 return null;
               },
@@ -181,7 +182,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             const SizedBox(height: 20),
             // Concept field.
             Text(
-              'Concepto',
+              'payments.new.concept'.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -191,7 +192,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               controller: _conceptController,
               maxLength: 140,
               decoration: InputDecoration(
-                hintText: 'Ej: Alquiler mes de marzo',
+                hintText: 'payments.new.concept_hint'.tr(),
                 prefixIcon: const Icon(Icons.description_outlined),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -201,7 +202,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Introduce un concepto';
+                  return 'payments.new.concept_required'.tr();
                 }
                 return null;
               },
@@ -221,9 +222,9 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
                   ),
                   elevation: 2,
                 ),
-                child: const Text(
-                  'Continuar',
-                  style: TextStyle(
+                child: Text(
+                  'payments.new.submit'.tr(),
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),

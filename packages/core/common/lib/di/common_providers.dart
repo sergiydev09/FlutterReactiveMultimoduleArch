@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/environment.dart';
+import '../localization/locale_change_notifier.dart';
 import '../network/dio_factory.dart';
 import '../notifiers/environment_notifier.dart';
 
@@ -10,6 +11,13 @@ abstract final class CommonProviders {
   static final environment = NotifierProvider<EnvironmentNotifier, Environment>(
     EnvironmentNotifier.new,
   );
+
+  /// Trigger a full-app locale rebuild by calling
+  /// `ref.read(CommonProviders.localeChangeNotifier.notifier).rebuild()`.
+  /// Watching this in [routerProvider] causes a new [GoRouter] to be created,
+  /// which forces [BankingApp] to rebuild the entire widget tree.
+  static final localeChangeNotifier =
+      NotifierProvider<LocaleChangeNotifier, int>(LocaleChangeNotifier.new);
 
   /// Shared Dio instance. Auto-configured from [environment].
   static final dio = Provider<Dio>((ref) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:accounts/routing/accounts_routes.dart';
 import 'package:cards/routing/cards_routes.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:globalposition/routing/globalposition_routes.dart';
 import 'package:go_router/go_router.dart';
@@ -29,11 +30,15 @@ class MainShell extends StatelessWidget {
     return 0;
   }
 
-  String _titleForLocation(String location) {
-    if (location.startsWith(GlobalPositionRoutes.home)) return 'Inicio';
-    if (location.startsWith(PaymentRoutes.base)) return 'Pagos';
-    if (location.startsWith(NotificationRoutes.notifications)) return 'Avisos';
-    return 'BankApp';
+  String _titleForLocation(BuildContext context, String location) {
+    if (location.startsWith(GlobalPositionRoutes.home)) {
+      return 'nav.home'.tr();
+    }
+    if (location.startsWith(PaymentRoutes.base)) return 'nav.payments'.tr();
+    if (location.startsWith(NotificationRoutes.notifications)) {
+      return 'nav.notifications'.tr();
+    }
+    return 'app_name'.tr();
   }
 
   String _initials(String name) {
@@ -52,7 +57,7 @@ class MainShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text(_titleForLocation(location)),
+        title: Text(_titleForLocation(context, location)),
         actions: [
           if (location.startsWith(GlobalPositionRoutes.home))
             IconButton(
@@ -80,14 +85,14 @@ class MainShell extends StatelessWidget {
                 ),
               ),
               accountName: Text(
-                userName.isNotEmpty ? userName : 'Usuario',
+                userName.isNotEmpty ? userName : 'shell.default_user'.tr(),
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              accountEmail: const Text('cliente@bankapp.es'),
+              accountEmail: Text('shell.default_email'.tr()),
             ),
             ListTile(
               leading: const Icon(Icons.account_balance_outlined),
-              title: const Text('Cuentas'),
+              title: Text('shell.drawer.accounts'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 unawaited(context.push(AccountRoutes.accounts));
@@ -95,7 +100,7 @@ class MainShell extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.credit_card_outlined),
-              title: const Text('Tarjetas'),
+              title: Text('shell.drawer.cards'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 unawaited(context.push(CardRoutes.cards));
@@ -103,46 +108,58 @@ class MainShell extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.settings_outlined),
-              title: const Text('Ajustes'),
+              title: Text('shell.drawer.settings'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 unawaited(context.push(SettingsRoutes.settings));
               },
             ),
             const Divider(),
-            const ListTile(
-              leading: Icon(Icons.trending_up_outlined, color: Colors.grey),
-              title: Text('Inversiones', style: TextStyle(color: Colors.grey)),
+            ListTile(
+              leading: const Icon(Icons.trending_up_outlined, color: Colors.grey),
+              title: Text(
+                'shell.drawer.investments'.tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
               subtitle: Text(
-                'Proximamente',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                'shell.drawer.coming_soon'.tr(),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
             ),
-            const ListTile(
-              leading: Icon(Icons.shield_outlined, color: Colors.grey),
-              title: Text('Seguros', style: TextStyle(color: Colors.grey)),
+            ListTile(
+              leading: const Icon(Icons.shield_outlined, color: Colors.grey),
+              title: Text(
+                'shell.drawer.insurance'.tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
               subtitle: Text(
-                'Proximamente',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                'shell.drawer.coming_soon'.tr(),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
             ),
-            const ListTile(
-              leading: Icon(Icons.request_quote_outlined, color: Colors.grey),
-              title: Text('Prestamos', style: TextStyle(color: Colors.grey)),
+            ListTile(
+              leading: const Icon(Icons.request_quote_outlined, color: Colors.grey),
+              title: Text(
+                'shell.drawer.loans'.tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
               subtitle: Text(
-                'Proximamente',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                'shell.drawer.coming_soon'.tr(),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
             ),
-            const ListTile(
-              leading: Icon(Icons.local_offer_outlined, color: Colors.grey),
-              title: Text('Ofertas', style: TextStyle(color: Colors.grey)),
+            ListTile(
+              leading: const Icon(Icons.local_offer_outlined, color: Colors.grey),
+              title: Text(
+                'shell.drawer.offers'.tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
               subtitle: Text(
-                'Proximamente',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                'shell.drawer.coming_soon'.tr(),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
             ),
@@ -159,7 +176,7 @@ class MainShell extends StatelessWidget {
                         }
                       : null,
                   icon: const Icon(Icons.logout),
-                  label: const Text('Cerrar sesion'),
+                  label: Text('common.logout'.tr()),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: BankingColors.error,
                     side: const BorderSide(color: BankingColors.error),
@@ -187,21 +204,21 @@ class MainShell extends StatelessWidget {
               context.go(NotificationRoutes.notifications);
           }
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Inicio',
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home),
+            label: 'nav.home'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.swap_horiz_outlined),
-            selectedIcon: Icon(Icons.swap_horiz),
-            label: 'Pagos',
+            icon: const Icon(Icons.swap_horiz_outlined),
+            selectedIcon: const Icon(Icons.swap_horiz),
+            label: 'nav.payments'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications_outlined),
-            selectedIcon: Icon(Icons.notifications),
-            label: 'Avisos',
+            icon: const Icon(Icons.notifications_outlined),
+            selectedIcon: const Icon(Icons.notifications),
+            label: 'nav.notifications'.tr(),
           ),
         ],
       ),

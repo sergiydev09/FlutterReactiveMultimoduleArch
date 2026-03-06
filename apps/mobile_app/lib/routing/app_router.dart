@@ -14,6 +14,7 @@ import './main_shell.dart';
 final routerProvider = Provider<GoRouter>((ref) {
   final isLoggedIn = ref.watch(SecurityProviders.isLoggedIn);
   final hasSeenOnboarding = ref.watch(SecurityProviders.hasSeenOnboarding);
+  ref.watch(CommonProviders.localeChangeNotifier);
 
   return GoRouter(
     initialLocation: AuthRoutes.login,

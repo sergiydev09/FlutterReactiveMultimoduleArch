@@ -1,5 +1,6 @@
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/account.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
 
@@ -63,9 +64,9 @@ class AccountInfoHeader extends StatelessWidget {
                     color: BankingColors.accent.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
-                    'Principal',
-                    style: TextStyle(
+                  child: Text(
+                    'accounts.badge.main'.tr(),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -94,9 +95,9 @@ class AccountInfoHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Saldo disponible',
-            style: TextStyle(
+          Text(
+            'accounts.balance.available'.tr(),
+            style: const TextStyle(
               color: Colors.white70,
               fontSize: 13,
             ),
@@ -121,9 +122,9 @@ class AccountInfoHeader extends StatelessWidget {
 
   String _accountTypeLabel(AccountType type) {
     return switch (type) {
-      AccountType.current => 'Cuenta Corriente',
-      AccountType.savings => 'Cuenta Ahorro',
-      AccountType.investment => 'Inversión',
+      AccountType.current => 'accounts.type.current'.tr(),
+      AccountType.savings => 'accounts.type.savings'.tr(),
+      AccountType.investment => 'accounts.type.investment'.tr(),
     };
   }
 }

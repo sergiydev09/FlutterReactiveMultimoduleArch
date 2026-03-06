@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -24,29 +25,26 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageController = PageController();
 
-  static const _slides = [
-    _SlideData(
-      icon: Icons.account_balance,
-      title: 'Bienvenido a BankApp',
-      description:
-          'Tu banco siempre contigo. Gestiona tus finanzas de forma sencilla y segura desde cualquier lugar.',
-      color: BankingColors.primary,
-    ),
-    _SlideData(
-      icon: Icons.dashboard_outlined,
-      title: 'Tus cuentas, un vistazo',
-      description:
-          'Consulta tus saldos, movimientos y tarjetas en una sola pantalla. Todo lo que necesitas, al instante.',
-      color: BankingColors.primaryLight,
-    ),
-    _SlideData(
-      icon: Icons.security_outlined,
-      title: 'Pagos seguros',
-      description:
-          'Realiza transferencias y pagos con la máxima seguridad. Protegemos tus operaciones con la última tecnología.',
-      color: BankingColors.secondary,
-    ),
-  ];
+  List<_SlideData> _buildSlides() => [
+        _SlideData(
+          icon: Icons.account_balance,
+          title: 'onboarding.slide1.title'.tr(),
+          description: 'onboarding.slide1.description'.tr(),
+          color: BankingColors.primary,
+        ),
+        _SlideData(
+          icon: Icons.dashboard_outlined,
+          title: 'onboarding.slide2.title'.tr(),
+          description: 'onboarding.slide2.description'.tr(),
+          color: BankingColors.primaryLight,
+        ),
+        _SlideData(
+          icon: Icons.security_outlined,
+          title: 'onboarding.slide3.title'.tr(),
+          description: 'onboarding.slide3.description'.tr(),
+          color: BankingColors.secondary,
+        ),
+      ];
 
   @override
   void dispose() {
@@ -73,6 +71,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final slides = _buildSlides();
+
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       body: SafeArea(
@@ -106,7 +106,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     child: TextButton(
                       onPressed: isLastPage ? null : _onSkip,
                       child: Text(
-                        isLastPage ? '' : 'Saltar',
+                        isLastPage ? '' : 'onboarding.skip'.tr(),
                         style: const TextStyle(
                           color: BankingColors.onBackgroundLightSecondary,
                           fontSize: 14,
@@ -120,14 +120,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
-                    itemCount: _slides.length,
+                    itemCount: slides.length,
                     onPageChanged: (index) {
                       context.read<OnboardingBloc>().add(
                         PageChanged(page: index),
                       );
                     },
                     itemBuilder: (context, index) {
-                      final slide = _slides[index];
+                      final slide = slides[index];
                       return _OnboardingSlide(data: slide);
                     },
                   ),
@@ -137,7 +137,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(_slides.length, (index) {
+                    children: List.generate(slides.length, (index) {
                       final isActive = index == currentPage;
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
@@ -171,7 +171,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         elevation: 2,
                       ),
                       child: Text(
-                        isLastPage ? 'Comenzar' : 'Siguiente',
+                        isLastPage
+                            ? 'onboarding.start'.tr()
+                            : 'onboarding.next'.tr(),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

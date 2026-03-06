@@ -1,5 +1,6 @@
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/transaction.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -43,7 +44,7 @@ class AccountDetailPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Volver'),
+                    child: Text('common.back'.tr()),
                   ),
                 ],
               ),
@@ -68,7 +69,7 @@ class AccountDetailPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                     child: Text(
-                      'Movimientos',
+                      'accounts.detail.transactions_section'.tr(),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),

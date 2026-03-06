@@ -1,5 +1,6 @@
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/transaction.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
 
@@ -18,7 +19,7 @@ class TransactionDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Detalle del movimiento'),
+        title: Text('transactions.detail.title'.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -89,29 +90,29 @@ class TransactionDetailPage extends StatelessWidget {
               child: Column(
                 children: [
                   _DetailRow(
-                    label: 'Concepto',
+                    label: 'transactions.detail.concept'.tr(),
                     value: transaction.description,
                   ),
                   const Divider(height: 24),
                   _DetailRow(
-                    label: 'Fecha',
+                    label: 'transactions.detail.date'.tr(),
                     value: Formatters.formatDateTime(transaction.createdAt),
                   ),
                   const Divider(height: 24),
                   _DetailRow(
-                    label: 'Categoría',
+                    label: 'transactions.detail.category'.tr(),
                     value: _categoryLabel(transaction.category),
                   ),
                   if (transaction.merchant != null) ...[
                     const Divider(height: 24),
                     _DetailRow(
-                      label: 'Comercio',
+                      label: 'transactions.detail.merchant'.tr(),
                       value: transaction.merchant!,
                     ),
                   ],
                   const Divider(height: 24),
                   _DetailRow(
-                    label: 'Referencia',
+                    label: 'transactions.detail.reference'.tr(),
                     value: transaction.id,
                   ),
                 ],
@@ -134,25 +135,26 @@ class TransactionDetailPage extends StatelessWidget {
 
   String _statusLabel(TransactionStatus status) {
     return switch (status) {
-      TransactionStatus.completed => 'Completado',
-      TransactionStatus.pending => 'Pendiente',
-      TransactionStatus.failed => 'Fallido',
-      TransactionStatus.cancelled => 'Cancelado',
+      TransactionStatus.completed => 'transactions.status.completed'.tr(),
+      TransactionStatus.pending => 'transactions.status.pending'.tr(),
+      TransactionStatus.failed => 'transactions.status.failed'.tr(),
+      TransactionStatus.cancelled => 'transactions.status.cancelled'.tr(),
     };
   }
 
   String _categoryLabel(TransactionCategory category) {
     return switch (category) {
-      TransactionCategory.salary => 'Nómina',
-      TransactionCategory.transfer => 'Transferencia',
-      TransactionCategory.shopping => 'Compras',
-      TransactionCategory.food => 'Alimentación',
-      TransactionCategory.transport => 'Transporte',
-      TransactionCategory.entertainment => 'Ocio',
-      TransactionCategory.bills => 'Facturas',
-      TransactionCategory.health => 'Salud',
-      TransactionCategory.atm => 'Cajero',
-      TransactionCategory.other => 'Otros',
+      TransactionCategory.salary => 'transactions.category.salary'.tr(),
+      TransactionCategory.transfer => 'transactions.category.transfer'.tr(),
+      TransactionCategory.shopping => 'transactions.category.shopping'.tr(),
+      TransactionCategory.food => 'transactions.category.food'.tr(),
+      TransactionCategory.transport => 'transactions.category.transport'.tr(),
+      TransactionCategory.entertainment =>
+        'transactions.category.entertainment'.tr(),
+      TransactionCategory.bills => 'transactions.category.bills'.tr(),
+      TransactionCategory.health => 'transactions.category.health'.tr(),
+      TransactionCategory.atm => 'transactions.category.atm'.tr(),
+      TransactionCategory.other => 'transactions.category.other'.tr(),
     };
   }
 }

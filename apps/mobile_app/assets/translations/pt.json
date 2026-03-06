@@ -1,0 +1,259 @@
+{
+  "app_name": "BankApp",
+
+  "common": {
+    "retry": "Tentar novamente",
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "continue": "Continuar",
+    "go_home": "Voltar ao início",
+    "logout": "Terminar sessão"
+  },
+
+  "login": {
+    "subtitle": "Acede à tua banca digital",
+    "dni_label": "NIF / BI",
+    "dni_required": "Introduz o teu NIF",
+    "password_label": "Palavra-passe",
+    "password_required": "Introduz a tua palavra-passe",
+    "forgot_password": "Esqueceste a palavra-passe?",
+    "submit": "Iniciar sessão",
+    "biometric": "Entrar com biometria"
+  },
+
+  "forgot_password": {
+    "title": "Recuperar palavra-passe",
+    "headline": "Esqueceste a palavra-passe?",
+    "description": "Introduz o teu NIF e enviar-te-emos instruções para redefinir a tua palavra-passe.",
+    "submit": "Enviar instruções",
+    "success_title": "Instruções enviadas",
+    "success_message": "Se o NIF introduzido existir no nosso sistema, receberás um email com instruções para redefinir a tua palavra-passe.",
+    "back": "Voltar ao início"
+  },
+
+  "environment_selector": {
+    "label": "Ambiente"
+  },
+
+  "nav": {
+    "home": "Início",
+    "payments": "Pagamentos",
+    "notifications": "Avisos"
+  },
+
+  "shell": {
+    "default_user": "Utilizador",
+    "default_email": "cliente@bankapp.pt",
+    "drawer": {
+      "accounts": "Contas",
+      "cards": "Cartões",
+      "settings": "Definições",
+      "investments": "Investimentos",
+      "insurance": "Seguros",
+      "loans": "Empréstimos",
+      "offers": "Ofertas",
+      "coming_soon": "Brevemente"
+    }
+  },
+
+  "global_position": {
+    "total_balance": "Saldo total",
+    "accounts_section": "As minhas contas",
+    "transactions_section": "Últimos movimentos",
+    "no_transactions": "Não há movimentos recentes",
+    "promotions_section": "Promoções"
+  },
+
+  "quick_actions": {
+    "transfer": "Transferir",
+    "pay": "Pagar",
+    "bizum": "Bizum",
+    "cards": "Cartões"
+  },
+
+  "accounts": {
+    "list": {
+      "title": "As minhas contas"
+    },
+    "detail": {
+      "transactions_section": "Movimentos"
+    },
+    "balance": {
+      "available": "Saldo disponível"
+    },
+    "badge": {
+      "main": "Principal"
+    },
+    "type": {
+      "current": "Conta à Ordem",
+      "savings": "Conta Poupança",
+      "investment": "Investimento"
+    }
+  },
+
+  "transactions": {
+    "detail": {
+      "title": "Detalhe do movimento",
+      "concept": "Conceito",
+      "date": "Data",
+      "category": "Categoria",
+      "merchant": "Comerciante",
+      "reference": "Referência"
+    },
+    "status": {
+      "completed": "Concluído",
+      "pending": "Pendente",
+      "failed": "Falhado",
+      "cancelled": "Cancelado"
+    },
+    "category": {
+      "salary": "Salário",
+      "transfer": "Transferência",
+      "shopping": "Compras",
+      "food": "Alimentação",
+      "transport": "Transporte",
+      "entertainment": "Lazer",
+      "bills": "Faturas",
+      "health": "Saúde",
+      "atm": "Multibanco",
+      "other": "Outros"
+    }
+  },
+
+  "cards": {
+    "list": {
+      "title": "Os meus cartões",
+      "empty": "Não tens cartões"
+    },
+    "detail": {
+      "title": "Detalhe do cartão",
+      "type": "Tipo",
+      "number": "Número",
+      "holder": "Titular",
+      "expiry": "Validade",
+      "status": "Estado",
+      "available_limit": "Limite disponível",
+      "credit": "Cartão de Crédito",
+      "debit": "Cartão de Débito",
+      "active": "Ativo",
+      "blocked": "Bloqueado",
+      "block_action": "Bloquear cartão",
+      "unblock_action": "Desbloquear cartão",
+      "change_pin": "Alterar PIN"
+    }
+  },
+
+  "notifications": {
+    "empty": "Não tens notificações"
+  },
+
+  "payments": {
+    "new": {
+      "source_account": "Conta de origem",
+      "iban": "IBAN de destino",
+      "amount": "Montante",
+      "concept": "Conceito",
+      "concept_hint": "Ex: Renda de março",
+      "account_required": "Seleciona uma conta",
+      "iban_required": "Introduz o IBAN de destino",
+      "iban_invalid": "O IBAN não é válido",
+      "amount_required": "Introduz o montante",
+      "amount_invalid": "O montante deve ser maior que 0",
+      "concept_required": "Introduz um conceito",
+      "submit": "Continuar"
+    },
+    "confirm": {
+      "title": "Confirmar transferência",
+      "amount_label": "Montante",
+      "source_account": "Conta de origem",
+      "iban": "IBAN de destino",
+      "concept": "Conceito",
+      "submit": "Confirmar transferência",
+      "cancel": "Cancelar"
+    },
+    "result": {
+      "success_title": "Transferência realizada",
+      "error_title": "Erro na transferência",
+      "success_message": "A tua transferência foi processada com sucesso.",
+      "error_message": "Ocorreu um erro. Tenta novamente.",
+      "reference_label": "Referência: ",
+      "go_home": "Voltar ao início",
+      "retry": "Tentar novamente",
+      "cancel": "Cancelar"
+    }
+  },
+
+  "settings": {
+    "title": "Definições",
+    "section": {
+      "appearance": "Aparência",
+      "security": "Segurança",
+      "notifications": "Notificações",
+      "general": "Geral"
+    },
+    "dark_mode": {
+      "title": "Modo escuro",
+      "enabled": "Ativado",
+      "disabled": "Desativado"
+    },
+    "biometrics": {
+      "title": "Autenticação biométrica",
+      "enabled": "Ativada",
+      "disabled": "Desativada"
+    },
+    "push_notifications": {
+      "title": "Notificações push",
+      "enabled": "Ativadas",
+      "disabled": "Desativadas"
+    },
+    "language": {
+      "title": "Idioma",
+      "value": "Português",
+      "change_dialog": {
+        "title": "Mudar idioma",
+        "message": "Para aplicar a mudança de idioma terás de terminar sessão. Desejas continuar?"
+      }
+    },
+    "about": {
+      "title": "Sobre",
+      "version": "Versão 1.0.0"
+    },
+    "logout": "Terminar sessão"
+  },
+
+  "onboarding": {
+    "skip": "Saltar",
+    "next": "Seguinte",
+    "start": "Começar",
+    "slide1": {
+      "title": "Bem-vindo ao BankApp",
+      "description": "O teu banco sempre contigo. Gere as tuas finanças de forma simples e segura em qualquer lugar."
+    },
+    "slide2": {
+      "title": "As tuas contas, de relance",
+      "description": "Consulta os teus saldos, movimentos e cartões num único ecrã. Tudo o que precisas, ao instante."
+    },
+    "slide3": {
+      "title": "Pagamentos seguros",
+      "description": "Realiza transferências e pagamentos com máxima segurança. Protegemos as tuas operações com a mais recente tecnologia."
+    }
+  },
+
+  "otp": {
+    "title": "Verificação de segurança",
+    "description": "Enviámos um código de {length} dígitos via {delivery}",
+    "timer": "Código válido durante {time}",
+    "delivery": {
+      "sms": "SMS",
+      "email": "email",
+      "push": "notificação push"
+    },
+    "validation": {
+      "incomplete": "Introduz o código completo",
+      "incorrect": "Código incorreto. Tenta novamente."
+    },
+    "verify": "Verificar",
+    "cancel": "Cancelar"
+  }
+}

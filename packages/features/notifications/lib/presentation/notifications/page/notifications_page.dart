@@ -1,5 +1,6 @@
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/notification_entity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -50,26 +51,26 @@ class NotificationsPage extends StatelessWidget {
                     backgroundColor: BankingColors.primary,
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text('Reintentar'),
+                  child: Text('common.retry'.tr()),
                 ),
               ],
             ),
           ),
           NotificationsLoaded(:final notifications) =>
             notifications.isEmpty
-                ? const Center(
+                ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.notifications_off_outlined,
                           size: 48,
                           color: BankingColors.onBackgroundLightSecondary,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
-                          'No tienes notificaciones',
-                          style: TextStyle(
+                          'notifications.empty'.tr(),
+                          style: const TextStyle(
                             fontSize: 16,
                             color: BankingColors.onBackgroundLightSecondary,
                           ),

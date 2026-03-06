@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
 
@@ -30,22 +31,22 @@ class QuickActions extends StatelessWidget {
       children: [
         _QuickActionItem(
           icon: Icons.swap_horiz,
-          label: 'Transferir',
+          label: 'quick_actions.transfer'.tr(),
           onTap: onTransfer,
         ),
         _QuickActionItem(
           icon: Icons.payment,
-          label: 'Pagar',
+          label: 'quick_actions.pay'.tr(),
           onTap: onPay,
         ),
         _QuickActionItem(
           icon: Icons.flash_on,
-          label: 'Bizum',
+          label: 'quick_actions.bizum'.tr(),
           onTap: onBizum,
         ),
         _QuickActionItem(
           icon: Icons.credit_card,
-          label: 'Tarjetas',
+          label: 'quick_actions.cards'.tr(),
           onTap: onCards,
         ),
       ],

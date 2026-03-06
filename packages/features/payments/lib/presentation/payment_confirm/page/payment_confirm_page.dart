@@ -1,4 +1,5 @@
 import 'package:common/utils/formatters.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -20,7 +21,7 @@ class PaymentConfirmPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: const Text('Confirmar transferencia'),
+        title: Text('payments.confirm.title'.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -51,9 +52,9 @@ class PaymentConfirmPage extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              const Text(
-                                'Importe',
-                                style: TextStyle(
+                              Text(
+                                'payments.confirm.amount_label'.tr(),
+                                style: const TextStyle(
                                   fontSize: 14,
                                   color:
                                       BankingColors.onBackgroundLightSecondary,
@@ -86,17 +87,17 @@ class PaymentConfirmPage extends StatelessWidget {
                           child: Column(
                             children: [
                               _SummaryRow(
-                                label: 'Cuenta origen',
+                                label: 'payments.confirm.source_account'.tr(),
                                 value: payment.fromAccount,
                               ),
                               const Divider(height: 24),
                               _SummaryRow(
-                                label: 'IBAN destino',
+                                label: 'payments.confirm.iban'.tr(),
                                 value: Formatters.formatIban(payment.toIban),
                               ),
                               const Divider(height: 24),
                               _SummaryRow(
-                                label: 'Concepto',
+                                label: 'payments.confirm.concept'.tr(),
                                 value: payment.concept,
                               ),
                             ],
@@ -137,9 +138,9 @@ class PaymentConfirmPage extends StatelessWidget {
                               ),
                             ),
                           )
-                        : const Text(
-                            'Confirmar transferencia',
-                            style: TextStyle(
+                        : Text(
+                            'payments.confirm.submit'.tr(),
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -161,7 +162,7 @@ class PaymentConfirmPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Cancelar'),
+                    child: Text('payments.confirm.cancel'.tr()),
                   ),
                 ),
               ],

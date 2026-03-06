@@ -1,5 +1,6 @@
 import 'package:common/config/environment.dart';
 import 'package:domain/entities/user.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
@@ -105,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'BankApp',
+                      'app_name'.tr(),
                       style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
                             color: BankingColors.primary,
@@ -114,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Accede a tu banca digital',
+                      'login.subtitle'.tr(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: BankingColors.onBackgroundLightSecondary,
                       ),
@@ -126,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'DNI / NIF',
+                        labelText: 'login.dni_label'.tr(),
                         prefixIcon: const Icon(Icons.person_outline),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -136,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Introduce tu DNI';
+                          return 'login.dni_required'.tr();
                         }
                         return null;
                       },
@@ -149,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _onLogin(),
                       decoration: InputDecoration(
-                        labelText: 'Contraseña',
+                        labelText: 'login.password_label'.tr(),
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -171,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Introduce tu contraseña';
+                          return 'login.password_required'.tr();
                         }
                         return null;
                       },
@@ -182,9 +183,9 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: widget.onForgotPassword,
-                        child: const Text(
-                          '¿Olvidaste tu contraseña?',
-                          style: TextStyle(
+                        child: Text(
+                          'login.forgot_password'.tr(),
+                          style: const TextStyle(
                             color: BankingColors.primary,
                             fontWeight: FontWeight.w500,
                           ),
@@ -220,9 +221,9 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                   )
-                                : const Text(
-                                    'Iniciar sesión',
-                                    style: TextStyle(
+                                : Text(
+                                    'login.submit'.tr(),
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -241,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         icon: const Icon(Icons.fingerprint),
-                        label: const Text('Acceder con biometría'),
+                        label: Text('login.biometric'.tr()),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: BankingColors.primary,
                           side: const BorderSide(color: BankingColors.primary),

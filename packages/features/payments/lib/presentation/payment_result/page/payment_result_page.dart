@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
 
@@ -59,8 +60,8 @@ class PaymentResultPage extends StatelessWidget {
               const SizedBox(height: 32),
               Text(
                 isSuccess
-                    ? 'Transferencia realizada'
-                    : 'Error en la transferencia',
+                    ? 'payments.result.success_title'.tr()
+                    : 'payments.result.error_title'.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: BankingColors.onBackgroundLight,
@@ -69,9 +70,9 @@ class PaymentResultPage extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 isSuccess
-                    ? 'Tu transferencia se ha procesado correctamente.'
+                    ? 'payments.result.success_message'.tr()
                     : errorMessage ??
-                          'Ha ocurrido un error. Inténtalo de nuevo.',
+                          'payments.result.error_message'.tr(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: BankingColors.onBackgroundLightSecondary,
@@ -88,9 +89,9 @@ class PaymentResultPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Referencia: ',
-                        style: TextStyle(
+                      Text(
+                        'payments.result.reference_label'.tr(),
+                        style: const TextStyle(
                           fontSize: 13,
                           color: BankingColors.onBackgroundLightSecondary,
                         ),
@@ -122,9 +123,9 @@ class PaymentResultPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Volver al inicio',
-                      style: TextStyle(
+                    child: Text(
+                      'payments.result.go_home'.tr(),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -144,9 +145,9 @@ class PaymentResultPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Reintentar',
-                      style: TextStyle(
+                    child: Text(
+                      'payments.result.retry'.tr(),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -166,7 +167,7 @@ class PaymentResultPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Cancelar'),
+                    child: Text('payments.result.cancel'.tr()),
                   ),
                 ),
               ],
