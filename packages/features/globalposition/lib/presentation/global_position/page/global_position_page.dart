@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class GlobalPositionPage extends StatelessWidget {
                 backgroundColor: BankingColors.primary,
                 foregroundColor: Colors.white,
               ),
-              child: Text('common.retry'.tr()),
+              child: Text(LocaleKeys.common_retry.tr()),
             ),
           ],
         ),
@@ -132,7 +133,7 @@ class GlobalPositionPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'global_position.accounts_section'.tr(),
+                LocaleKeys.global_position_accounts_section.tr(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -158,7 +159,7 @@ class GlobalPositionPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'global_position.transactions_section'.tr(),
+                LocaleKeys.global_position_transactions_section.tr(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -171,7 +172,7 @@ class GlobalPositionPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'global_position.no_transactions'.tr(),
+                  LocaleKeys.global_position_no_transactions.tr(),
                   style: const TextStyle(
                     color: BankingColors.onBackgroundLightSecondary,
                   ),
@@ -190,7 +191,7 @@ class GlobalPositionPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'global_position.promotions_section'.tr(),
+                  LocaleKeys.global_position_promotions_section.tr(),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -244,7 +245,7 @@ class _TotalBalanceCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'global_position.total_balance'.tr(),
+            LocaleKeys.global_position_total_balance.tr(),
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,

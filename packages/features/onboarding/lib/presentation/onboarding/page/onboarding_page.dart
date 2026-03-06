@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,20 +29,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
   List<_SlideData> _buildSlides() => [
         _SlideData(
           icon: Icons.account_balance,
-          title: 'onboarding.slide1.title'.tr(),
-          description: 'onboarding.slide1.description'.tr(),
+          title: LocaleKeys.onboarding_slide1_title.tr(),
+          description: LocaleKeys.onboarding_slide1_description.tr(),
           color: BankingColors.primary,
         ),
         _SlideData(
           icon: Icons.dashboard_outlined,
-          title: 'onboarding.slide2.title'.tr(),
-          description: 'onboarding.slide2.description'.tr(),
+          title: LocaleKeys.onboarding_slide2_title.tr(),
+          description: LocaleKeys.onboarding_slide2_description.tr(),
           color: BankingColors.primaryLight,
         ),
         _SlideData(
           icon: Icons.security_outlined,
-          title: 'onboarding.slide3.title'.tr(),
-          description: 'onboarding.slide3.description'.tr(),
+          title: LocaleKeys.onboarding_slide3_title.tr(),
+          description: LocaleKeys.onboarding_slide3_description.tr(),
           color: BankingColors.secondary,
         ),
       ];
@@ -106,7 +107,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     child: TextButton(
                       onPressed: isLastPage ? null : _onSkip,
                       child: Text(
-                        isLastPage ? '' : 'onboarding.skip'.tr(),
+                        isLastPage ? '' : LocaleKeys.onboarding_skip.tr(),
                         style: const TextStyle(
                           color: BankingColors.onBackgroundLightSecondary,
                           fontSize: 14,
@@ -172,8 +173,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ),
                       child: Text(
                         isLastPage
-                            ? 'onboarding.start'.tr()
-                            : 'onboarding.next'.tr(),
+                            ? LocaleKeys.onboarding_start.tr()
+                            : LocaleKeys.onboarding_next.tr(),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

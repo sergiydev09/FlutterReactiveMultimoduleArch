@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -44,7 +45,7 @@ class AccountDetailPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text('common.back'.tr()),
+                    child: Text(LocaleKeys.common_back.tr()),
                   ),
                 ],
               ),
@@ -69,7 +70,7 @@ class AccountDetailPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                     child: Text(
-                      'accounts.detail.transactions_section'.tr(),
+                      LocaleKeys.accounts_detail_transactions_section.tr(),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),

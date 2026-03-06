@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class PaymentConfirmPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('payments.confirm.title'.tr()),
+        title: Text(LocaleKeys.payments_confirm_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -53,7 +54,7 @@ class PaymentConfirmPage extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                'payments.confirm.amount_label'.tr(),
+                                LocaleKeys.payments_confirm_amount_label.tr(),
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color:
@@ -87,17 +88,17 @@ class PaymentConfirmPage extends StatelessWidget {
                           child: Column(
                             children: [
                               _SummaryRow(
-                                label: 'payments.confirm.source_account'.tr(),
+                                label: LocaleKeys.payments_confirm_source_account.tr(),
                                 value: payment.fromAccount,
                               ),
                               const Divider(height: 24),
                               _SummaryRow(
-                                label: 'payments.confirm.iban'.tr(),
+                                label: LocaleKeys.payments_confirm_iban.tr(),
                                 value: Formatters.formatIban(payment.toIban),
                               ),
                               const Divider(height: 24),
                               _SummaryRow(
-                                label: 'payments.confirm.concept'.tr(),
+                                label: LocaleKeys.payments_confirm_concept.tr(),
                                 value: payment.concept,
                               ),
                             ],
@@ -139,7 +140,7 @@ class PaymentConfirmPage extends StatelessWidget {
                             ),
                           )
                         : Text(
-                            'payments.confirm.submit'.tr(),
+                            LocaleKeys.payments_confirm_submit.tr(),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -162,7 +163,7 @@ class PaymentConfirmPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text('payments.confirm.cancel'.tr()),
+                    child: Text(LocaleKeys.payments_confirm_cancel.tr()),
                   ),
                 ),
               ],

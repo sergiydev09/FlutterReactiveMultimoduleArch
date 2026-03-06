@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,7 +99,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
     final code = _enteredCode;
     if (code.length != widget.config.length) {
       setState(() {
-        _errorMessage = 'otp.validation.incomplete'.tr();
+        _errorMessage = LocaleKeys.otp_validation_incomplete.tr();
       });
       return;
     }
@@ -119,7 +120,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
     } else {
       setState(() {
         _isVerifying = false;
-        _errorMessage = 'otp.validation.incorrect'.tr();
+        _errorMessage = LocaleKeys.otp_validation_incorrect.tr();
       });
     }
   }
@@ -142,9 +143,9 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
 
   String _deliveryLabel() {
     return switch (widget.config.deliveryType) {
-      OtpDeliveryType.sms => 'otp.delivery.sms'.tr(),
-      OtpDeliveryType.email => 'otp.delivery.email'.tr(),
-      OtpDeliveryType.push => 'otp.delivery.push'.tr(),
+      OtpDeliveryType.sms => LocaleKeys.otp_delivery_sms.tr(),
+      OtpDeliveryType.email => LocaleKeys.otp_delivery_email.tr(),
+      OtpDeliveryType.push => LocaleKeys.otp_delivery_push.tr(),
     };
   }
 
@@ -176,14 +177,14 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           ),
           const SizedBox(height: 16),
           Text(
-            'otp.title'.tr(),
+            LocaleKeys.otp_title.tr(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'otp.description'.tr(
+            LocaleKeys.otp_description.tr(
               namedArgs: {
                 'length': widget.config.length.toString(),
                 'delivery': _deliveryLabel(),
@@ -240,7 +241,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           const SizedBox(height: 16),
           // Timer.
           Text(
-            'otp.timer'.tr(namedArgs: {'time': _formattedTime}),
+            LocaleKeys.otp_timer.tr(namedArgs: {'time': _formattedTime}),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: _remainingSeconds < 30
                   ? BankingColors.error
@@ -283,7 +284,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
                       ),
                     )
                   : Text(
-                      'otp.verify'.tr(),
+                      LocaleKeys.otp_verify.tr(),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -295,7 +296,7 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           TextButton(
             onPressed: _cancel,
             child: Text(
-              'otp.cancel'.tr(),
+              LocaleKeys.otp_cancel.tr(),
               style: TextStyle(
                 color: Colors.grey.shade600,
                 fontSize: 14,

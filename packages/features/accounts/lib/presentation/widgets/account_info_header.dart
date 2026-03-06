@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/account.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -65,7 +66,7 @@ class AccountInfoHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'accounts.badge.main'.tr(),
+                    LocaleKeys.accounts_badge_main.tr(),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -96,7 +97,7 @@ class AccountInfoHeader extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'accounts.balance.available'.tr(),
+            LocaleKeys.accounts_balance_available.tr(),
             style: const TextStyle(
               color: Colors.white70,
               fontSize: 13,
@@ -122,9 +123,9 @@ class AccountInfoHeader extends StatelessWidget {
 
   String _accountTypeLabel(AccountType type) {
     return switch (type) {
-      AccountType.current => 'accounts.type.current'.tr(),
-      AccountType.savings => 'accounts.type.savings'.tr(),
-      AccountType.investment => 'accounts.type.investment'.tr(),
+      AccountType.current => LocaleKeys.accounts_type_current.tr(),
+      AccountType.savings => LocaleKeys.accounts_type_savings.tr(),
+      AccountType.investment => LocaleKeys.accounts_type_investment.tr(),
     };
   }
 }

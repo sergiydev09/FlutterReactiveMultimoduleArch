@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/notification_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -51,7 +52,7 @@ class NotificationsPage extends StatelessWidget {
                     backgroundColor: BankingColors.primary,
                     foregroundColor: Colors.white,
                   ),
-                  child: Text('common.retry'.tr()),
+                  child: Text(LocaleKeys.common_retry.tr()),
                 ),
               ],
             ),
@@ -69,7 +70,7 @@ class NotificationsPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'notifications.empty'.tr(),
+                          LocaleKeys.notifications_empty.tr(),
                           style: const TextStyle(
                             fontSize: 16,
                             color: BankingColors.onBackgroundLightSecondary,

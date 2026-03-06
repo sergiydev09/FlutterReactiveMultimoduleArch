@@ -20,7 +20,7 @@ class BankingApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return EasyLocalization(
       supportedLocales: const [Locale('es'), Locale('en'), Locale('pt')],
-      path: 'assets/translations',
+      path: 'packages/common/assets/translations',
       fallbackLocale: const Locale('es'),
       assetLoader: assetLoader,
       child: ProviderScope(

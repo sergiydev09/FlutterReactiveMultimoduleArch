@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/account.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,7 +18,7 @@ class AccountsListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('accounts.list.title'.tr()),
+        title: Text(LocaleKeys.accounts_list_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,

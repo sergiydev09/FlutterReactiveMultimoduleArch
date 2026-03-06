@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:accounts/routing/accounts_routes.dart';
 import 'package:cards/routing/cards_routes.dart';
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:globalposition/routing/globalposition_routes.dart';
@@ -32,13 +33,13 @@ class MainShell extends StatelessWidget {
 
   String _titleForLocation(BuildContext context, String location) {
     if (location.startsWith(GlobalPositionRoutes.home)) {
-      return 'nav.home'.tr();
+      return LocaleKeys.nav_home.tr();
     }
-    if (location.startsWith(PaymentRoutes.base)) return 'nav.payments'.tr();
+    if (location.startsWith(PaymentRoutes.base)) return LocaleKeys.nav_payments.tr();
     if (location.startsWith(NotificationRoutes.notifications)) {
-      return 'nav.notifications'.tr();
+      return LocaleKeys.nav_notifications.tr();
     }
-    return 'app_name'.tr();
+    return LocaleKeys.app_name.tr();
   }
 
   String _initials(String name) {
@@ -85,14 +86,14 @@ class MainShell extends StatelessWidget {
                 ),
               ),
               accountName: Text(
-                userName.isNotEmpty ? userName : 'shell.default_user'.tr(),
+                userName.isNotEmpty ? userName : LocaleKeys.shell_default_user.tr(),
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-              accountEmail: Text('shell.default_email'.tr()),
+              accountEmail: Text(LocaleKeys.shell_default_email.tr()),
             ),
             ListTile(
               leading: const Icon(Icons.account_balance_outlined),
-              title: Text('shell.drawer.accounts'.tr()),
+              title: Text(LocaleKeys.shell_drawer_accounts.tr()),
               onTap: () {
                 Navigator.pop(context);
                 unawaited(context.push(AccountRoutes.accounts));
@@ -100,7 +101,7 @@ class MainShell extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.credit_card_outlined),
-              title: Text('shell.drawer.cards'.tr()),
+              title: Text(LocaleKeys.shell_drawer_cards.tr()),
               onTap: () {
                 Navigator.pop(context);
                 unawaited(context.push(CardRoutes.cards));
@@ -108,7 +109,7 @@ class MainShell extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.settings_outlined),
-              title: Text('shell.drawer.settings'.tr()),
+              title: Text(LocaleKeys.shell_drawer_settings.tr()),
               onTap: () {
                 Navigator.pop(context);
                 unawaited(context.push(SettingsRoutes.settings));
@@ -118,11 +119,11 @@ class MainShell extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.trending_up_outlined, color: Colors.grey),
               title: Text(
-                'shell.drawer.investments'.tr(),
+                LocaleKeys.shell_drawer_investments.tr(),
                 style: const TextStyle(color: Colors.grey),
               ),
               subtitle: Text(
-                'shell.drawer.coming_soon'.tr(),
+                LocaleKeys.shell_drawer_coming_soon.tr(),
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
@@ -130,11 +131,11 @@ class MainShell extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.shield_outlined, color: Colors.grey),
               title: Text(
-                'shell.drawer.insurance'.tr(),
+                LocaleKeys.shell_drawer_insurance.tr(),
                 style: const TextStyle(color: Colors.grey),
               ),
               subtitle: Text(
-                'shell.drawer.coming_soon'.tr(),
+                LocaleKeys.shell_drawer_coming_soon.tr(),
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
@@ -142,11 +143,11 @@ class MainShell extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.request_quote_outlined, color: Colors.grey),
               title: Text(
-                'shell.drawer.loans'.tr(),
+                LocaleKeys.shell_drawer_loans.tr(),
                 style: const TextStyle(color: Colors.grey),
               ),
               subtitle: Text(
-                'shell.drawer.coming_soon'.tr(),
+                LocaleKeys.shell_drawer_coming_soon.tr(),
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
@@ -154,11 +155,11 @@ class MainShell extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.local_offer_outlined, color: Colors.grey),
               title: Text(
-                'shell.drawer.offers'.tr(),
+                LocaleKeys.shell_drawer_offers.tr(),
                 style: const TextStyle(color: Colors.grey),
               ),
               subtitle: Text(
-                'shell.drawer.coming_soon'.tr(),
+                LocaleKeys.shell_drawer_coming_soon.tr(),
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
               enabled: false,
@@ -176,7 +177,7 @@ class MainShell extends StatelessWidget {
                         }
                       : null,
                   icon: const Icon(Icons.logout),
-                  label: Text('common.logout'.tr()),
+                  label: Text(LocaleKeys.common_logout.tr()),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: BankingColors.error,
                     side: const BorderSide(color: BankingColors.error),
@@ -208,17 +209,17 @@ class MainShell extends StatelessWidget {
           NavigationDestination(
             icon: const Icon(Icons.home_outlined),
             selectedIcon: const Icon(Icons.home),
-            label: 'nav.home'.tr(),
+            label: LocaleKeys.nav_home.tr(),
           ),
           NavigationDestination(
             icon: const Icon(Icons.swap_horiz_outlined),
             selectedIcon: const Icon(Icons.swap_horiz),
-            label: 'nav.payments'.tr(),
+            label: LocaleKeys.nav_payments.tr(),
           ),
           NavigationDestination(
             icon: const Icon(Icons.notifications_outlined),
             selectedIcon: const Icon(Icons.notifications),
-            label: 'nav.notifications'.tr(),
+            label: LocaleKeys.nav_notifications.tr(),
           ),
         ],
       ),

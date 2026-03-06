@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
@@ -60,8 +61,8 @@ class PaymentResultPage extends StatelessWidget {
               const SizedBox(height: 32),
               Text(
                 isSuccess
-                    ? 'payments.result.success_title'.tr()
-                    : 'payments.result.error_title'.tr(),
+                    ? LocaleKeys.payments_result_success_title.tr()
+                    : LocaleKeys.payments_result_error_title.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: BankingColors.onBackgroundLight,
@@ -70,9 +71,9 @@ class PaymentResultPage extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 isSuccess
-                    ? 'payments.result.success_message'.tr()
+                    ? LocaleKeys.payments_result_success_message.tr()
                     : errorMessage ??
-                          'payments.result.error_message'.tr(),
+                          LocaleKeys.payments_result_error_message.tr(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: BankingColors.onBackgroundLightSecondary,
@@ -90,7 +91,7 @@ class PaymentResultPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'payments.result.reference_label'.tr(),
+                        LocaleKeys.payments_result_reference_label.tr(),
                         style: const TextStyle(
                           fontSize: 13,
                           color: BankingColors.onBackgroundLightSecondary,
@@ -124,7 +125,7 @@ class PaymentResultPage extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'payments.result.go_home'.tr(),
+                      LocaleKeys.payments_result_go_home.tr(),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -146,7 +147,7 @@ class PaymentResultPage extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'payments.result.retry'.tr(),
+                      LocaleKeys.payments_result_retry.tr(),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -167,7 +168,7 @@ class PaymentResultPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text('payments.result.cancel'.tr()),
+                    child: Text(LocaleKeys.payments_result_cancel.tr()),
                   ),
                 ),
               ],

@@ -18,6 +18,10 @@ dependencies:
   freezed_annotation:
   go_router:
 
+flutter:
+  assets:
+    - assets/translations/
+
 dev_dependencies:
   build_runner:
   flutter_test:

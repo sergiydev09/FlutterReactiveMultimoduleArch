@@ -1,4 +1,5 @@
 import 'package:common/config/environment.dart';
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
@@ -45,7 +46,7 @@ class _EnvironmentSelectorState extends State<EnvironmentSelector> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'environment_selector.label'.tr(),
+            LocaleKeys.environment_selector_label.tr(),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: BankingColors.onBackgroundLightSecondary,
             ),

@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class CardsListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('cards.list.title'.tr()),
+        title: Text(LocaleKeys.cards_list_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -53,7 +54,7 @@ class CardsListPage extends StatelessWidget {
                       backgroundColor: BankingColors.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: Text('common.retry'.tr()),
+                    child: Text(LocaleKeys.common_retry.tr()),
                   ),
                 ],
               ),
@@ -62,7 +63,7 @@ class CardsListPage extends StatelessWidget {
               cards.isEmpty
                   ? Center(
                       child: Text(
-                        'cards.list.empty'.tr(),
+                        LocaleKeys.cards_list_empty.tr(),
                         style: const TextStyle(
                           fontSize: 16,
                           color: BankingColors.onBackgroundLightSecondary,

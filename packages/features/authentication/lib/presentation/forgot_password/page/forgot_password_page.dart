@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
@@ -34,7 +35,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('forgot_password.title'.tr()),
+        title: Text(LocaleKeys.forgot_password_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -56,7 +57,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         children: [
           const SizedBox(height: 16),
           Text(
-            'forgot_password.headline'.tr(),
+            LocaleKeys.forgot_password_headline.tr(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: BankingColors.onBackgroundLight,
@@ -64,7 +65,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'forgot_password.description'.tr(),
+            LocaleKeys.forgot_password_description.tr(),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: BankingColors.onBackgroundLightSecondary,
             ),
@@ -76,7 +77,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _onSubmit(),
             decoration: InputDecoration(
-              labelText: 'login.dni_label'.tr(),
+              labelText: LocaleKeys.login_dni_label.tr(),
               prefixIcon: const Icon(Icons.person_outline),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -86,7 +87,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'login.dni_required'.tr();
+                return LocaleKeys.login_dni_required.tr();
               }
               return null;
             },
@@ -105,7 +106,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
               ),
               child: Text(
-                'forgot_password.submit'.tr(),
+                LocaleKeys.forgot_password_submit.tr(),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -137,14 +138,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
         const SizedBox(height: 24),
         Text(
-          'forgot_password.success_title'.tr(),
+          LocaleKeys.forgot_password_success_title.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 12),
         Text(
-          'forgot_password.success_message'.tr(),
+          LocaleKeys.forgot_password_success_message.tr(),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: BankingColors.onBackgroundLightSecondary,
@@ -163,7 +164,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text('forgot_password.back'.tr()),
+            child: Text(LocaleKeys.forgot_password_back.tr()),
           ),
         ),
       ],

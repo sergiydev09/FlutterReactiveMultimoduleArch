@@ -1,4 +1,5 @@
 import 'package:common/di/common_providers.dart';
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('settings.title'.tr()),
+        title: Text(LocaleKeys.settings_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -36,13 +37,13 @@ class SettingsPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
               // Appearance section.
-              _SectionHeader(title: 'settings.section.appearance'.tr()),
+              _SectionHeader(title: LocaleKeys.settings_section_appearance.tr()),
               _SettingsTile(
                 icon: Icons.dark_mode_outlined,
-                title: 'settings.dark_mode.title'.tr(),
+                title: LocaleKeys.settings_dark_mode_title.tr(),
                 subtitle: state.isDarkMode
-                    ? 'settings.dark_mode.enabled'.tr()
-                    : 'settings.dark_mode.disabled'.tr(),
+                    ? LocaleKeys.settings_dark_mode_enabled.tr()
+                    : LocaleKeys.settings_dark_mode_disabled.tr(),
                 trailing: Switch.adaptive(
                   value: state.isDarkMode,
                   onChanged: (_) {
@@ -53,13 +54,13 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(indent: 56, height: 1),
               // Security section.
-              _SectionHeader(title: 'settings.section.security'.tr()),
+              _SectionHeader(title: LocaleKeys.settings_section_security.tr()),
               _SettingsTile(
                 icon: Icons.fingerprint,
-                title: 'settings.biometrics.title'.tr(),
+                title: LocaleKeys.settings_biometrics_title.tr(),
                 subtitle: state.isBiometricsEnabled
-                    ? 'settings.biometrics.enabled'.tr()
-                    : 'settings.biometrics.disabled'.tr(),
+                    ? LocaleKeys.settings_biometrics_enabled.tr()
+                    : LocaleKeys.settings_biometrics_disabled.tr(),
                 trailing: Switch.adaptive(
                   value: state.isBiometricsEnabled,
                   onChanged: (_) {
@@ -70,13 +71,13 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(indent: 56, height: 1),
               // Notifications section.
-              _SectionHeader(title: 'settings.section.notifications'.tr()),
+              _SectionHeader(title: LocaleKeys.settings_section_notifications.tr()),
               _SettingsTile(
                 icon: Icons.notifications_outlined,
-                title: 'settings.push_notifications.title'.tr(),
+                title: LocaleKeys.settings_push_notifications_title.tr(),
                 subtitle: state.areNotificationsEnabled
-                    ? 'settings.push_notifications.enabled'.tr()
-                    : 'settings.push_notifications.disabled'.tr(),
+                    ? LocaleKeys.settings_push_notifications_enabled.tr()
+                    : LocaleKeys.settings_push_notifications_disabled.tr(),
                 trailing: Switch.adaptive(
                   value: state.areNotificationsEnabled,
                   onChanged: (_) {
@@ -89,11 +90,11 @@ class SettingsPage extends StatelessWidget {
               ),
               const Divider(indent: 56, height: 1),
               // General section.
-              _SectionHeader(title: 'settings.section.general'.tr()),
+              _SectionHeader(title: LocaleKeys.settings_section_general.tr()),
               _SettingsTile(
                 icon: Icons.language,
-                title: 'settings.language.title'.tr(),
-                subtitle: 'settings.language.value'.tr(),
+                title: LocaleKeys.settings_language_title.tr(),
+                subtitle: LocaleKeys.settings_language_value.tr(),
                 trailing: const Icon(
                   Icons.chevron_right,
                   color: BankingColors.onBackgroundLightSecondary,
@@ -103,8 +104,8 @@ class SettingsPage extends StatelessWidget {
               const Divider(indent: 56, height: 1),
               _SettingsTile(
                 icon: Icons.info_outline,
-                title: 'settings.about.title'.tr(),
-                subtitle: 'settings.about.version'.tr(),
+                title: LocaleKeys.settings_about_title.tr(),
+                subtitle: LocaleKeys.settings_about_version.tr(),
                 trailing: const Icon(
                   Icons.chevron_right,
                   color: BankingColors.onBackgroundLightSecondary,
@@ -122,7 +123,7 @@ class SettingsPage extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onLogout,
                     icon: const Icon(Icons.logout),
-                    label: Text('settings.logout'.tr()),
+                    label: Text(LocaleKeys.settings_logout.tr()),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: BankingColors.error,
                       side: const BorderSide(color: BankingColors.error),

@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -19,7 +20,7 @@ class TransactionDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('transactions.detail.title'.tr()),
+        title: Text(LocaleKeys.transactions_detail_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -90,29 +91,29 @@ class TransactionDetailPage extends StatelessWidget {
               child: Column(
                 children: [
                   _DetailRow(
-                    label: 'transactions.detail.concept'.tr(),
+                    label: LocaleKeys.transactions_detail_concept.tr(),
                     value: transaction.description,
                   ),
                   const Divider(height: 24),
                   _DetailRow(
-                    label: 'transactions.detail.date'.tr(),
+                    label: LocaleKeys.transactions_detail_date.tr(),
                     value: Formatters.formatDateTime(transaction.createdAt),
                   ),
                   const Divider(height: 24),
                   _DetailRow(
-                    label: 'transactions.detail.category'.tr(),
+                    label: LocaleKeys.transactions_detail_category.tr(),
                     value: _categoryLabel(transaction.category),
                   ),
                   if (transaction.merchant != null) ...[
                     const Divider(height: 24),
                     _DetailRow(
-                      label: 'transactions.detail.merchant'.tr(),
+                      label: LocaleKeys.transactions_detail_merchant.tr(),
                       value: transaction.merchant!,
                     ),
                   ],
                   const Divider(height: 24),
                   _DetailRow(
-                    label: 'transactions.detail.reference'.tr(),
+                    label: LocaleKeys.transactions_detail_reference.tr(),
                     value: transaction.id,
                   ),
                 ],
@@ -135,25 +136,25 @@ class TransactionDetailPage extends StatelessWidget {
 
   String _statusLabel(TransactionStatus status) {
     return switch (status) {
-      TransactionStatus.completed => 'transactions.status.completed'.tr(),
-      TransactionStatus.pending => 'transactions.status.pending'.tr(),
-      TransactionStatus.failed => 'transactions.status.failed'.tr(),
-      TransactionStatus.cancelled => 'transactions.status.cancelled'.tr(),
+      TransactionStatus.completed => LocaleKeys.transactions_status_completed.tr(),
+      TransactionStatus.pending => LocaleKeys.transactions_status_pending.tr(),
+      TransactionStatus.failed => LocaleKeys.transactions_status_failed.tr(),
+      TransactionStatus.cancelled => LocaleKeys.transactions_status_cancelled.tr(),
     };
   }
 
   String _categoryLabel(TransactionCategory category) {
     return switch (category) {
-      TransactionCategory.salary => 'transactions.category.salary'.tr(),
-      TransactionCategory.transfer => 'transactions.category.transfer'.tr(),
-      TransactionCategory.shopping => 'transactions.category.shopping'.tr(),
-      TransactionCategory.food => 'transactions.category.food'.tr(),
-      TransactionCategory.transport => 'transactions.category.transport'.tr(),
+      TransactionCategory.salary => LocaleKeys.transactions_category_salary.tr(),
+      TransactionCategory.transfer => LocaleKeys.transactions_category_transfer.tr(),
+      TransactionCategory.shopping => LocaleKeys.transactions_category_shopping.tr(),
+      TransactionCategory.food => LocaleKeys.transactions_category_food.tr(),
+      TransactionCategory.transport => LocaleKeys.transactions_category_transport.tr(),
       TransactionCategory.entertainment =>
-        'transactions.category.entertainment'.tr(),
-      TransactionCategory.bills => 'transactions.category.bills'.tr(),
-      TransactionCategory.health => 'transactions.category.health'.tr(),
-      TransactionCategory.atm => 'transactions.category.atm'.tr(),
+        LocaleKeys.transactions_category_entertainment.tr(),
+      TransactionCategory.bills => LocaleKeys.transactions_category_bills.tr(),
+      TransactionCategory.health => LocaleKeys.transactions_category_health.tr(),
+      TransactionCategory.atm => LocaleKeys.transactions_category_atm.tr(),
       TransactionCategory.other => 'transactions.category.other'.tr(),
     };
   }

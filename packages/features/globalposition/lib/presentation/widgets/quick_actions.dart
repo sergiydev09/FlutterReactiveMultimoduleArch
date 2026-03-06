@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/tokens/colors.dart';
@@ -31,22 +32,22 @@ class QuickActions extends StatelessWidget {
       children: [
         _QuickActionItem(
           icon: Icons.swap_horiz,
-          label: 'quick_actions.transfer'.tr(),
+          label: LocaleKeys.quick_actions_transfer.tr(),
           onTap: onTransfer,
         ),
         _QuickActionItem(
           icon: Icons.payment,
-          label: 'quick_actions.pay'.tr(),
+          label: LocaleKeys.quick_actions_pay.tr(),
           onTap: onPay,
         ),
         _QuickActionItem(
           icon: Icons.flash_on,
-          label: 'quick_actions.bizum'.tr(),
+          label: LocaleKeys.quick_actions_bizum.tr(),
           onTap: onBizum,
         ),
         _QuickActionItem(
           icon: Icons.credit_card,
-          label: 'quick_actions.cards'.tr(),
+          label: LocaleKeys.quick_actions_cards.tr(),
           onTap: onCards,
         ),
       ],

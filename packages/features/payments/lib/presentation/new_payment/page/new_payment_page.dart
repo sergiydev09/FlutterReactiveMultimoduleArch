@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,7 +72,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
           children: [
             // Source account dropdown.
             Text(
-              'payments.new.source_account'.tr(),
+              LocaleKeys.payments_new_source_account.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -105,7 +106,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'payments.new.account_required'.tr();
+                  return LocaleKeys.payments_new_account_required.tr();
                 }
                 return null;
               },
@@ -113,7 +114,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             const SizedBox(height: 20),
             // IBAN field.
             Text(
-              'payments.new.iban'.tr(),
+              LocaleKeys.payments_new_iban.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -133,10 +134,10 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'payments.new.iban_required'.tr();
+                  return LocaleKeys.payments_new_iban_required.tr();
                 }
                 if (value.trim().replaceAll(' ', '').length < 16) {
-                  return 'payments.new.iban_invalid'.tr();
+                  return LocaleKeys.payments_new_iban_invalid.tr();
                 }
                 return null;
               },
@@ -144,7 +145,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             const SizedBox(height: 20),
             // Amount field.
             Text(
-              'payments.new.amount'.tr(),
+              LocaleKeys.payments_new_amount.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -170,11 +171,11 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'payments.new.amount_required'.tr();
+                  return LocaleKeys.payments_new_amount_required.tr();
                 }
                 final amount = double.tryParse(value.replaceAll(',', '.'));
                 if (amount == null || amount <= 0) {
-                  return 'payments.new.amount_invalid'.tr();
+                  return LocaleKeys.payments_new_amount_invalid.tr();
                 }
                 return null;
               },
@@ -182,7 +183,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             const SizedBox(height: 20),
             // Concept field.
             Text(
-              'payments.new.concept'.tr(),
+              LocaleKeys.payments_new_concept.tr(),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: BankingColors.onBackgroundLight,
               ),
@@ -192,7 +193,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               controller: _conceptController,
               maxLength: 140,
               decoration: InputDecoration(
-                hintText: 'payments.new.concept_hint'.tr(),
+                hintText: LocaleKeys.payments_new_concept_hint.tr(),
                 prefixIcon: const Icon(Icons.description_outlined),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -202,7 +203,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'payments.new.concept_required'.tr();
+                  return LocaleKeys.payments_new_concept_required.tr();
                 }
                 return null;
               },
@@ -223,7 +224,7 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
                   elevation: 2,
                 ),
                 child: Text(
-                  'payments.new.submit'.tr(),
+                  LocaleKeys.payments_new_submit.tr(),
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

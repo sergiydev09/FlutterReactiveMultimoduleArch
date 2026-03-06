@@ -1,3 +1,4 @@
+import 'package:common/generated/locale_keys.g.dart';
 import 'package:domain/entities/card_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class CardDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       appBar: AppBar(
-        title: Text('cards.detail.title'.tr()),
+        title: Text(LocaleKeys.cards_detail_title.tr()),
         backgroundColor: BankingColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -54,32 +55,32 @@ class CardDetailPage extends StatelessWidget {
                   child: Column(
                     children: [
                       _InfoRow(
-                        label: 'cards.detail.type'.tr(),
+                        label: LocaleKeys.cards_detail_type.tr(),
                         value: currentCard.isCredit
-                            ? 'cards.detail.credit'.tr()
-                            : 'cards.detail.debit'.tr(),
+                            ? LocaleKeys.cards_detail_credit.tr()
+                            : LocaleKeys.cards_detail_debit.tr(),
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'cards.detail.number'.tr(),
+                        label: LocaleKeys.cards_detail_number.tr(),
                         value: currentCard.maskedNumber,
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'cards.detail.holder'.tr(),
+                        label: LocaleKeys.cards_detail_holder.tr(),
                         value: currentCard.cardHolderName,
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'cards.detail.expiry'.tr(),
+                        label: LocaleKeys.cards_detail_expiry.tr(),
                         value: currentCard.expiryDate,
                       ),
                       const Divider(height: 24),
                       _InfoRow(
-                        label: 'cards.detail.status'.tr(),
+                        label: LocaleKeys.cards_detail_status.tr(),
                         value: currentCard.isActive
-                            ? 'cards.detail.active'.tr()
-                            : 'cards.detail.blocked'.tr(),
+                            ? LocaleKeys.cards_detail_active.tr()
+                            : LocaleKeys.cards_detail_blocked.tr(),
                         valueColor: currentCard.isActive
                             ? BankingColors.success
                             : BankingColors.error,
@@ -87,7 +88,7 @@ class CardDetailPage extends StatelessWidget {
                       if (currentCard.availableLimit != null) ...[
                         const Divider(height: 24),
                         _InfoRow(
-                          label: 'cards.detail.available_limit'.tr(),
+                          label: LocaleKeys.cards_detail_available_limit.tr(),
                           value:
                               '${currentCard.availableLimit!.toStringAsFixed(2)} EUR',
                         ),
@@ -117,8 +118,8 @@ class CardDetailPage extends StatelessWidget {
                           ),
                           label: Text(
                             currentCard.isActive
-                                ? 'cards.detail.block_action'.tr()
-                                : 'cards.detail.unblock_action'.tr(),
+                                ? LocaleKeys.cards_detail_block_action.tr()
+                                : LocaleKeys.cards_detail_unblock_action.tr(),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: currentCard.isActive
@@ -140,7 +141,7 @@ class CardDetailPage extends StatelessWidget {
                             // PIN change action.
                           },
                           icon: const Icon(Icons.pin_outlined),
-                          label: Text('cards.detail.change_pin'.tr()),
+                          label: Text(LocaleKeys.cards_detail_change_pin.tr()),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: BankingColors.primary,
                             side: const BorderSide(
