@@ -35,10 +35,13 @@ abstract final class SettingsRoutes {
               },
             ),
             child: SettingsPage(
-              onLogout: () {
+              onLogout: () async {
+                await container
+                    .read(SecurityProviders.sessionManager.notifier)
+                    .clearSession();
                 container
-                    .read(SecurityProviders.isLoggedIn.notifier)
-                    .set(value: false);
+                    .read(SecurityProviders.userSession.notifier)
+                    .clear();
               },
             ),
           );

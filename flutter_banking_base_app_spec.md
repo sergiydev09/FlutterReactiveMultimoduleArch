@@ -49,7 +49,7 @@ Listado completo de todos los paquetes del monorepo, organizados por capa, con s
 | **common** | `packages/core/common/` | Networking (Dio, interceptors, certificate pinning), config de entorno, error handling (`Failure` sealed), base `UseCase`, extensions, formatters, validators, i18n (`easy_localization` config, `RemoteDeltaAssetLoader`, `LocaleKeys` generadas) | Flutter SDK |
 | **ui** | `packages/core/ui/` | Design system: tokens (colors, typography, spacing, radii), temas (light/dark con `ThemeExtension`), componentes atómicos (atoms: `AppButton`, `AppInput`; molecules: `AmountDisplay`, `SearchBar`; organisms: `BankingAppBar`, `BottomSheet`) | Flutter SDK |
 | **domain** | `packages/core/domain/` | Entidades compartidas cross-feature (`UserModel`, `AccountModel`, `Currency`), value objects (`Money`, `IBAN`, `PhoneNumber`), contratos abstractos de repositorios compartidos | `common` |
-| **security** | `packages/core/security/` | `SecureStorageService` (wrapper genérico de `flutter_secure_storage`, no conoce conceptos de negocio), biometric auth (`local_auth`), `freeRASP` (root/jailbreak, hooks, debugger, emulator, tampering), cifrado (AES/RSA helpers), gestión de sesión (timeout inactividad, token refresh), clipboard protection, `FLAG_SECURE` | `common` |
+| **security** | `packages/core/security/` | `SecureStorageService` (wrapper genérico de `flutter_secure_storage`, no conoce conceptos de negocio), biometric auth (`local_auth`), **detección local de amenazas** (root/jailbreak via `safe_device`/`flutter_jailbreak_detection`, hooks, debugger, emulator, mock GPS, tampering — sin telemetría a terceros), **attestation de integridad** ([Play Integrity API](https://developer.android.com/google/play/integrity/overview) en Android + [App Attest](https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity) en iOS via [`app_device_integrity`](https://pub.dev/packages/app_device_integrity) — genera tokens firmados por Google/Apple que el backend del banco valida para verificar que la petición proviene de la app legítima en un dispositivo no comprometido), cifrado (AES/RSA helpers), gestión de sesión (timeout inactividad, token refresh), clipboard protection, `FLAG_SECURE` | `common` |
 | **mock** | `packages/core/mock/` | ⚠️ **Solo compila en DEV** (`main_dev.dart`). Implementaciones mock de data sources de features y libs. Fixtures JSON. Solo happy path. Los features NO conocen mock — mock conoce los features | `common`, features (interfaces), libs (interfaces) |
 
 ### 2.3 Libs (Librerías compartidas de negocio)
@@ -1069,7 +1069,8 @@ Cada item debe estar implementado y funcionando en la app base:
 - [ ] Certificate pinning configurado (aunque apunte a mock, la estructura está)
 - [ ] `flutter_secure_storage` con wrapper genérico
 - [ ] Biometric auth (`local_auth`) en login y confirmación de pago
-- [ ] `freeRASP` configurado (root/jailbreak, hooks, debugger, emulator, tampering)
+- [ ] Detección local de amenazas sin terceros (root/jailbreak, hooks, debugger, emulator, mock GPS, tampering) via `safe_device` + `flutter_jailbreak_detection`
+- [ ] Attestation de integridad: [Play Integrity API](https://developer.android.com/google/play/integrity/overview) (Android) + [App Attest / DeviceCheck](https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity) (iOS) via [`app_device_integrity`](https://pub.dev/packages/app_device_integrity) — token generado en cliente, validado en backend del banco
 - [ ] Ofuscación configurada en los builds de release
 - [ ] `FLAG_SECURE` para prevención de captura de pantalla
 - [ ] Gestión de sesión con timeout de inactividad

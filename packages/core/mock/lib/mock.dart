@@ -7,5 +7,6 @@ export 'datasources/mock_globalposition_datasource.dart';
 export 'datasources/mock_notification_datasource.dart';
 export 'datasources/mock_payment_datasource.dart';
 export 'datasources/mock_promotions_datasource.dart';
+export 'datasources/mock_shell_config_datasource.dart';
 export 'datasources/unimplemented_auth_datasource.dart';
 export 'di/mock_providers.dart';

@@ -1,14 +1,14 @@
 /// Shared utilities, networking, config, and error handling.
 library;
 
-// Configuration
 export 'config/environment.dart';
 export 'di/common_providers.dart';
-export 'localization/locale_change_notifier.dart';
 export 'error/failures.dart';
 export 'extensions/either_extensions.dart';
+export 'localization/locale_change_notifier.dart';
 export 'network/auth_interceptor.dart';
 export 'network/cache_config.dart';
+export 'network/certificate_pinning.dart';
 export 'network/dio_exception_mapper.dart';
 export 'network/dio_factory.dart';
 export 'network/logging_interceptor.dart';

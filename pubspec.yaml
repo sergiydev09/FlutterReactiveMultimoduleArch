@@ -14,6 +14,7 @@ workspace:
   - packages/features/authentication
   - packages/features/cards
   - packages/features/globalposition
+  - packages/features/main_shell
   - packages/features/notifications
   - packages/features/onboarding
   - packages/features/payments
@@ -23,7 +24,9 @@ workspace:
   - packages/libs/webview
 
 dependencies:
+  app_device_integrity: ^1.1.0
   bloc_concurrency: ^0.3.0
+  crypto: ^3.0.6
   dio: ^5.8.0+1
   dio_cache_interceptor: ^3.5.0
   easy_localization: ^3.0.7+1
@@ -42,6 +45,7 @@ dependencies:
   retrofit: ^4.9.2
   riverpod: ^3.2.1
   riverpod_annotation: ^4.0.2
+  safe_device: ^1.2.0
 
 dev_dependencies:
   bloc_test: any
@@ -90,6 +94,30 @@ melos:
       packageFilters:
         scope:
           - common
+
+    build:apk:
+      description: Build release APK with obfuscation
+      run: >
+        flutter build apk
+        --flavor prod
+        -t lib/main_prod.dart
+        --obfuscate
+        --split-debug-info=build/symbols/
+      exec:
+        packageFilters:
+          scope: mobile_app
+
+    build:ios:
+      description: Build release iOS with obfuscation
+      run: >
+        flutter build ios
+        --flavor prod
+        -t lib/main_prod.dart
+        --obfuscate
+        --split-debug-info=build/symbols/
+      exec:
+        packageFilters:
+          scope: mobile_app
 
     clean:
       description: Clean all packages

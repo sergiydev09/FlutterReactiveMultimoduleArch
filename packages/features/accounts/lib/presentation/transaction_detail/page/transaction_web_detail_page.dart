@@ -162,9 +162,7 @@ class _TransactionWebDetailPageState extends State<TransactionWebDetailPage> {
     }
 
     if (_url == null) {
-      return const Center(
-        child: CircularProgressIndicator(color: BankingColors.primary),
-      );
+      return const SizedBox.shrink();
     }
 
     return BankingWebView(

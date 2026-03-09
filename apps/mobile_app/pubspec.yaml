@@ -28,6 +28,8 @@ dependencies:
   globalposition:
     path: ../../packages/features/globalposition
   go_router:
+  main_shell:
+    path: ../../packages/features/main_shell
   mock:
     path: ../../packages/core/mock
   notifications_feature:

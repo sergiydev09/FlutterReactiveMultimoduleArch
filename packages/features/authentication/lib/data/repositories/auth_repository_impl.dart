@@ -5,6 +5,7 @@ import 'package:domain/entities/user.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:security/biometric/biometric_service.dart';
 import 'package:security/session/session_manager.dart';
+import 'package:security/session/user_storage_keys.dart';
 import 'package:security/storage/secure_storage_service.dart';
 import '../../domain/entities/login_credentials.dart';
 import '../../domain/entities/login_result.dart';
@@ -24,15 +25,6 @@ class AuthRepositoryImpl implements AuthRepository {
   final BiometricService biometricService;
   final SessionManager sessionManager;
   final SecureStorageService secureStorage;
-
-  // Storage keys for user fields.
-  static const _userId = 'user_id';
-  static const _userDni = 'user_dni';
-  static const _userFirstName = 'user_first_name';
-  static const _userLastName = 'user_last_name';
-  static const _userEmail = 'user_email';
-  static const _userCreatedAt = 'user_created_at';
-  static const _userPhone = 'user_phone';
 
   @override
   Future<Either<Failure, LoginResult>> login(
@@ -93,25 +85,28 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   Future<void> _persistUser(User user) async {
-    await secureStorage.write(_userId, user.id);
-    await secureStorage.write(_userDni, user.dni);
-    await secureStorage.write(_userFirstName, user.firstName);
-    await secureStorage.write(_userLastName, user.lastName);
-    await secureStorage.write(_userEmail, user.email);
-    await secureStorage.write(_userCreatedAt, user.createdAt.toIso8601String());
+    await secureStorage.write(UserStorageKeys.id, user.id);
+    await secureStorage.write(UserStorageKeys.dni, user.dni);
+    await secureStorage.write(UserStorageKeys.firstName, user.firstName);
+    await secureStorage.write(UserStorageKeys.lastName, user.lastName);
+    await secureStorage.write(UserStorageKeys.email, user.email);
+    await secureStorage.write(
+      UserStorageKeys.createdAt,
+      user.createdAt.toIso8601String(),
+    );
     if (user.phone != null) {
-      await secureStorage.write(_userPhone, user.phone!);
+      await secureStorage.write(UserStorageKeys.phone, user.phone!);
     }
   }
 
   Future<User?> _readUser() async {
-    final id = await secureStorage.read(_userId);
-    final dni = await secureStorage.read(_userDni);
-    final firstName = await secureStorage.read(_userFirstName);
-    final lastName = await secureStorage.read(_userLastName);
-    final email = await secureStorage.read(_userEmail);
-    final createdAtStr = await secureStorage.read(_userCreatedAt);
-    final phone = await secureStorage.read(_userPhone);
+    final id = await secureStorage.read(UserStorageKeys.id);
+    final dni = await secureStorage.read(UserStorageKeys.dni);
+    final firstName = await secureStorage.read(UserStorageKeys.firstName);
+    final lastName = await secureStorage.read(UserStorageKeys.lastName);
+    final email = await secureStorage.read(UserStorageKeys.email);
+    final createdAtStr = await secureStorage.read(UserStorageKeys.createdAt);
+    final phone = await secureStorage.read(UserStorageKeys.phone);
 
     if (id == null ||
         dni == null ||

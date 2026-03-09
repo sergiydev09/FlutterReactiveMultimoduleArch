@@ -13,8 +13,12 @@ import '../bloc/account_detail_bloc.dart';
 class AccountDetailPage extends StatelessWidget {
   const AccountDetailPage({
     super.key,
+    this.accountName,
     this.onTransactionTap,
   });
+
+  /// Account name passed from the list (shown immediately in the AppBar).
+  final String? accountName;
 
   /// Callback when a transaction is tapped.
   final void Function(Transaction transaction)? onTransactionTap;
@@ -23,14 +27,18 @@ class AccountDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: BankingColors.backgroundLight,
+      appBar: AppBar(
+        backgroundColor: BankingColors.primary,
+        foregroundColor: Colors.white,
+        title: accountName != null
+            ? Text(accountName!, style: const TextStyle(fontSize: 16))
+            : null,
+      ),
       body: BlocBuilder<AccountDetailBloc, AccountDetailState>(
         builder: (context, detailState) {
           return switch (detailState) {
-            AccountDetailInitial() || AccountDetailLoading() => const Center(
-              child: CircularProgressIndicator(
-                color: BankingColors.primary,
-              ),
-            ),
+            AccountDetailInitial() || AccountDetailLoading() =>
+              const SizedBox.shrink(),
             AccountDetailError(:final message) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -52,18 +60,8 @@ class AccountDetailPage extends StatelessWidget {
             ),
             AccountDetailLoaded(:final account) => CustomScrollView(
               slivers: [
-                SliverAppBar(
-                  expandedHeight: 280,
-                  pinned: true,
-                  backgroundColor: BankingColors.primary,
-                  foregroundColor: Colors.white,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: AccountInfoHeader(account: account),
-                  ),
-                  title: Text(
-                    account.name,
-                    style: const TextStyle(fontSize: 16),
-                  ),
+                SliverToBoxAdapter(
+                  child: AccountInfoHeader(account: account),
                 ),
                 // Transactions list.
                 SliverToBoxAdapter(

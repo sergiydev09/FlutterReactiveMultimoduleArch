@@ -1880,33 +1880,46 @@ final didAuthenticate = await localAuth.authenticate(
 );
 ```
 
-### 12.4 Detección de Amenazas en Runtime: freeRASP
+### 12.4 Detección de Amenazas en Runtime (Local, sin telemetría a terceros)
 
-freeRASP (Runtime Application Self-Protection) es la única librería de detección. Cubre todo en un solo paquete: root/jailbreak, hooks (Frida, Xposed), debugger, emulador, tampering y repackaging. No necesitamos `flutter_jailbreak_detection` ni ninguna otra.
+> **Decisión**: Se descartó freeRASP porque envía telemetría a servidores de Talsec
+> (tercero). La implementación usa **`safe_device`** como única librería de detección
+> local, sin envío de datos a terceros.
+
+`safe_device` cubre todas las verificaciones necesarias:
+- Root/jailbreak (RootBeer en Android, IOSSecuritySuite en iOS)
+- Detección de emulador, mock GPS, almacenamiento externo, modo desarrollador y depuración USB.
 
 ```dart
-// packages/core/security/lib/anti_tamper/rasp_service.dart
-final config = TalsecConfig(
-  androidConfig: AndroidConfig(
-    packageName: 'com.bank.app',
-    signingCertHashes: ['HASH_DEL_CERTIFICADO'],
-  ),
-  iosConfig: IOSConfig(
-    bundleIds: ['com.bank.app'],
-    teamId: 'TEAM_ID',
-  ),
-  watcherMail: 'security@bank.com',
-);
+// packages/core/security/lib/threat_detection/device_threat_detector.dart
+class DeviceThreatDetectorImpl implements DeviceThreatDetector {
+  @override
+  Future<ThreatReport> evaluate() async {
+    // Ejecuta todos los checks en paralelo.
+    final results = await Future.wait([
+      _checkJailbroken(),   // FlutterJailbreakDetection
+      _checkRealDevice(),   // SafeDevice.isRealDevice
+      _checkMockLocation(), // SafeDevice.isMockLocation (Android)
+      _checkExternalStorage(),
+      _checkDeveloperMode(),
+      _checkUsbDebugging(),
+    ]);
+    return ThreatReport(/* ... */);
+  }
+}
 
-// Callbacks por tipo de amenaza
-final callback = ThreatCallback(
-  onRootDetected: () => _handleThreat('root'),
-  onDebuggerDetected: () => _handleThreat('debugger'),
-  onEmulatorDetected: () => _handleThreat('emulator'),
-  onTamperDetected: () => _handleThreat('tamper'),
-  onHookDetected: () => _handleThreat('hook'),
-  onUnofficialStoreDetected: () => _handleThreat('unofficial_store'),
+// Para dev/test: NoOpDeviceThreatDetector (siempre devuelve ThreatReport limpio).
+```
+
+Orquestación al arranque:
+```dart
+// En main_prod.dart
+final initializer = SecurityInitializer(
+  threatDetector: DeviceThreatDetectorImpl(),
+  screenProtection: ScreenProtectionService(),
+  policy: ThreatPolicy.block,  // Bloquea en producción si hay root/jailbreak
 );
+await initializer.initialize(onBlocked: () { /* pantalla de bloqueo */ });
 ```
 
 ### 12.5 Ofuscación de Código
@@ -1974,7 +1987,7 @@ class SessionManager {
 | Almacenamiento seguro | flutter_secure_storage (Keychain/Keystore) |
 | Comunicación segura | Certificate pinning + TLS 1.2+ |
 | Autenticación | Biometrics + PIN + 2FA |
-| Integridad de código | Ofuscación + freeRASP + firma de app |
+| Integridad de código | Ofuscación + safe_device + firma de app |
 | Anti-reversión | ProGuard/R8 (Android) + Bitcode (iOS) |
 | Detección de entorno | Root/jailbreak detection + emulator detection |
 | Logging seguro | No logs sensibles en release, crashlytics filtrado |

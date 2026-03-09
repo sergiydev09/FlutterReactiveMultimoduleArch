@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import '../config/environment.dart';
 import './auth_interceptor.dart';
 import './cache_config.dart';
+import './certificate_pinning.dart';
 import './logging_interceptor.dart';
 
 /// Factory responsible for creating and configuring the [Dio] HTTP client.
@@ -32,6 +34,15 @@ class DioFactory {
         },
       ),
     );
+
+    // Certificate pinning — only in PRE/PRO environments.
+    if (environmentConfig.isCertificatePinningEnabled) {
+      final pinnedClient = CertificatePinning.createPinnedHttpClient(
+        environmentConfig.certificatePinHashes,
+      );
+      (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient =
+          () => pinnedClient;
+    }
 
     // Auth interceptor – handles token injection and 401 refresh.
     dio.interceptors.add(

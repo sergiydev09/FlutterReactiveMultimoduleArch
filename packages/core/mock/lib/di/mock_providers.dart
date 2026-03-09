@@ -5,6 +5,7 @@ import '../datasources/mock_globalposition_datasource.dart';
 import '../datasources/mock_notification_datasource.dart';
 import '../datasources/mock_payment_datasource.dart';
 import '../datasources/mock_promotions_datasource.dart';
+import '../datasources/mock_shell_config_datasource.dart';
 
 abstract final class MockProviders {
   static final mockAuthDataSource = MockAuthDataSource();
@@ -14,4 +15,5 @@ abstract final class MockProviders {
   static final mockCardDataSource = MockCardDataSource();
   static final mockNotificationDataSource = MockNotificationDataSource();
   static final mockPromotionsDataSource = MockPromotionsDataSource();
+  static final mockShellConfigDataSource = MockShellConfigDataSource();
 }

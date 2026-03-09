@@ -95,6 +95,14 @@ abstract final class BankingTheme {
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       dividerColor: dividerColor,
 
+      // -- Page Transitions (unified across platforms) --
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
+
       // -- AppBar --
       appBarTheme: AppBarTheme(
         elevation: 0,

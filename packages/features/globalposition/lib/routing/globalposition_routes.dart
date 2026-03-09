@@ -27,8 +27,17 @@ abstract final class GlobalPositionRoutes {
               ),
             )..add(const LoadGlobalPosition()),
             child: GlobalPositionPage(
-              onAccountTap: (accountId) {
-                unawaited(context.push('/accounts/$accountId'));
+              onAccountTap: (account) {
+                unawaited(context.push(
+                  '/accounts/${account.id}',
+                  extra: account.name,
+                ));
+              },
+              onTransactionTap: (tx) {
+                unawaited(context.push(
+                  '/accounts/${tx.accountId}/transactions/${tx.id}',
+                  extra: tx,
+                ));
               },
             ),
           );

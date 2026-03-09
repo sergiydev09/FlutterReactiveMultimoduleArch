@@ -1,5 +1,5 @@
 name: security
-description: Security module - storage, biometrics, session management
+description: Security module - storage, biometrics, threat detection, attestation, screen protection, clipboard, session management
 publish_to: 'none'
 
 environment:
@@ -15,6 +15,10 @@ dependencies:
   flutter_riverpod:
   flutter_secure_storage:
   local_auth:
+  # Local threat detection (no telemetry)
+  safe_device:
+  # Play Integrity (Android) + App Attest (iOS)
+  app_device_integrity:
 
 dev_dependencies:
   flutter_test:

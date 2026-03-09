@@ -1,48 +1,67 @@
 import 'dart:developer' as developer;
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../di/security_providers.dart';
 import '../storage/secure_storage_service.dart';
 
-/// Manages the user session: token persistence, validity checks,
-/// and session lifecycle.
-class SessionManager {
-  SessionManager({
-    required SecureStorageService secureStorage,
-    this.sessionTimeout = const Duration(minutes: 5),
-  }) : _secureStorage = secureStorage;
+/// Contract for session lifecycle management.
+///
+/// The session is considered active when a valid access token exists and
+/// the inactivity timeout has not been exceeded.
+abstract class SessionManager {
+  Future<void> saveToken(String accessToken);
+  Future<String?> getToken();
+  Future<void> saveRefreshToken(String refreshToken);
+  Future<String?> getRefreshToken();
+  Future<void> clearSession();
+  Future<bool> isSessionValid();
+  Future<void> recordActivity();
+  Future<String?> refreshToken();
+}
 
-  final SecureStorageService _secureStorage;
+/// Reactive implementation of [SessionManager] as an [AsyncNotifier].
+///
+/// The notifier state (`bool`) represents whether the session is active.
+/// [saveToken] sets it to `true`, [clearSession] sets it to `false`.
+/// The router watches this state to trigger redirects.
+class SessionManagerNotifier extends AsyncNotifier<bool>
+    implements SessionManager {
+  SecureStorageService get _secureStorage =>
+      ref.read(SecurityProviders.secureStorage);
 
-  /// Duration after which the session is considered expired due to inactivity.
-  final Duration sessionTimeout;
+  Duration get sessionTimeout => const Duration(minutes: 5);
 
   static const _tag = 'SessionManager';
-
-  // Storage keys.
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
   static const _lastActivityKey = 'last_activity';
+
+  @override
+  Future<bool> build() => isSessionValid();
 
   // ---------------------------------------------------------------------------
   // Token management
   // ---------------------------------------------------------------------------
 
-  /// Persists the access token.
+  @override
   Future<void> saveToken(String accessToken) async {
     await _secureStorage.write(_accessTokenKey, accessToken);
     await _recordActivity();
+    state = const AsyncData(true);
     developer.log('Access token saved', name: _tag);
   }
 
-  /// Retrieves the access token, or `null` if not stored.
+  @override
   Future<String?> getToken() async {
     return _secureStorage.read(_accessTokenKey);
   }
 
-  /// Persists the refresh token.
+  @override
   Future<void> saveRefreshToken(String refreshToken) async {
     await _secureStorage.write(_refreshTokenKey, refreshToken);
   }
 
-  /// Retrieves the refresh token, or `null` if not stored.
+  @override
   Future<String?> getRefreshToken() async {
     return _secureStorage.read(_refreshTokenKey);
   }
@@ -51,16 +70,16 @@ class SessionManager {
   // Session lifecycle
   // ---------------------------------------------------------------------------
 
-  /// Clears all session data (tokens and activity timestamps).
+  @override
   Future<void> clearSession() async {
     await _secureStorage.delete(_accessTokenKey);
     await _secureStorage.delete(_refreshTokenKey);
     await _secureStorage.delete(_lastActivityKey);
+    state = const AsyncData(false);
     developer.log('Session cleared', name: _tag);
   }
 
-  /// Returns `true` if the session is valid (token exists and not expired
-  /// due to inactivity).
+  @override
   Future<bool> isSessionValid() async {
     final token = await getToken();
     if (token == null || token.isEmpty) return false;
@@ -76,8 +95,7 @@ class SessionManager {
     return elapsed < sessionTimeout;
   }
 
-  /// Records the current time as the last user activity.
-  /// Call this on meaningful user interactions to keep the session alive.
+  @override
   Future<void> recordActivity() async {
     await _recordActivity();
   }
@@ -86,6 +104,7 @@ class SessionManager {
   ///
   /// In a real implementation this would call the auth API to exchange
   /// the refresh token for a new access token.
+  @override
   Future<String?> refreshToken() async {
     final currentRefreshToken = await getRefreshToken();
     if (currentRefreshToken == null || currentRefreshToken.isEmpty) {

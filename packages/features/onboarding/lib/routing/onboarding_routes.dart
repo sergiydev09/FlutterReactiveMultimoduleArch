@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:security/security.dart';
+import '../di/onboarding_providers.dart';
 import '../presentation/onboarding/bloc/onboarding_bloc.dart';
 import '../presentation/onboarding/page/onboarding_page.dart';
 
@@ -20,9 +22,11 @@ abstract final class OnboardingRoutes {
             create: (_) => OnboardingBloc(),
             child: OnboardingPage(
               onComplete: () {
-                container
-                    .read(SecurityProviders.hasSeenOnboarding.notifier)
-                    .set(value: true);
+                unawaited(
+                  container
+                      .read(OnboardingProviders.hasSeenOnboarding.notifier)
+                      .markSeen(),
+                );
               },
             ),
           );

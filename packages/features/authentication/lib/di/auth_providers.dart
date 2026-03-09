@@ -27,7 +27,7 @@ abstract final class AuthProviders {
     return AuthRepositoryImpl(
       remoteDataSource: ref.watch(AuthProviders.remoteDataSource),
       biometricService: ref.watch(SecurityProviders.biometricService),
-      sessionManager: ref.watch(SecurityProviders.sessionManager),
+      sessionManager: ref.read(SecurityProviders.sessionManager.notifier),
       secureStorage: ref.watch(SecurityProviders.secureStorage),
     );
   });

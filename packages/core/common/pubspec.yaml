@@ -8,6 +8,7 @@ environment:
 resolution: workspace
 
 dependencies:
+  crypto:
   dio:
   dio_cache_interceptor:
   easy_localization:

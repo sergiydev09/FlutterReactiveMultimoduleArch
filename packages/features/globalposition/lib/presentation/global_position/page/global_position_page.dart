@@ -1,5 +1,7 @@
 import 'package:common/generated/locale_keys.g.dart';
 import 'package:common/utils/formatters.dart';
+import 'package:domain/entities/account.dart';
+import 'package:domain/entities/transaction.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,10 +34,10 @@ class GlobalPositionPage extends StatelessWidget {
   final List<PromoBanner> promoBanners;
 
   /// Callback when an account card is tapped.
-  final void Function(String accountId)? onAccountTap;
+  final void Function(Account account)? onAccountTap;
 
   /// Callback when a transaction is tapped.
-  final void Function(String transactionId)? onTransactionTap;
+  final void Function(Transaction transaction)? onTransactionTap;
 
   /// Callback for quick action buttons.
   final VoidCallback? onTransfer;
@@ -150,7 +152,7 @@ class GlobalPositionPage extends StatelessWidget {
                 ),
                 child: AccountCard(
                   account: account,
-                  onTap: () => onAccountTap?.call(account.id),
+                  onTap: () => onAccountTap?.call(account),
                 ),
               ),
             ),
@@ -182,7 +184,7 @@ class GlobalPositionPage extends StatelessWidget {
               ...state.transactions.map(
                 (tx) => TransactionTile(
                   transaction: tx,
-                  onTap: () => onTransactionTap?.call(tx.id),
+                  onTap: () => onTransactionTap?.call(tx),
                 ),
               ),
             const SizedBox(height: 24),

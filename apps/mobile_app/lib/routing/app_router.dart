@@ -4,59 +4,34 @@ import 'package:cards/routing/cards_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:globalposition/routing/globalposition_routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:main_shell/main_shell.dart';
 import 'package:notifications_feature/routing/notifications_routes.dart';
-import 'package:onboarding/routing/onboarding_routes.dart';
 import 'package:payments/routing/payments_routes.dart';
 import 'package:settings/routing/settings_routes.dart';
 import '../di/providers.dart';
-import './main_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final isLoggedIn = ref.watch(SecurityProviders.isLoggedIn);
-  final hasSeenOnboarding = ref.watch(SecurityProviders.hasSeenOnboarding);
+  final isSessionActive = ref.watch(SecurityProviders.isSessionActive);
   ref.watch(CommonProviders.localeChangeNotifier);
 
   return GoRouter(
     initialLocation: AuthRoutes.login,
     redirect: (context, state) {
-      final loggingIn =
+      final isAuthRoute =
           state.matchedLocation == AuthRoutes.login ||
           state.matchedLocation == AuthRoutes.forgotPassword;
 
-      if (!isLoggedIn && !loggingIn) return AuthRoutes.login;
-
-      if (isLoggedIn &&
-          !hasSeenOnboarding &&
-          state.matchedLocation != OnboardingRoutes.onboarding) {
-        return OnboardingRoutes.onboarding;
-      }
-
-      if (isLoggedIn &&
-          hasSeenOnboarding &&
-          state.matchedLocation == OnboardingRoutes.onboarding) {
-        return GlobalPositionRoutes.home;
-      }
-
-      if (isLoggedIn && loggingIn) return GlobalPositionRoutes.home;
+      if (!isSessionActive && !isAuthRoute) return AuthRoutes.login;
+      if (isSessionActive && isAuthRoute) return GlobalPositionRoutes.home;
 
       return null;
     },
     routes: [
       ...AuthRoutes.routes.fullScreenRoutes,
-      ...OnboardingRoutes.routes.fullScreenRoutes,
+      // TODO(onboarding): Descomentar cuando se active el flujo de onboarding.
+      // ...OnboardingRoutes.routes.fullScreenRoutes,
       ShellRoute(
-        builder: (context, state, child) {
-          final container = ProviderScope.containerOf(context);
-          return MainShell(
-            userName: container.read(SecurityProviders.currentUserName),
-            onLogout: () {
-              container
-                  .read(SecurityProviders.isLoggedIn.notifier)
-                  .set(value: false);
-            },
-            child: child,
-          );
-        },
+        builder: MainShellRoutes.builder,
         routes: [
           ...GlobalPositionRoutes.routes.shellRoutes,
           ...PaymentRoutes.routes.shellRoutes,

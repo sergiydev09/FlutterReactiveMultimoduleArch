@@ -22,6 +22,8 @@ dependencies:
     sdk: flutter
   globalposition:
     path: ../../features/globalposition
+  main_shell:
+    path: ../../features/main_shell
   notifications_feature:
     path: ../../features/notifications
   payments:

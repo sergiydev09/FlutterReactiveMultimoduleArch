@@ -39,12 +39,13 @@ abstract final class AuthRoutes {
               container.read(CommonProviders.environment.notifier).set(env);
             },
             onLoginSuccess: (user) {
-              container
-                  .read(SecurityProviders.isLoggedIn.notifier)
-                  .set(value: true);
-              container
-                  .read(SecurityProviders.currentUserName.notifier)
-                  .set(user.fullName);
+              // SessionManager already transitioned to active via saveToken()
+              // in the repository. Refresh the user session cache.
+              unawaited(
+                container
+                    .read(SecurityProviders.userSession.notifier)
+                    .refresh(),
+              );
             },
             onForgotPassword: () => context.go(forgotPassword),
           );

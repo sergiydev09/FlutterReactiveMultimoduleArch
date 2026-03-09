@@ -54,6 +54,7 @@ abstract final class AccountRoutes {
               final container = ProviderScope.containerOf(context);
               final accountRepo = container.read(AccountProviders.repository);
               final accountId = state.pathParameters['id']!;
+              final accountName = state.extra as String?;
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(
@@ -73,6 +74,7 @@ abstract final class AccountRoutes {
                   ),
                 ],
                 child: AccountDetailPage(
+                  accountName: accountName,
                   onTransactionTap: (tx) {
                     unawaited(context.push(
                       AccountRoutes.transaction(
@@ -101,7 +103,7 @@ abstract final class AccountRoutes {
                   return TransactionWebDetailPage(
                     transaction: transaction,
                     sessionManager: container.read(
-                      SecurityProviders.sessionManager,
+                      SecurityProviders.sessionManager.notifier,
                     ),
                     accountRepository: container.read(
                       AccountProviders.repository,
