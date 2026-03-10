@@ -249,7 +249,8 @@ dependencies:
   go_router: ^14.0.0
   flutter_secure_storage: ^9.0.0
   local_auth: ^2.2.0
-  freerasp: ^6.0.0
+  safe_device: ^1.2.0
+  app_device_integrity: ^3.0.0
   easy_localization: ^3.0.0
   dio_cache_interceptor: ^3.5.0
   flutter_windowmanager: ^2.1.0
@@ -1882,9 +1883,8 @@ final didAuthenticate = await localAuth.authenticate(
 
 ### 12.4 Detección de Amenazas en Runtime (Local, sin telemetría a terceros)
 
-> **Decisión**: Se descartó freeRASP porque envía telemetría a servidores de Talsec
-> (tercero). La implementación usa **`safe_device`** como única librería de detección
-> local, sin envío de datos a terceros.
+> **Decisión**: Se usa **`safe_device`** como librería de detección local,
+> sin envío de datos ni telemetría a terceros.
 
 `safe_device` cubre todas las verificaciones necesarias:
 - Root/jailbreak (RootBeer en Android, IOSSecuritySuite en iOS)
@@ -1922,7 +1922,72 @@ final initializer = SecurityInitializer(
 await initializer.initialize(onBlocked: () { /* pantalla de bloqueo */ });
 ```
 
-### 12.5 Ofuscación de Código
+### 12.5 Verificación de Integridad de la App (Play Integrity + App Attest)
+
+Verifica que la app se ejecuta en un entorno legítimo y no ha sido modificada (repackaging, sideloading, etc.). Usa **`app_device_integrity`** que abstrae las APIs nativas de cada plataforma.
+
+| Plataforma | API nativa | Qué verifica |
+|------------|-----------|--------------|
+| Android | **Play Integrity API** | App firmada por Google Play, dispositivo no rooteado, binario original |
+| iOS | **App Attest / DeviceCheck** | App descargada desde App Store, dispositivo no comprometido |
+
+```dart
+// packages/core/security/lib/attestation/integrity_attestation_service.dart
+abstract class IntegrityAttestationService {
+  /// Genera un token de atestación firmado por Google/Apple.
+  /// [challengeUuid]: nonce único del backend (previene replay attacks).
+  /// El token se envía al backend en el header `X-Integrity-Token`
+  /// para que lo valide contra los servidores de Google/Apple.
+  Future<String?> getAttestationToken({required String challengeUuid});
+}
+
+class IntegrityAttestationServiceImpl implements IntegrityAttestationService {
+  final String _gcpProjectId; // Solo requerido en Android
+
+  @override
+  Future<String?> getAttestationToken({required String challengeUuid}) async {
+    final plugin = AppDeviceIntegrity();
+
+    if (Platform.isAndroid) {
+      return plugin.getAttestationServiceSupport(
+        challengeString: challengeUuid,
+        gcp: _gcpProjectId,
+      );
+    } else {
+      return plugin.getAttestationServiceSupport(
+        challengeString: challengeUuid,
+      );
+    }
+  }
+}
+
+// Para dev/staging: MockIntegrityAttestationService (token falso).
+```
+
+**Flujo de verificación:**
+
+1. App solicita un **challenge UUID** al backend (nonce de un solo uso).
+2. App invoca `getAttestationToken(challengeUuid)` → API nativa genera token firmado.
+3. App envía el token al backend en header `X-Integrity-Token`.
+4. Backend valida el token contra servidores de Google/Apple.
+5. Si la validación falla → el backend rechaza la petición.
+
+**Configuración DI:**
+
+```dart
+// security_providers.dart — default: mock (dev)
+// Override en main_staging/prod con:
+SecurityProviders.integrityAttestation.overrideWithValue(
+  IntegrityAttestationServiceImpl(gcpProjectId: 'YOUR_GCP_PROJECT_ID'),
+)
+```
+
+> **Prerequisitos para producción:**
+> - Android: configurar GCP Project ID vinculado a Play Console.
+> - iOS: activar App Attest capability en Xcode + Apple Developer Portal.
+> - Backend: endpoint de validación de tokens contra las APIs de Google/Apple.
+
+### 12.6 Ofuscación de Código
 
 ```bash
 # Build con ofuscación (obligatorio para producción)
@@ -1937,7 +2002,7 @@ flutter build ipa \
   --release
 ```
 
-### 12.6 Prevención de Captura de Pantalla
+### 12.7 Prevención de Captura de Pantalla
 
 ```dart
 // flutter_windowmanager (Android) + método nativo (iOS)
@@ -1947,7 +2012,7 @@ await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
 // iOS: requiere implementación nativa con UITextField.isSecureTextEntry trick
 ```
 
-### 12.7 Protección del Portapapeles
+### 12.8 Protección del Portapapeles
 
 ```dart
 // Limpiar clipboard después de copiar datos sensibles
@@ -1960,7 +2025,7 @@ Future<void> secureCopy(String sensitiveData) async {
 }
 ```
 
-### 12.8 Gestión de Sesión
+### 12.9 Gestión de Sesión
 
 ```dart
 class SessionManager {
@@ -2652,7 +2717,8 @@ apps/mobile_app/              @platform-team
 |-----------|---------|-----|
 | Secure Storage | `flutter_secure_storage` | Keychain (iOS) / Keystore (Android) |
 | Biometrics | `local_auth` | Fingerprint, Face ID |
-| RASP | `freerasp` | Root/jailbreak, tampering, hooks, debugger detection |
+| Threat Detection | `safe_device` | Root/jailbreak, emulador, mock GPS, modo desarrollador |
+| App Integrity | `app_device_integrity` | Play Integrity (Android), App Attest (iOS) |
 | Screen Protection | `flutter_windowmanager` | Prevenir capturas de pantalla (Android) |
 
 ### Caché y Persistencia
