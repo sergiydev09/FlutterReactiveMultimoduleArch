@@ -1,15 +1,12 @@
 part of 'login_bloc.dart';
 
+enum LoginStatus { initial, loading, authenticated, unauthenticated, error }
+
 @freezed
-sealed class LoginState with _$LoginState {
-  const factory LoginState.initial() = LoginInitial;
-
-  const factory LoginState.loading() = LoginLoading;
-
-  const factory LoginState.authenticated({required User user}) =
-      LoginAuthenticated;
-
-  const factory LoginState.unauthenticated() = LoginUnauthenticated;
-
-  const factory LoginState.error({required String message}) = LoginError;
+abstract class LoginState with _$LoginState {
+  const factory LoginState({
+    @Default(LoginStatus.initial) LoginStatus status,
+    User? user,
+    @Default('') String errorMessage,
+  }) = _LoginState;
 }

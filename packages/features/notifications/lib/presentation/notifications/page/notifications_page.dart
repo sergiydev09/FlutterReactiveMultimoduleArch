@@ -24,13 +24,14 @@ class NotificationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationsBloc, NotificationsState>(
       builder: (context, state) {
-        return switch (state) {
-          NotificationsInitial() || NotificationsLoading() => const Center(
-            child: CircularProgressIndicator(
-              color: BankingColors.primary,
+        return switch (state.status) {
+          NotificationsStatus.initial || NotificationsStatus.loading =>
+            const Center(
+              child: CircularProgressIndicator(
+                color: BankingColors.primary,
+              ),
             ),
-          ),
-          NotificationsError(:final message) => Center(
+          NotificationsStatus.error => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -40,7 +41,7 @@ class NotificationsPage extends StatelessWidget {
                   color: BankingColors.error,
                 ),
                 const SizedBox(height: 16),
-                Text(message),
+                Text(state.errorMessage),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
@@ -57,8 +58,8 @@ class NotificationsPage extends StatelessWidget {
               ],
             ),
           ),
-          NotificationsLoaded(:final notifications) =>
-            notifications.isEmpty
+          NotificationsStatus.loaded =>
+            state.notifications.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -81,13 +82,13 @@ class NotificationsPage extends StatelessWidget {
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: notifications.length,
+                    itemCount: state.notifications.length,
                     separatorBuilder: (_, _) => const Divider(
                       height: 1,
                       indent: 72,
                     ),
                     itemBuilder: (context, index) {
-                      final notification = notifications[index];
+                      final notification = state.notifications[index];
                       return _NotificationTile(
                         notification: notification,
                         onTap: () {

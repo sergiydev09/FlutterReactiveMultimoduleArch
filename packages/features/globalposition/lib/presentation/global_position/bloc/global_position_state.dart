@@ -1,21 +1,19 @@
 part of 'global_position_bloc.dart';
 
+enum GlobalPositionStatus { initial, loading, loaded, error }
+
 @freezed
-sealed class GlobalPositionState with _$GlobalPositionState {
-  const factory GlobalPositionState.initial() = GPInitial;
+abstract class GlobalPositionState with _$GlobalPositionState {
+  const factory GlobalPositionState({
+    @Default(GlobalPositionStatus.initial) GlobalPositionStatus status,
+    @Default([]) List<Account> accounts,
+    @Default([]) List<Transaction> transactions,
+    @Default('') String userName,
+    @Default('') String errorMessage,
+  }) = _GlobalPositionState;
 
-  const factory GlobalPositionState.loading() = GPLoading;
+  const GlobalPositionState._();
 
-  const factory GlobalPositionState.loaded({
-    required List<Account> accounts,
-    required List<Transaction> transactions,
-    required String userName,
-  }) = GPLoaded;
-
-  const factory GlobalPositionState.error({required String message}) = GPError;
-}
-
-extension GPLoadedX on GPLoaded {
   double get totalBalance =>
       accounts.fold(0, (sum, account) => sum + account.balance);
 }

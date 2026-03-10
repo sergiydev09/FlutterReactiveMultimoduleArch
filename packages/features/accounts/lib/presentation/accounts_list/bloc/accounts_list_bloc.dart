@@ -13,7 +13,7 @@ class AccountsListBloc extends Bloc<AccountsListEvent, AccountsListState> {
   AccountsListBloc({
     required GetAccountsUseCase getAccountsUseCase,
   }) : _getAccountsUseCase = getAccountsUseCase,
-       super(const AccountsListInitial()) {
+       super(const AccountsListState()) {
     on<LoadAccounts>(_onLoadAccounts);
   }
 
@@ -23,13 +23,19 @@ class AccountsListBloc extends Bloc<AccountsListEvent, AccountsListState> {
     LoadAccounts event,
     Emitter<AccountsListState> emit,
   ) async {
-    emit(const AccountsListLoading());
+    emit(state.copyWith(status: AccountsListStatus.loading));
 
     final result = await _getAccountsUseCase(const NoParams());
 
     result.match(
-      (failure) => emit(AccountsListError(message: failure.message)),
-      (accounts) => emit(AccountsListLoaded(accounts: accounts)),
+      (failure) => emit(state.copyWith(
+        status: AccountsListStatus.error,
+        errorMessage: failure.message,
+      )),
+      (accounts) => emit(state.copyWith(
+        status: AccountsListStatus.loaded,
+        accounts: accounts,
+      )),
     );
   }
 }

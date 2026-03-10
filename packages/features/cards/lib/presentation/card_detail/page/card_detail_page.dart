@@ -30,7 +30,7 @@ class CardDetailPage extends StatelessWidget {
       body: BlocBuilder<CardsListBloc, CardsListState>(
         builder: (context, state) {
           // Find the latest version of this card from the state.
-          final currentCard = state is CardsListLoaded
+          final currentCard = state.status == CardsListStatus.loaded
               ? state.cards.firstWhere(
                   (c) => c.id == card.id,
                   orElse: () => card,

@@ -13,7 +13,7 @@ class AccountTransactionsBloc
   AccountTransactionsBloc({
     required GetAccountTransactionsUseCase getAccountTransactionsUseCase,
   }) : _getAccountTransactionsUseCase = getAccountTransactionsUseCase,
-       super(const AccountTransactionsInitial()) {
+       super(const AccountTransactionsState()) {
     on<LoadTransactions>(_onLoad);
     on<LoadMoreTransactions>(_onLoadMore);
   }
@@ -24,22 +24,24 @@ class AccountTransactionsBloc
     LoadTransactions event,
     Emitter<AccountTransactionsState> emit,
   ) async {
-    emit(const AccountTransactionsLoading());
+    emit(state.copyWith(status: AccountTransactionsStatus.loading));
 
     final result = await _getAccountTransactionsUseCase(
       GetAccountTransactionsParams(accountId: event.accountId),
     );
 
     result.match(
-      (failure) => emit(AccountTransactionsError(message: failure.message)),
-      (transactions) => emit(
-        AccountTransactionsLoaded(
-          transactions: transactions,
-          hasReachedMax: transactions.length < 20,
-          currentPage: 0,
-          accountId: event.accountId,
-        ),
-      ),
+      (failure) => emit(state.copyWith(
+        status: AccountTransactionsStatus.error,
+        errorMessage: failure.message,
+      )),
+      (transactions) => emit(state.copyWith(
+        status: AccountTransactionsStatus.loaded,
+        transactions: transactions,
+        hasReachedMax: transactions.length < 20,
+        currentPage: 0,
+        accountId: event.accountId,
+      )),
     );
   }
 
@@ -47,34 +49,33 @@ class AccountTransactionsBloc
     LoadMoreTransactions event,
     Emitter<AccountTransactionsState> emit,
   ) async {
-    final currentState = state;
-    if (currentState is! AccountTransactionsLoaded ||
-        currentState.hasReachedMax) {
+    if (state.status != AccountTransactionsStatus.loaded ||
+        state.hasReachedMax) {
       return;
     }
 
-    final nextPage = currentState.currentPage + 1;
+    final nextPage = state.currentPage + 1;
 
     final result = await _getAccountTransactionsUseCase(
       GetAccountTransactionsParams(
-        accountId: currentState.accountId,
+        accountId: state.accountId,
         page: nextPage,
       ),
     );
 
     result.match(
-      (failure) => emit(AccountTransactionsError(message: failure.message)),
-      (newTransactions) => emit(
-        AccountTransactionsLoaded(
-          transactions: [
-            ...currentState.transactions,
-            ...newTransactions,
-          ],
-          hasReachedMax: newTransactions.length < 20,
-          currentPage: nextPage,
-          accountId: currentState.accountId,
-        ),
-      ),
+      (failure) => emit(state.copyWith(
+        status: AccountTransactionsStatus.error,
+        errorMessage: failure.message,
+      )),
+      (newTransactions) => emit(state.copyWith(
+        transactions: [
+          ...state.transactions,
+          ...newTransactions,
+        ],
+        hasReachedMax: newTransactions.length < 20,
+        currentPage: nextPage,
+      )),
     );
   }
 }

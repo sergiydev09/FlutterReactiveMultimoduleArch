@@ -1,10 +1,12 @@
 part of 'main_shell_bloc.dart';
 
+enum MainShellStatus { loading, ready, error }
+
 @freezed
-sealed class MainShellState with _$MainShellState {
-  const factory MainShellState.loading() = ShellLoading;
-  const factory MainShellState.ready({
-    required ShellConfig config,
-  }) = ShellReady;
-  const factory MainShellState.error({required String message}) = ShellError;
+abstract class MainShellState with _$MainShellState {
+  const factory MainShellState({
+    @Default(MainShellStatus.loading) MainShellStatus status,
+    ShellConfig? config,
+    @Default('') String errorMessage,
+  }) = _MainShellState;
 }

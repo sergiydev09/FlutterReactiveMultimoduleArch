@@ -25,21 +25,22 @@ class AccountsListPage extends StatelessWidget {
       ),
       body: BlocBuilder<AccountsListBloc, AccountsListState>(
         builder: (context, state) {
-          return switch (state) {
-            AccountsListInitial() || AccountsListLoading() => const Center(
-              child: CircularProgressIndicator(
-                color: BankingColors.primary,
+          return switch (state.status) {
+            AccountsListStatus.initial || AccountsListStatus.loading =>
+              const Center(
+                child: CircularProgressIndicator(
+                  color: BankingColors.primary,
+                ),
               ),
+            AccountsListStatus.error => Center(
+              child: Text(state.errorMessage),
             ),
-            AccountsListError(:final message) => Center(
-              child: Text(message),
-            ),
-            AccountsListLoaded(:final accounts) => ListView.separated(
+            AccountsListStatus.loaded => ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              itemCount: accounts.length,
+              itemCount: state.accounts.length,
               separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
-                final account = accounts[index];
+                final account = state.accounts[index];
                 return _AccountListTile(
                   account: account,
                   onTap: () => context.push(

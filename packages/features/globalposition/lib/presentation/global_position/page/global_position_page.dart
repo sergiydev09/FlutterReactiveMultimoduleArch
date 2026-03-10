@@ -52,14 +52,16 @@ class GlobalPositionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalPositionBloc, GlobalPositionState>(
       builder: (context, state) {
-        return switch (state) {
-          GPInitial() || GPLoading() => const Center(
-            child: CircularProgressIndicator(
-              color: BankingColors.primary,
+        return switch (state.status) {
+          GlobalPositionStatus.initial || GlobalPositionStatus.loading =>
+            const Center(
+              child: CircularProgressIndicator(
+                color: BankingColors.primary,
+              ),
             ),
-          ),
-          GPError(:final message) => _buildError(context, message),
-          GPLoaded() => _buildLoaded(context, state),
+          GlobalPositionStatus.error =>
+            _buildError(context, state.errorMessage),
+          GlobalPositionStatus.loaded => _buildLoaded(context, state),
         };
       },
     );
@@ -105,7 +107,7 @@ class GlobalPositionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoaded(BuildContext context, GPLoaded state) {
+  Widget _buildLoaded(BuildContext context, GlobalPositionState state) {
     return RefreshIndicator(
       color: BankingColors.primary,
       onRefresh: () async {

@@ -28,13 +28,13 @@ class CardsListPage extends StatelessWidget {
       ),
       body: BlocBuilder<CardsListBloc, CardsListState>(
         builder: (context, state) {
-          return switch (state) {
-            CardsListInitial() || CardsListLoading() => const Center(
+          return switch (state.status) {
+            CardsListStatus.initial || CardsListStatus.loading => const Center(
               child: CircularProgressIndicator(
                 color: BankingColors.primary,
               ),
             ),
-            CardsListError(:final message) => Center(
+            CardsListStatus.error => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -44,7 +44,7 @@ class CardsListPage extends StatelessWidget {
                     color: BankingColors.error,
                   ),
                   const SizedBox(height: 16),
-                  Text(message),
+                  Text(state.errorMessage),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
@@ -59,8 +59,8 @@ class CardsListPage extends StatelessWidget {
                 ],
               ),
             ),
-            CardsListLoaded(:final cards) =>
-              cards.isEmpty
+            CardsListStatus.loaded =>
+              state.cards.isEmpty
                   ? Center(
                       child: Text(
                         LocaleKeys.cards_list_empty.tr(),
@@ -72,9 +72,9 @@ class CardsListPage extends StatelessWidget {
                     )
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      itemCount: cards.length,
+                      itemCount: state.cards.length,
                       itemBuilder: (context, index) {
-                        final card = cards[index];
+                        final card = state.cards[index];
                         return CreditCardWidget(
                           card: card,
                           onTap: () => onCardTap?.call(card.id),

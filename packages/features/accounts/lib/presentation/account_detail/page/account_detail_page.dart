@@ -36,10 +36,10 @@ class AccountDetailPage extends StatelessWidget {
       ),
       body: BlocBuilder<AccountDetailBloc, AccountDetailState>(
         builder: (context, detailState) {
-          return switch (detailState) {
-            AccountDetailInitial() || AccountDetailLoading() =>
+          return switch (detailState.status) {
+            AccountDetailStatus.initial || AccountDetailStatus.loading =>
               const SizedBox.shrink(),
-            AccountDetailError(:final message) => Center(
+            AccountDetailStatus.error => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -49,7 +49,7 @@ class AccountDetailPage extends StatelessWidget {
                     color: BankingColors.error,
                   ),
                   const SizedBox(height: 16),
-                  Text(message),
+                  Text(detailState.errorMessage),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -58,10 +58,10 @@ class AccountDetailPage extends StatelessWidget {
                 ],
               ),
             ),
-            AccountDetailLoaded(:final account) => CustomScrollView(
+            AccountDetailStatus.loaded => CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: AccountInfoHeader(account: account),
+                  child: AccountInfoHeader(account: detailState.account!),
                 ),
                 // Transactions list.
                 SliverToBoxAdapter(
@@ -77,28 +77,26 @@ class AccountDetailPage extends StatelessWidget {
                 ),
                 BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
                   builder: (context, txState) {
-                    return switch (txState) {
-                      AccountTransactionsInitial() ||
-                      AccountTransactionsLoading() => const SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: BankingColors.primary,
+                    return switch (txState.status) {
+                      AccountTransactionsStatus.initial ||
+                      AccountTransactionsStatus.loading =>
+                        const SliverFillRemaining(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: BankingColors.primary,
+                            ),
                           ),
                         ),
-                      ),
-                      AccountTransactionsError(:final message) =>
+                      AccountTransactionsStatus.error =>
                         SliverFillRemaining(
-                          child: Center(child: Text(message)),
+                          child: Center(child: Text(txState.errorMessage)),
                         ),
-                      AccountTransactionsLoaded(
-                        :final transactions,
-                        :final hasReachedMax,
-                      ) =>
+                      AccountTransactionsStatus.loaded =>
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
-                              if (index >= transactions.length) {
-                                if (!hasReachedMax) {
+                              if (index >= txState.transactions.length) {
+                                if (!txState.hasReachedMax) {
                                   context.read<AccountTransactionsBloc>().add(
                                     const LoadMoreTransactions(),
                                   );
@@ -114,14 +112,14 @@ class AccountDetailPage extends StatelessWidget {
                                 return null;
                               }
 
-                              final tx = transactions[index];
+                              final tx = txState.transactions[index];
                               return _TransactionListItem(
                                 transaction: tx,
                                 onTap: () => onTransactionTap?.call(tx),
                               );
                             },
-                            childCount:
-                                transactions.length + (hasReachedMax ? 0 : 1),
+                            childCount: txState.transactions.length +
+                                (txState.hasReachedMax ? 0 : 1),
                           ),
                         ),
                     };

@@ -1,15 +1,12 @@
 part of 'accounts_list_bloc.dart';
 
+enum AccountsListStatus { initial, loading, loaded, error }
+
 @freezed
-sealed class AccountsListState with _$AccountsListState {
-  const factory AccountsListState.initial() = AccountsListInitial;
-
-  const factory AccountsListState.loading() = AccountsListLoading;
-
-  const factory AccountsListState.loaded({
-    required List<Account> accounts,
-  }) = AccountsListLoaded;
-
-  const factory AccountsListState.error({required String message}) =
-      AccountsListError;
+abstract class AccountsListState with _$AccountsListState {
+  const factory AccountsListState({
+    @Default(AccountsListStatus.initial) AccountsListStatus status,
+    @Default([]) List<Account> accounts,
+    @Default('') String errorMessage,
+  }) = _AccountsListState;
 }

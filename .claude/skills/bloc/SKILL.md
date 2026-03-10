@@ -1,6 +1,6 @@
 ---
 name: bloc
-description: Scaffold a new BLoC with sealed events and states following the project pattern
+description: Scaffold a new BLoC with sealed events and single-class state following the project pattern
 disable-model-invocation: true
 allowed-tools: Read, Write, Glob, Grep
 ---
@@ -33,7 +33,7 @@ part 'generated/<name>_bloc.freezed.dart';
 class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
   <Name>Bloc({
     // required use cases via constructor injection
-  }) : super(const <Name>Initial()) {
+  }) : super(const <Name>State()) {
     on<<Name>LoadRequested>(_onLoadRequested);
   }
 
@@ -41,11 +41,17 @@ class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
     <Name>LoadRequested event,
     Emitter<<Name>State> emit,
   ) async {
-    emit(const <Name>Loading());
+    emit(state.copyWith(status: <Name>Status.loading));
     // TODO: call use case and handle Either result
     // result.match(
-    //   (failure) => emit(<Name>Error(message: failure.message)),
-    //   (data) => emit(<Name>Loaded(data: data)),
+    //   (failure) => emit(state.copyWith(
+    //     status: <Name>Status.error,
+    //     errorMessage: failure.message,
+    //   )),
+    //   (data) => emit(state.copyWith(
+    //     status: <Name>Status.loaded,
+    //     data: data,
+    //   )),
     // );
   }
 }
@@ -65,11 +71,15 @@ sealed class <Name>Event with _$<Name>Event {
 ```dart
 part of '<name>_bloc.dart';
 
+enum <Name>Status { initial, loading, loaded, error }
+
 @freezed
-sealed class <Name>State with _$<Name>State {
-  const factory <Name>State.initial() = <Name>Initial;
-  const factory <Name>State.loading() = <Name>Loading;
-  const factory <Name>State.error({required String message}) = <Name>Error;
+abstract class <Name>State with _$<Name>State {
+  const factory <Name>State({
+    @Default(<Name>Status.initial) <Name>Status status,
+    // TODO: add data fields with @Default values
+    @Default('') String errorMessage,
+  }) = _<Name>State;
 }
 ```
 

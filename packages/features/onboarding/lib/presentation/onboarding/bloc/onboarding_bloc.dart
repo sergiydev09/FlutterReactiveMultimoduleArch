@@ -7,7 +7,7 @@ part 'generated/onboarding_bloc.freezed.dart';
 
 /// BLoC that tracks the current onboarding page.
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
-  OnboardingBloc() : super(const OnboardingIdle(currentPage: 0)) {
+  OnboardingBloc() : super(const OnboardingState()) {
     on<PageChanged>(_onPageChanged);
     on<NextPageRequested>(_onNextPage);
   }
@@ -18,19 +18,15 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     PageChanged event,
     Emitter<OnboardingState> emit,
   ) {
-    emit(OnboardingIdle(currentPage: event.page));
+    emit(state.copyWith(currentPage: event.page));
   }
 
   void _onNextPage(
     NextPageRequested event,
     Emitter<OnboardingState> emit,
   ) {
-    final current = switch (state) {
-      OnboardingIdle(:final currentPage) => currentPage,
-    };
-
-    if (current < totalPages - 1) {
-      emit(OnboardingIdle(currentPage: current + 1));
+    if (state.currentPage < totalPages - 1) {
+      emit(state.copyWith(currentPage: state.currentPage + 1));
     }
   }
 }

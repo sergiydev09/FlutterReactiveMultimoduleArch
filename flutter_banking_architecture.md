@@ -541,16 +541,16 @@ class FetchAccountTransactions extends AccountEvent {
 
 class RefreshAccountTransactions extends AccountEvent {}
 
-// States
-sealed class AccountState {}
+// States (single class + status enum pattern)
+enum AccountStatus { initial, loading, loaded, error }
 
-class AccountInitial extends AccountState {}
-
-class AccountLoading extends AccountState {}
-
-class AccountLoaded extends AccountState {
-  final List<Transaction> transactions;
-  AccountLoaded(this.transactions);
+@freezed
+abstract class AccountState with _$AccountState {
+  const factory AccountState({
+    @Default(AccountStatus.initial) AccountStatus status,
+    @Default([]) List<Transaction> transactions,
+    @Default('') String errorMessage,
+  }) = _AccountState;
 }
 
 class AccountError extends AccountState {

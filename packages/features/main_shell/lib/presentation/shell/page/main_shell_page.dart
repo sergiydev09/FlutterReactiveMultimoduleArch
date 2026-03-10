@@ -44,17 +44,17 @@ class MainShellPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MainShellBloc, MainShellState>(
-      builder: (context, state) => switch (state) {
-        ShellLoading() => const SizedBox.shrink(),
-        ShellError(:final message) => Scaffold(
-            body: Center(child: Text(message)),
+      builder: (context, state) => switch (state.status) {
+        MainShellStatus.loading => const SizedBox.shrink(),
+        MainShellStatus.error => Scaffold(
+            body: Center(child: Text(state.errorMessage)),
           ),
-        ShellReady(:final config) => _ShellScaffold(
-            config: config,
+        MainShellStatus.ready => _ShellScaffold(
+            config: state.config!,
             userName: userName,
             userInitials: userInitials,
-            selectedIndex: _selectedIndex(context, config.bottomTabs),
-            title: _titleForLocation(context, config.bottomTabs),
+            selectedIndex: _selectedIndex(context, state.config!.bottomTabs),
+            title: _titleForLocation(context, state.config!.bottomTabs),
             child: child,
           ),
       },

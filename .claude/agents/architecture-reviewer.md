@@ -22,7 +22,9 @@ Buscar violaciones de imports entre paquetes:
 
 ### 2. Patrones BLoC
 Verificar:
-- Events y States son `@freezed sealed class` con mixin `_$<Name>`
+- Events son `@freezed sealed class` con mixin `_$<Name>Event`
+- States son `@freezed abstract class` con single class + status enum (`<Feature>Status`)
+- States usan `state.copyWith(status: ...)` — NO construyen subclases
 - Usan `part` / `part of`
 - Archivos generados (`.freezed.dart`) en subcarpeta `generated/`
 - Constructor injection (no service locator, no `getIt`, no `context.read` en constructor)
@@ -38,7 +40,7 @@ Verificar:
 Verificar que se siguen las convenciones:
 - BLoC: `<Feature>Bloc`
 - Events: `sealed class`, `final class <Acción>Requested/Loaded`
-- States: `sealed class`, `final class <Feature><Estado>`
+- States: `<Feature>State` (single class), `<Feature>Status` (enum)
 - UseCases: `<Acción>UseCase extends UseCase<Type, Params>`
 - Repositories: `<Feature>Repository` (abstracto), `<Feature>RepositoryImpl`
 

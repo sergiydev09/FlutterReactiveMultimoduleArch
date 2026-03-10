@@ -12,7 +12,7 @@ class AccountDetailBloc extends Bloc<AccountDetailEvent, AccountDetailState> {
   AccountDetailBloc({
     required GetAccountDetailUseCase getAccountDetailUseCase,
   }) : _getAccountDetailUseCase = getAccountDetailUseCase,
-       super(const AccountDetailInitial()) {
+       super(const AccountDetailState()) {
     on<LoadAccountDetail>(_onLoad);
   }
 
@@ -22,13 +22,19 @@ class AccountDetailBloc extends Bloc<AccountDetailEvent, AccountDetailState> {
     LoadAccountDetail event,
     Emitter<AccountDetailState> emit,
   ) async {
-    emit(const AccountDetailLoading());
+    emit(state.copyWith(status: AccountDetailStatus.loading));
 
     final result = await _getAccountDetailUseCase(event.accountId);
 
     result.match(
-      (failure) => emit(AccountDetailError(message: failure.message)),
-      (account) => emit(AccountDetailLoaded(account: account)),
+      (failure) => emit(state.copyWith(
+        status: AccountDetailStatus.error,
+        errorMessage: failure.message,
+      )),
+      (account) => emit(state.copyWith(
+        status: AccountDetailStatus.loaded,
+        account: account,
+      )),
     );
   }
 }

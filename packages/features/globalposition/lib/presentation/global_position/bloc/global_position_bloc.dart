@@ -16,7 +16,7 @@ class GlobalPositionBloc
   GlobalPositionBloc({
     required GetGlobalPositionUseCase getGlobalPositionUseCase,
   }) : _getGlobalPositionUseCase = getGlobalPositionUseCase,
-       super(const GPInitial()) {
+       super(const GlobalPositionState()) {
     on<LoadGlobalPosition>(_onLoad, transformer: droppable());
     on<RefreshGlobalPosition>(_onRefresh, transformer: droppable());
   }
@@ -27,7 +27,7 @@ class GlobalPositionBloc
     LoadGlobalPosition event,
     Emitter<GlobalPositionState> emit,
   ) async {
-    emit(const GPLoading());
+    emit(state.copyWith(status: GlobalPositionStatus.loading));
     await _fetchData(emit);
   }
 
@@ -42,14 +42,16 @@ class GlobalPositionBloc
     final result = await _getGlobalPositionUseCase(const NoParams());
 
     result.match(
-      (failure) => emit(GPError(message: failure.message)),
-      (data) => emit(
-        GPLoaded(
-          accounts: data.accounts,
-          transactions: data.recentTransactions,
-          userName: 'Usuario',
-        ),
-      ),
+      (failure) => emit(state.copyWith(
+        status: GlobalPositionStatus.error,
+        errorMessage: failure.message,
+      )),
+      (data) => emit(state.copyWith(
+        status: GlobalPositionStatus.loaded,
+        accounts: data.accounts,
+        transactions: data.recentTransactions,
+        userName: 'Usuario',
+      )),
     );
   }
 }

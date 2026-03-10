@@ -3,6 +3,7 @@ import 'package:common/generated/locale_keys.g.dart';
 import 'package:domain/entities/user.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../widgets/environment_selector.dart';
@@ -67,16 +68,22 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark, // dark icons on Android
+        statusBarBrightness: Brightness.light, // light bar (dark icons) on iOS
+      ),
+      child: Scaffold(
       backgroundColor: BankingColors.backgroundLight,
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
-          if (state is LoginAuthenticated) {
-            widget.onLoginSuccess?.call(state.user);
-          } else if (state is LoginError) {
+          if (state.status == LoginStatus.authenticated) {
+            widget.onLoginSuccess?.call(state.user!);
+          } else if (state.status == LoginStatus.error) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.errorMessage),
                 backgroundColor: BankingColors.error,
               ),
             );
@@ -197,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                     // Login button.
                     BlocBuilder<LoginBloc, LoginState>(
                       builder: (context, state) {
-                        final isLoading = state is LoginLoading;
+                        final isLoading = state.status == LoginStatus.loading;
                         return SizedBox(
                           width: double.infinity,
                           height: 52,
@@ -269,6 +276,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    ),
     );
   }
 }

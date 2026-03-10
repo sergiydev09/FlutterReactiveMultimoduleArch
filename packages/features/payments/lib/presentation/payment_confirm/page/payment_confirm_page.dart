@@ -29,7 +29,7 @@ class PaymentConfirmPage extends StatelessWidget {
       ),
       body: BlocBuilder<NewPaymentBloc, NewPaymentState>(
         builder: (context, state) {
-          final isProcessing = state is NewPaymentProcessing;
+          final isProcessing = state.status == NewPaymentStatus.processing;
 
           return Padding(
             padding: const EdgeInsets.all(24),

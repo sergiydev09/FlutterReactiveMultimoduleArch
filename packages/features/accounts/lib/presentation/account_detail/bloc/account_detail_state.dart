@@ -1,14 +1,12 @@
 part of 'account_detail_bloc.dart';
 
+enum AccountDetailStatus { initial, loading, loaded, error }
+
 @freezed
-sealed class AccountDetailState with _$AccountDetailState {
-  const factory AccountDetailState.initial() = AccountDetailInitial;
-
-  const factory AccountDetailState.loading() = AccountDetailLoading;
-
-  const factory AccountDetailState.loaded({required Account account}) =
-      AccountDetailLoaded;
-
-  const factory AccountDetailState.error({required String message}) =
-      AccountDetailError;
+abstract class AccountDetailState with _$AccountDetailState {
+  const factory AccountDetailState({
+    @Default(AccountDetailStatus.initial) AccountDetailStatus status,
+    Account? account,
+    @Default('') String errorMessage,
+  }) = _AccountDetailState;
 }

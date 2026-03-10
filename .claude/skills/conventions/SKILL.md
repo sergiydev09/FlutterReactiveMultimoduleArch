@@ -20,7 +20,10 @@ Claude DEBE aplicar estas reglas automáticamente al escribir o modificar códig
 
 ## BLoC
 
-- Events y States son `@freezed sealed class` con `_$<Name>` mixin
+- Events son `@freezed sealed class` con `_$<Name>Event` mixin
+- States son `@freezed abstract class` con single class + status enum (`<Feature>Status`)
+  - Usar `state.copyWith(status: ...)` para emitir cambios
+  - En widgets: `switch (state.status) { ... }` para discriminar
 - Usar `part` / `part of` para separar events y states en archivos propios
 - Archivos generados (`.freezed.dart`) van en subcarpeta `generated/` junto al fuente
 - Inyección de dependencias SOLO por constructor
@@ -48,7 +51,7 @@ Claude DEBE aplicar estas reglas automáticamente al escribir o modificar códig
 
 - Archivos: snake_case (`auth_bloc.dart`)
 - Clases: PascalCase (`AuthBloc`)
-- BLoC: `<Feature>Bloc`, Events: `<Acción>Requested`, States: `<Feature><Estado>`
+- BLoC: `<Feature>Bloc`, Events: `<Acción>Requested`, States: `<Feature>State`, Status: `<Feature>Status`
 - UseCase: `<Acción>UseCase`
 - Repository abstracto: `<Feature>Repository`, implementación: `<Feature>RepositoryImpl`
 

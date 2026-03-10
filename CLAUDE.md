@@ -74,7 +74,14 @@ packages/features/<name>/lib/
 ## Patrones obligatorios
 
 ### BLoC
-- Events y States son **`@freezed sealed class`** (exhaustive pattern matching)
+- Events son **`@freezed sealed class`** (exhaustive pattern matching)
+- States son **`@freezed abstract class`** con **single class + status enum** (patrón oficial BLoC)
+  - Un `enum <Feature>Status { initial, loading, loaded, error }` por estado
+  - Una sola clase `@freezed abstract class <Feature>State` con todos los campos y `@Default` values
+  - Campos nullable para datos que no existen en todos los status (ej. `Account? account`)
+  - Usar `state.copyWith(status: ..., field: ...)` para emitir cambios
+  - En widgets: `switch (state.status) { ... }` para discriminar el estado
+  - Getters computados con constructor privado: `const <Feature>State._();` después del factory
 - Usan mixin `_$<Name>` generado por Freezed (NO Equatable)
 - Usan `part` / `part of` (event y state en archivos separados)
 - Archivos generados (`.freezed.dart`) van en subcarpeta `bloc/generated/` junto al fuente
@@ -165,7 +172,8 @@ melos deps:upgrade     # Actualizar dependencias
 | Clase | PascalCase | `AuthBloc`, `LoginUseCase` |
 | BLoC | `<Feature>Bloc` | `PaymentBloc` |
 | Event | `<Acción>Requested/Loaded` | `LoginRequested`, `AccountsLoaded` |
-| State | `<Feature><Estado>` | `AuthLoading`, `AuthAuthenticated` |
+| State | `<Feature>State` | `LoginState`, `AccountDetailState` |
+| Status enum | `<Feature>Status` | `LoginStatus`, `AccountDetailStatus` |
 | UseCase | `<Acción>UseCase` | `GetAccountDetailUseCase` |
 | Repository | `<Feature>Repository` | `AuthRepository` (abstracto), `AuthRepositoryImpl` (concreto) |
 | DataSource | `Remote<Feature>DataSource` | `RemoteAuthDataSource` |

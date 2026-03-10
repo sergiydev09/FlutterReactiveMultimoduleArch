@@ -28,7 +28,7 @@ packages/features/<nombre>/
     │   │   ├── <nombre>_page.dart        # Page (StatelessWidget con BlocBuilder)
     │   │   ├── <nombre>_bloc.dart        # extends Bloc<Event, State>
     │   │   ├── <nombre>_event.dart       # @freezed sealed class
-    │   │   └── <nombre>_state.dart       # @freezed sealed class
+    │   │   └── <nombre>_state.dart       # @freezed abstract class + status enum
     │   └── widgets/                      # Widgets compartidos entre pantallas del feature
     │       └── .gitkeep
     ├── domain/
@@ -99,7 +99,8 @@ targets:
 4. **BLoC** — seguir el patrón Freezed del proyecto:
    - Usar `part` / `part of` para events y states
    - Events: `@freezed sealed class` con `_$<Name>Event` mixin
-   - States: `@freezed sealed class` con `_$<Name>State` mixin, con `Initial`, `Loading`, `Loaded`, `Error`
+   - States: `@freezed abstract class` con single class + `enum <Name>Status { initial, loading, loaded, error }`
+   - Usar `state.copyWith(status: ...)` para emitir cambios, `switch (state.status)` en widgets
    - `part 'generated/<name>_bloc.freezed.dart';` para el archivo generado
    - Constructor injection de use cases
    - Handlers nombrados `_on<EventName>`

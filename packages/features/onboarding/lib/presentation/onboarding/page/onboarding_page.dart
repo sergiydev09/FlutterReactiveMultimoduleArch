@@ -55,9 +55,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _onNext(BuildContext context) {
     final bloc = context.read<OnboardingBloc>();
-    final isLastPage = switch (bloc.state) {
-      OnboardingIdle(:final isLastPage) => isLastPage,
-    };
+    final isLastPage = bloc.state.isLastPage;
 
     if (isLastPage) {
       widget.onComplete?.call();
@@ -79,23 +77,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: SafeArea(
         child: BlocConsumer<OnboardingBloc, OnboardingState>(
           listener: (context, state) {
-            if (state is OnboardingIdle) {
-              unawaited(
-                _pageController.animateToPage(
-                  state.currentPage,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                ),
-              );
-            }
+            unawaited(
+              _pageController.animateToPage(
+                state.currentPage,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              ),
+            );
           },
           builder: (context, state) {
-            final currentPage = switch (state) {
-              OnboardingIdle(:final currentPage) => currentPage,
-            };
-            final isLastPage = switch (state) {
-              OnboardingIdle(:final isLastPage) => isLastPage,
-            };
+            final currentPage = state.currentPage;
+            final isLastPage = state.isLastPage;
 
             return Column(
               children: [

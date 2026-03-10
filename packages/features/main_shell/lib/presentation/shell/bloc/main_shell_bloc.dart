@@ -15,7 +15,7 @@ class MainShellBloc extends Bloc<MainShellEvent, MainShellState> {
     required this.getShellConfigUseCase,
     required Future<void> Function() onLogout,
   })  : _onLogout = onLogout,
-        super(const ShellLoading()) {
+        super(const MainShellState()) {
     on<ShellStarted>(_onStarted);
     on<LogoutRequested>(_onLogoutRequested);
   }
@@ -27,11 +27,17 @@ class MainShellBloc extends Bloc<MainShellEvent, MainShellState> {
     ShellStarted event,
     Emitter<MainShellState> emit,
   ) async {
-    emit(const ShellLoading());
+    emit(state.copyWith(status: MainShellStatus.loading));
     final result = await getShellConfigUseCase(const NoParams());
     result.fold(
-      (failure) => emit(ShellError(message: failure.toString())),
-      (config) => emit(ShellReady(config: config)),
+      (failure) => emit(state.copyWith(
+        status: MainShellStatus.error,
+        errorMessage: failure.toString(),
+      )),
+      (config) => emit(state.copyWith(
+        status: MainShellStatus.ready,
+        config: config,
+      )),
     );
   }
 

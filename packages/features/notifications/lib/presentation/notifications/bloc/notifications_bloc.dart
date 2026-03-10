@@ -12,7 +12,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc({
     required NotificationRepository notificationRepository,
   }) : _notificationRepository = notificationRepository,
-       super(const NotificationsInitial()) {
+       super(const NotificationsState()) {
     on<LoadNotifications>(_onLoad);
     on<MarkNotificationAsRead>(_onMarkAsRead);
   }
@@ -23,15 +23,19 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     LoadNotifications event,
     Emitter<NotificationsState> emit,
   ) async {
-    emit(const NotificationsLoading());
+    emit(state.copyWith(status: NotificationsStatus.loading));
 
     final result = await _notificationRepository.getNotifications();
 
     result.match(
-      (failure) => emit(NotificationsError(message: failure.message)),
-      (notifications) => emit(
-        NotificationsLoaded(notifications: notifications),
-      ),
+      (failure) => emit(state.copyWith(
+        status: NotificationsStatus.error,
+        errorMessage: failure.message,
+      )),
+      (notifications) => emit(state.copyWith(
+        status: NotificationsStatus.loaded,
+        notifications: notifications,
+      )),
     );
   }
 
@@ -39,8 +43,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     MarkNotificationAsRead event,
     Emitter<NotificationsState> emit,
   ) async {
-    final currentState = state;
-    if (currentState is! NotificationsLoaded) return;
+    if (state.status != NotificationsStatus.loaded) return;
 
     final result = await _notificationRepository.markAsRead(
       event.notificationId,
@@ -51,10 +54,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         // Silently fail - keep current state.
       },
       (_) {
-        final updatedNotifications = currentState.notifications.map((n) {
+        final updatedNotifications = state.notifications.map((n) {
           return n.id == event.notificationId ? n.copyWith(isRead: true) : n;
         }).toList();
-        emit(NotificationsLoaded(notifications: updatedNotifications));
+        emit(state.copyWith(notifications: updatedNotifications));
       },
     );
   }

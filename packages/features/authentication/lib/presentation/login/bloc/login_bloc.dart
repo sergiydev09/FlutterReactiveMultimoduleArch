@@ -20,7 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }) : _loginUseCase = loginUseCase,
        _logoutUseCase = logoutUseCase,
        _biometricLoginUseCase = biometricLoginUseCase,
-       super(const LoginInitial()) {
+       super(const LoginState()) {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<BiometricLoginRequested>(_onBiometricLoginRequested);
@@ -35,15 +35,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginRequested event,
     Emitter<LoginState> emit,
   ) async {
-    emit(const LoginLoading());
+    emit(state.copyWith(status: LoginStatus.loading));
 
     final result = await _loginUseCase(
       LoginCredentials(dni: event.dni, password: event.password),
     );
 
     result.match(
-      (failure) => emit(LoginError(message: failure.message)),
-      (loginResult) => emit(LoginAuthenticated(user: loginResult.user)),
+      (failure) => emit(state.copyWith(
+        status: LoginStatus.error,
+        errorMessage: failure.message,
+      )),
+      (loginResult) => emit(state.copyWith(
+        status: LoginStatus.authenticated,
+        user: loginResult.user,
+      )),
     );
   }
 
@@ -51,13 +57,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LogoutRequested event,
     Emitter<LoginState> emit,
   ) async {
-    emit(const LoginLoading());
+    emit(state.copyWith(status: LoginStatus.loading));
 
     final result = await _logoutUseCase(const NoParams());
 
     result.match(
-      (failure) => emit(LoginError(message: failure.message)),
-      (_) => emit(const LoginUnauthenticated()),
+      (failure) => emit(state.copyWith(
+        status: LoginStatus.error,
+        errorMessage: failure.message,
+      )),
+      (_) => emit(state.copyWith(status: LoginStatus.unauthenticated)),
     );
   }
 
@@ -65,13 +74,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     BiometricLoginRequested event,
     Emitter<LoginState> emit,
   ) async {
-    emit(const LoginLoading());
+    emit(state.copyWith(status: LoginStatus.loading));
 
     final result = await _biometricLoginUseCase(const NoParams());
 
     result.match(
-      (failure) => emit(LoginError(message: failure.message)),
-      (loginResult) => emit(LoginAuthenticated(user: loginResult.user)),
+      (failure) => emit(state.copyWith(
+        status: LoginStatus.error,
+        errorMessage: failure.message,
+      )),
+      (loginResult) => emit(state.copyWith(
+        status: LoginStatus.authenticated,
+        user: loginResult.user,
+      )),
     );
   }
 
@@ -79,8 +94,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     CheckAuthStatus event,
     Emitter<LoginState> emit,
   ) async {
-    emit(const LoginLoading());
+    emit(state.copyWith(status: LoginStatus.loading));
     // Check for stored tokens/session.
-    emit(const LoginUnauthenticated());
+    emit(state.copyWith(status: LoginStatus.unauthenticated));
   }
 }

@@ -16,7 +16,7 @@ class CardsListBloc extends Bloc<CardsListEvent, CardsListState> {
     required CardRepository cardRepository,
   }) : _getCardsUseCase = getCardsUseCase,
        _cardRepository = cardRepository,
-       super(const CardsListInitial()) {
+       super(const CardsListState()) {
     on<LoadCards>(_onLoadCards);
     on<ToggleCardStatus>(_onToggleCardStatus);
   }
@@ -28,13 +28,19 @@ class CardsListBloc extends Bloc<CardsListEvent, CardsListState> {
     LoadCards event,
     Emitter<CardsListState> emit,
   ) async {
-    emit(const CardsListLoading());
+    emit(state.copyWith(status: CardsListStatus.loading));
 
     final result = await _getCardsUseCase(const NoParams());
 
     result.match(
-      (failure) => emit(CardsListError(message: failure.message)),
-      (cards) => emit(CardsListLoaded(cards: cards)),
+      (failure) => emit(state.copyWith(
+        status: CardsListStatus.error,
+        errorMessage: failure.message,
+      )),
+      (cards) => emit(state.copyWith(
+        status: CardsListStatus.loaded,
+        cards: cards,
+      )),
     );
   }
 
@@ -42,18 +48,20 @@ class CardsListBloc extends Bloc<CardsListEvent, CardsListState> {
     ToggleCardStatus event,
     Emitter<CardsListState> emit,
   ) async {
-    final currentState = state;
-    if (currentState is! CardsListLoaded) return;
+    if (state.status != CardsListStatus.loaded) return;
 
     final result = await _cardRepository.toggleCardStatus(event.cardId);
 
     result.match(
-      (failure) => emit(CardsListError(message: failure.message)),
+      (failure) => emit(state.copyWith(
+        status: CardsListStatus.error,
+        errorMessage: failure.message,
+      )),
       (updatedCard) {
-        final updatedCards = currentState.cards.map((card) {
+        final updatedCards = state.cards.map((card) {
           return card.id == updatedCard.id ? updatedCard : card;
         }).toList();
-        emit(CardsListLoaded(cards: updatedCards));
+        emit(state.copyWith(cards: updatedCards));
       },
     );
   }

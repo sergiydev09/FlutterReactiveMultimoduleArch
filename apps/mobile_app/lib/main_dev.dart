@@ -10,6 +10,7 @@ import './di/providers.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  EasyLocalization.logger.enableBuildModes = [];
 
   // Security: no-op en dev para evitar falsos positivos en emuladores.
   final securityInitializer = SecurityInitializer(

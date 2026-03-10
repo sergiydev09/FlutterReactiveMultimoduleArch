@@ -1,13 +1,12 @@
 part of 'cards_list_bloc.dart';
 
+enum CardsListStatus { initial, loading, loaded, error }
+
 @freezed
-sealed class CardsListState with _$CardsListState {
-  const factory CardsListState.initial() = CardsListInitial;
-
-  const factory CardsListState.loading() = CardsListLoading;
-
-  const factory CardsListState.loaded({required List<CardEntity> cards}) =
-      CardsListLoaded;
-
-  const factory CardsListState.error({required String message}) = CardsListError;
+abstract class CardsListState with _$CardsListState {
+  const factory CardsListState({
+    @Default(CardsListStatus.initial) CardsListStatus status,
+    @Default([]) List<CardEntity> cards,
+    @Default('') String errorMessage,
+  }) = _CardsListState;
 }

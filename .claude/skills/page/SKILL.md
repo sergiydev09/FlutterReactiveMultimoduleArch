@@ -42,7 +42,7 @@ part 'generated/<screen_name>_bloc.freezed.dart';
 class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
   <Name>Bloc({
     // required use cases via constructor injection
-  }) : super(const <Name>Initial()) {
+  }) : super(const <Name>State()) {
     on<<Name>LoadRequested>(_onLoadRequested);
   }
 
@@ -50,8 +50,12 @@ class <Name>Bloc extends Bloc<<Name>Event, <Name>State> {
     <Name>LoadRequested event,
     Emitter<<Name>State> emit,
   ) async {
-    emit(const <Name>Loading());
+    emit(state.copyWith(status: <Name>Status.loading));
     // TODO: call use case and handle Either result
+    // result.match(
+    //   (failure) => emit(state.copyWith(status: <Name>Status.error, errorMessage: failure.message)),
+    //   (data) => emit(state.copyWith(status: <Name>Status.loaded, ...)),
+    // );
   }
 }
 ```
@@ -70,11 +74,15 @@ sealed class <Name>Event with _$<Name>Event {
 ```dart
 part of '<screen_name>_bloc.dart';
 
+enum <Name>Status { initial, loading, loaded, error }
+
 @freezed
-sealed class <Name>State with _$<Name>State {
-  const factory <Name>State.initial() = <Name>Initial;
-  const factory <Name>State.loading() = <Name>Loading;
-  const factory <Name>State.error({required String message}) = <Name>Error;
+abstract class <Name>State with _$<Name>State {
+  const factory <Name>State({
+    @Default(<Name>Status.initial) <Name>Status status,
+    // TODO: add data fields with @Default values
+    @Default('') String errorMessage,
+  }) = _<Name>State;
 }
 ```
 
@@ -97,19 +105,19 @@ class <Name>Page extends StatelessWidget {
       ),
       body: BlocBuilder<<Name>Bloc, <Name>State>(
         builder: (context, state) {
-          return switch (state) {
-            <Name>Initial() => const SizedBox.shrink(),
-            <Name>Loading() => const Center(
+          return switch (state.status) {
+            <Name>Status.initial => const SizedBox.shrink(),
+            <Name>Status.loading => const Center(
                 child: CircularProgressIndicator(),
               ),
-            <Name>Error(:final message) => Center(
+            <Name>Status.error => Center(
                 child: Text(
-                  message,
+                  state.errorMessage,
                   style: TextStyle(color: BankingColors.error),
                 ),
               ),
-            // TODO: add Loaded state handler
-            _ => const SizedBox.shrink(),
+            <Name>Status.loaded => const SizedBox.shrink(),
+            // TODO: build loaded UI
           };
         },
       ),

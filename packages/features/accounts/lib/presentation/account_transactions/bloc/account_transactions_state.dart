@@ -1,18 +1,16 @@
 part of 'account_transactions_bloc.dart';
 
+enum AccountTransactionsStatus { initial, loading, loaded, error }
+
 @freezed
-sealed class AccountTransactionsState with _$AccountTransactionsState {
-  const factory AccountTransactionsState.initial() = AccountTransactionsInitial;
-
-  const factory AccountTransactionsState.loading() = AccountTransactionsLoading;
-
-  const factory AccountTransactionsState.loaded({
-    required List<Transaction> transactions,
-    required bool hasReachedMax,
-    required int currentPage,
-    required String accountId,
-  }) = AccountTransactionsLoaded;
-
-  const factory AccountTransactionsState.error({required String message}) =
-      AccountTransactionsError;
+abstract class AccountTransactionsState with _$AccountTransactionsState {
+  const factory AccountTransactionsState({
+    @Default(AccountTransactionsStatus.initial)
+    AccountTransactionsStatus status,
+    @Default([]) List<Transaction> transactions,
+    @Default(false) bool hasReachedMax,
+    @Default(0) int currentPage,
+    @Default('') String accountId,
+    @Default('') String errorMessage,
+  }) = _AccountTransactionsState;
 }

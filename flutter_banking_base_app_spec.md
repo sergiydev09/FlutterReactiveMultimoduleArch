@@ -1016,7 +1016,7 @@ Cada item debe estar implementado y funcionando en la app base:
 
 ### State Management y DI
 
-- [ ] BLoC en cada feature (con Events y States sealed)
+- [ ] BLoC en cada feature (Events sealed, States single class + status enum)
 - [ ] Riverpod como DI único + estado global (sesión, tema, idioma, entorno)
 - [ ] Providers por entorno (mock vs real) con switch en caliente
 - [ ] `ProviderContainer` + `UncontrolledProviderScope` para inicialización temprana

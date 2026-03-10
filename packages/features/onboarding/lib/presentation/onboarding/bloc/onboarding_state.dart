@@ -1,11 +1,12 @@
 part of 'onboarding_bloc.dart';
 
 @freezed
-sealed class OnboardingState with _$OnboardingState {
-  const factory OnboardingState.idle({required int currentPage}) =
-      OnboardingIdle;
-}
+abstract class OnboardingState with _$OnboardingState {
+  const factory OnboardingState({
+    @Default(0) int currentPage,
+  }) = _OnboardingState;
 
-extension OnboardingIdleX on OnboardingIdle {
+  const OnboardingState._();
+
   bool get isLastPage => currentPage == OnboardingBloc.totalPages - 1;
 }

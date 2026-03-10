@@ -12,7 +12,7 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
   NewPaymentBloc({
     required ExecutePaymentUseCase executePaymentUseCase,
   }) : _executePaymentUseCase = executePaymentUseCase,
-       super(const NewPaymentInitial()) {
+       super(const NewPaymentState()) {
     on<SubmitPayment>(_onSubmit);
     on<ConfirmPayment>(_onConfirm);
     on<RetryPayment>(_onRetry);
@@ -20,31 +20,36 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
   }
 
   final ExecutePaymentUseCase _executePaymentUseCase;
-  Payment? _currentPayment;
 
   Future<void> _onSubmit(
     SubmitPayment event,
     Emitter<NewPaymentState> emit,
   ) async {
-    _currentPayment = event.payment;
-    emit(NewPaymentReview(payment: event.payment));
+    emit(state.copyWith(
+      status: NewPaymentStatus.review,
+      payment: event.payment,
+    ));
   }
 
   Future<void> _onConfirm(
     ConfirmPayment event,
     Emitter<NewPaymentState> emit,
   ) async {
-    if (_currentPayment == null) return;
+    if (state.payment == null) return;
 
-    emit(const NewPaymentProcessing());
+    emit(state.copyWith(status: NewPaymentStatus.processing));
 
-    final result = await _executePaymentUseCase(_currentPayment!);
+    final result = await _executePaymentUseCase(state.payment!);
 
     result.match(
-      (failure) => emit(NewPaymentError(message: failure.message)),
-      (confirmationId) => emit(
-        NewPaymentSuccess(confirmationId: confirmationId),
-      ),
+      (failure) => emit(state.copyWith(
+        status: NewPaymentStatus.error,
+        errorMessage: failure.message,
+      )),
+      (confirmationId) => emit(state.copyWith(
+        status: NewPaymentStatus.success,
+        confirmationId: confirmationId,
+      )),
     );
   }
 
@@ -52,10 +57,10 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
     RetryPayment event,
     Emitter<NewPaymentState> emit,
   ) async {
-    if (_currentPayment != null) {
-      emit(NewPaymentReview(payment: _currentPayment!));
+    if (state.payment != null) {
+      emit(state.copyWith(status: NewPaymentStatus.review));
     } else {
-      emit(const NewPaymentInitial());
+      emit(const NewPaymentState());
     }
   }
 
@@ -63,7 +68,6 @@ class NewPaymentBloc extends Bloc<NewPaymentEvent, NewPaymentState> {
     ResetPayment event,
     Emitter<NewPaymentState> emit,
   ) {
-    _currentPayment = null;
-    emit(const NewPaymentInitial());
+    emit(const NewPaymentState());
   }
 }
