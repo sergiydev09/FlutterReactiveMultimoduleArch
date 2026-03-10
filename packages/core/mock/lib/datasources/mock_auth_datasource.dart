@@ -60,4 +60,52 @@ class MockAuthDataSource implements RemoteAuthDataSource {
   Future<void> logout(String token) async {
     await MockDelay.simulate(config);
   }
+
+  // ---------------------------------------------------------------------------
+  // Biometric device credentials (stubs for dev)
+  // ---------------------------------------------------------------------------
+
+  @override
+  Future<void> registerDevice({
+    required String publicKey,
+    required String deviceId,
+  }) async {
+    await MockDelay.simulate(config);
+  }
+
+  @override
+  Future<String> getBiometricChallenge(String deviceId) async {
+    await MockDelay.simulate(config);
+    return 'mock_challenge_${DateTime.now().millisecondsSinceEpoch}';
+  }
+
+  @override
+  Future<LoginResponseDto> verifyBiometric({
+    required String signature,
+    required String deviceId,
+  }) async {
+    await MockDelay.simulate(config);
+    final token = AuthTokenDto(
+      accessToken:
+          'mock_bio_access_token_${DateTime.now().millisecondsSinceEpoch}',
+      refreshToken:
+          'mock_bio_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+      expiresAt:
+          DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+    );
+    final user = UserDto(
+      id: 'usr-001',
+      dni: '12345678A',
+      firstName: 'Juan',
+      lastName: 'García',
+      email: 'juan@bankapp.com',
+      createdAt: DateTime.utc(2024).toIso8601String(),
+    );
+    return LoginResponseDto(token: token, user: user);
+  }
+
+  @override
+  Future<void> unregisterDevice(String deviceId) async {
+    await MockDelay.simulate(config);
+  }
 }

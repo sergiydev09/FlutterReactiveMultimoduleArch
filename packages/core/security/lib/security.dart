@@ -3,7 +3,9 @@
 library;
 
 export 'attestation/integrity_attestation_service.dart';
+export 'biometric/biometric_auth_result.dart';
 export 'biometric/biometric_service.dart';
+export 'biometric/device_credential_service.dart';
 export 'clipboard/clipboard_protection_service.dart';
 export 'di/security_providers.dart';
 export 'notifiers/biometric_enabled_notifier.dart';

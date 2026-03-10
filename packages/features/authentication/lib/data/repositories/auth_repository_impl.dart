@@ -4,6 +4,7 @@ import 'package:common/network/safe_api_call.dart';
 import 'package:domain/entities/user.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:security/biometric/biometric_service.dart';
+import 'package:security/biometric/device_credential_service.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:security/session/user_storage_keys.dart';
 import 'package:security/storage/secure_storage_service.dart';
@@ -17,14 +18,20 @@ class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl({
     required this.remoteDataSource,
     required this.biometricService,
+    required this.deviceCredentialService,
     required this.sessionManager,
     required this.secureStorage,
   });
 
   final RemoteAuthDataSource remoteDataSource;
   final BiometricService biometricService;
+  final DeviceCredentialService deviceCredentialService;
   final SessionManager sessionManager;
   final SecureStorageService secureStorage;
+
+  // ---------------------------------------------------------------------------
+  // Credential login
+  // ---------------------------------------------------------------------------
 
   @override
   Future<Either<Failure, LoginResult>> login(
@@ -49,8 +56,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, void>> logout() =>
       safeApiCall(() => remoteDataSource.logout(''));
 
+  // ---------------------------------------------------------------------------
+  // Biometric login
+  // ---------------------------------------------------------------------------
+
   @override
-  Future<Either<Failure, User>> biometricLogin() async {
+  Future<Either<Failure, LoginResult>> biometricLogin() async {
+    // 1. Check biometric availability.
     final isAvailable = await biometricService.isAvailable();
     if (!isAvailable) {
       return const AuthFailure(
@@ -58,31 +70,64 @@ class AuthRepositoryImpl implements AuthRepository {
       ).toLeft();
     }
 
-    final authenticated = await biometricService.authenticate(
-      reason: 'Accede a tu banca',
-    );
-    if (!authenticated) {
+    // 2. Check device credentials are enrolled.
+    final isEnrolled = await deviceCredentialService.isEnrolled();
+    if (!isEnrolled) {
       return const AuthFailure(
-        message: 'Autenticación biométrica fallida',
+        message: 'Login biométrico no configurado',
       ).toLeft();
     }
 
-    final isValid = await sessionManager.isSessionValid();
-    if (!isValid) {
-      return const AuthFailure(
-        message: 'Sesión expirada, inicia sesión de nuevo',
-      ).toLeft();
-    }
+    // 3. Get challenge from backend.
+    return safeApiCall(() async {
+      final deviceId = await deviceCredentialService.getDeviceId();
+      final challenge = await remoteDataSource.getBiometricChallenge(deviceId);
 
-    final user = await _readUser();
-    if (user == null) {
-      return const AuthFailure(
-        message: 'No se encontraron datos de sesión',
-      ).toLeft();
-    }
+      // 4. Biometric verification + sign challenge (single prompt).
+      final result = await deviceCredentialService.authenticate(challenge);
 
-    return Right(user);
+      // 5. Send signed challenge to backend → get tokens + user.
+      final response = await remoteDataSource.verifyBiometric(
+        signature: result.signature,
+        deviceId: result.deviceId,
+      );
+      final token = response.token.toEntity();
+      final user = response.user.toEntity();
+
+      await sessionManager.saveToken(token.accessToken);
+      await sessionManager.saveRefreshToken(token.refreshToken);
+      await _persistUser(user);
+
+      return LoginResult(token: token, user: user);
+    });
   }
+
+  // ---------------------------------------------------------------------------
+  // Biometric enrollment
+  // ---------------------------------------------------------------------------
+
+  @override
+  Future<Either<Failure, void>> enrollBiometric() =>
+      safeApiCall(() async {
+        final publicKey = await deviceCredentialService.enroll();
+        final deviceId = await deviceCredentialService.getDeviceId();
+        await remoteDataSource.registerDevice(
+          publicKey: publicKey,
+          deviceId: deviceId,
+        );
+      });
+
+  @override
+  Future<Either<Failure, void>> unenrollBiometric() =>
+      safeApiCall(() async {
+        final deviceId = await deviceCredentialService.getDeviceId();
+        await remoteDataSource.unregisterDevice(deviceId);
+        await deviceCredentialService.unenroll();
+      });
+
+  // ---------------------------------------------------------------------------
+  // User persistence
+  // ---------------------------------------------------------------------------
 
   Future<void> _persistUser(User user) async {
     await secureStorage.write(UserStorageKeys.id, user.id);
@@ -97,34 +142,5 @@ class AuthRepositoryImpl implements AuthRepository {
     if (user.phone != null) {
       await secureStorage.write(UserStorageKeys.phone, user.phone!);
     }
-  }
-
-  Future<User?> _readUser() async {
-    final id = await secureStorage.read(UserStorageKeys.id);
-    final dni = await secureStorage.read(UserStorageKeys.dni);
-    final firstName = await secureStorage.read(UserStorageKeys.firstName);
-    final lastName = await secureStorage.read(UserStorageKeys.lastName);
-    final email = await secureStorage.read(UserStorageKeys.email);
-    final createdAtStr = await secureStorage.read(UserStorageKeys.createdAt);
-    final phone = await secureStorage.read(UserStorageKeys.phone);
-
-    if (id == null ||
-        dni == null ||
-        firstName == null ||
-        lastName == null ||
-        email == null ||
-        createdAtStr == null) {
-      return null;
-    }
-
-    return User(
-      id: id,
-      dni: dni,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      createdAt: DateTime.parse(createdAtStr),
-      phone: phone,
-    );
   }
 }

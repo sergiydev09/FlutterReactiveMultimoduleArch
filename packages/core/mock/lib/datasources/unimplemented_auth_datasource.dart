@@ -15,4 +15,30 @@ class UnimplementedAuthDataSource implements RemoteAuthDataSource {
   Future<void> logout(String token) {
     throw Exception('Los servicios de PRE/PRO no están implementados');
   }
+
+  @override
+  Future<void> registerDevice({
+    required String publicKey,
+    required String deviceId,
+  }) {
+    throw Exception('Los servicios de PRE/PRO no están implementados');
+  }
+
+  @override
+  Future<String> getBiometricChallenge(String deviceId) {
+    throw Exception('Los servicios de PRE/PRO no están implementados');
+  }
+
+  @override
+  Future<LoginResponseDto> verifyBiometric({
+    required String signature,
+    required String deviceId,
+  }) {
+    throw Exception('Los servicios de PRE/PRO no están implementados');
+  }
+
+  @override
+  Future<void> unregisterDevice(String deviceId) {
+    throw Exception('Los servicios de PRE/PRO no están implementados');
+  }
 }

@@ -71,7 +71,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     result.match(
       (failure) => emit(LoginError(message: failure.message)),
-      (user) => emit(LoginAuthenticated(user: user)),
+      (loginResult) => emit(LoginAuthenticated(user: loginResult.user)),
     );
   }
 

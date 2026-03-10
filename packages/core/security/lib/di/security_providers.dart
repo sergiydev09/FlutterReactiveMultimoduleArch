@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../attestation/integrity_attestation_service.dart';
 import '../biometric/biometric_service.dart';
+import '../biometric/device_credential_service.dart';
 import '../clipboard/clipboard_protection_service.dart';
 import '../notifiers/biometric_enabled_notifier.dart';
 import '../screen/screen_protection_service.dart';
@@ -52,9 +53,17 @@ abstract final class SecurityProviders {
   // Biometrics
   // ---------------------------------------------------------------------------
 
-  /// Biometric authentication service.
+  /// Biometric authentication service (local verification only).
   static final biometricService = Provider<BiometricService>((ref) {
     return BiometricService();
+  });
+
+  /// Device-bound credentials for biometric login (keypair + signing).
+  ///
+  /// Defaults to no-op. Override in main_staging/prod with a real
+  /// implementation using Secure Enclave / Android Keystore.
+  static final deviceCredential = Provider<DeviceCredentialService>((ref) {
+    return NoOpDeviceCredentialService();
   });
 
   /// User biometric login preference, persisted in [secureStorage].
