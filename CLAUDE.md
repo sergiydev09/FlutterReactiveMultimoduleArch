@@ -77,6 +77,7 @@ packages/features/<name>/lib/
 - Events son **`@freezed sealed class`** (exhaustive pattern matching)
 - States son **`@freezed abstract class`** con **single class + status enum** (patrón oficial BLoC)
   - Un `enum <Feature>Status { initial, loading, loaded, error }` por estado
+  - Siempre añadir una `extension <Feature>StatusX on <Feature>Status` con un getter `bool get is<Value>` por cada valor del enum (ej. `isInitial`, `isLoading`, `isLoaded`, `isError`)
   - Una sola clase `@freezed abstract class <Feature>State` con todos los campos y `@Default` values
   - Campos nullable para datos que no existen en todos los status (ej. `Account? account`)
   - Usar `state.copyWith(status: ..., field: ...)` para emitir cambios

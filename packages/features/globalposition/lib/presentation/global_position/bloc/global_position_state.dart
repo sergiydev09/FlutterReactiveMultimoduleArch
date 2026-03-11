@@ -2,6 +2,13 @@ part of 'global_position_bloc.dart';
 
 enum GlobalPositionStatus { initial, loading, loaded, error }
 
+extension GlobalPositionStatusX on GlobalPositionStatus {
+  bool get isInitial => this == GlobalPositionStatus.initial;
+  bool get isLoading => this == GlobalPositionStatus.loading;
+  bool get isLoaded => this == GlobalPositionStatus.loaded;
+  bool get isError => this == GlobalPositionStatus.error;
+}
+
 @freezed
 abstract class GlobalPositionState with _$GlobalPositionState {
   const factory GlobalPositionState({

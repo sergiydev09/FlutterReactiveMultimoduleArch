@@ -2,6 +2,13 @@ part of 'account_transactions_bloc.dart';
 
 enum AccountTransactionsStatus { initial, loading, loaded, error }
 
+extension AccountTransactionsStatusX on AccountTransactionsStatus {
+  bool get isInitial => this == AccountTransactionsStatus.initial;
+  bool get isLoading => this == AccountTransactionsStatus.loading;
+  bool get isLoaded => this == AccountTransactionsStatus.loaded;
+  bool get isError => this == AccountTransactionsStatus.error;
+}
+
 @freezed
 abstract class AccountTransactionsState with _$AccountTransactionsState {
   const factory AccountTransactionsState({
