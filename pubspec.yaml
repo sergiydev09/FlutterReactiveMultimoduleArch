@@ -81,6 +81,12 @@ melos:
         concurrency: 2
         orderDependents: true
 
+    generate:
+      description: Genera LocaleKeys + build_runner (freezed, json_serializable, retrofit)
+      steps:
+        - l10n:generate
+        - build:runner
+
     l10n:generate:
       description: Genera LocaleKeys a partir de los JSONs de traducción
       run: >
