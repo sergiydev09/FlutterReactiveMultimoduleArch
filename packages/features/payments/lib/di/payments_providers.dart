@@ -4,6 +4,7 @@ import '../data/datasources/payments_api_client.dart';
 import '../data/datasources/remote_payment_datasource.dart';
 import '../data/repositories/payment_repository_impl.dart';
 import '../domain/repositories/payment_repository.dart';
+import '../domain/usecases/execute_payment_usecase.dart';
 
 /// Riverpod providers for the payments feature.
 abstract final class PaymentProviders {
@@ -24,6 +25,13 @@ abstract final class PaymentProviders {
   static final repository = Provider<PaymentRepository>((ref) {
     return PaymentRepositoryImpl(
       remoteDataSource: ref.watch(PaymentProviders.remoteDataSource),
+    );
+  });
+
+  /// Use case to execute a payment.
+  static final executePaymentUseCase = Provider<ExecutePaymentUseCase>((ref) {
+    return ExecutePaymentUseCase(
+      repository: ref.watch(PaymentProviders.repository),
     );
   });
 }

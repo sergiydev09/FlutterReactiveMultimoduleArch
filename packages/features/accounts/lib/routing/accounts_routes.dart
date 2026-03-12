@@ -8,9 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:security/di/security_providers.dart';
 import '../di/accounts_providers.dart';
-import '../domain/usecases/get_account_detail_usecase.dart';
-import '../domain/usecases/get_account_transactions_usecase.dart';
-import '../domain/usecases/get_accounts_usecase.dart';
 import '../presentation/account_detail/bloc/account_detail_bloc.dart';
 import '../presentation/account_detail/page/account_detail_page.dart';
 import '../presentation/account_transactions/bloc/account_transactions_bloc.dart';
@@ -39,10 +36,9 @@ abstract final class AccountRoutes {
         path: accounts,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
-          final accountRepo = container.read(AccountProviders.repository);
           return BlocProvider(
             create: (_) => AccountsListBloc(
-              getAccountsUseCase: GetAccountsUseCase(repository: accountRepo),
+              getAccountsUseCase: container.read(AccountProviders.getAccountsUseCase),
             )..add(const LoadAccounts()),
             child: const AccountsListPage(),
           );
@@ -52,24 +48,22 @@ abstract final class AccountRoutes {
             path: _idSegment,
             builder: (context, state) {
               final container = ProviderScope.containerOf(context);
-              final accountRepo = container.read(AccountProviders.repository);
               final accountId = state.pathParameters['id']!;
               final accountName = state.extra as String?;
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(
                     create: (_) => AccountDetailBloc(
-                      getAccountDetailUseCase: GetAccountDetailUseCase(
-                        repository: accountRepo,
+                      getAccountDetailUseCase: container.read(
+                        AccountProviders.getAccountDetailUseCase,
                       ),
                     )..add(LoadAccountDetail(accountId: accountId)),
                   ),
                   BlocProvider(
                     create: (_) => AccountTransactionsBloc(
-                      getAccountTransactionsUseCase:
-                          GetAccountTransactionsUseCase(
-                            repository: accountRepo,
-                          ),
+                      getAccountTransactionsUseCase: container.read(
+                        AccountProviders.getAccountTransactionsUseCase,
+                      ),
                     )..add(LoadTransactions(accountId: accountId)),
                   ),
                 ],

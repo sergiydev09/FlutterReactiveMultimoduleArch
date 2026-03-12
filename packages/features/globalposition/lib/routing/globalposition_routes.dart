@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../di/globalposition_providers.dart';
-import '../domain/usecases/get_global_position_usecase.dart';
 import '../presentation/global_position/bloc/global_position_bloc.dart';
 import '../presentation/global_position/page/global_position_page.dart';
 
@@ -19,11 +18,10 @@ abstract final class GlobalPositionRoutes {
         path: home,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
-          final gpRepo = container.read(GlobalPositionProviders.repository);
           return BlocProvider(
             create: (_) => GlobalPositionBloc(
-              getGlobalPositionUseCase: GetGlobalPositionUseCase(
-                repository: gpRepo,
+              getGlobalPositionUseCase: container.read(
+                GlobalPositionProviders.getGlobalPositionUseCase,
               ),
             )..add(const LoadGlobalPosition()),
             child: GlobalPositionPage(

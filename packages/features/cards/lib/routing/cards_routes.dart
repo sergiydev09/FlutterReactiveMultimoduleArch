@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../di/cards_providers.dart';
-import '../domain/usecases/get_cards_usecase.dart';
 import '../presentation/card_detail/page/card_detail_page.dart';
 import '../presentation/cards_list/bloc/cards_list_bloc.dart';
 import '../presentation/cards_list/page/cards_list_page.dart';
@@ -24,11 +23,10 @@ abstract final class CardRoutes {
         path: cards,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
-          final cardRepo = container.read(CardProviders.repository);
           return BlocProvider(
             create: (_) => CardsListBloc(
-              getCardsUseCase: GetCardsUseCase(repository: cardRepo),
-              cardRepository: cardRepo,
+              getCardsUseCase: container.read(CardProviders.getCardsUseCase),
+              cardRepository: container.read(CardProviders.repository),
             )..add(const LoadCards()),
             child: const CardsListPage(),
           );
@@ -40,11 +38,10 @@ abstract final class CardRoutes {
               final card = state.extra as CardEntity?;
               if (card != null) {
                 final container = ProviderScope.containerOf(context);
-                final cardRepo = container.read(CardProviders.repository);
                 return BlocProvider(
                   create: (_) => CardsListBloc(
-                    getCardsUseCase: GetCardsUseCase(repository: cardRepo),
-                    cardRepository: cardRepo,
+                    getCardsUseCase: container.read(CardProviders.getCardsUseCase),
+                    cardRepository: container.read(CardProviders.repository),
                   )..add(const LoadCards()),
                   child: CardDetailPage(card: card),
                 );

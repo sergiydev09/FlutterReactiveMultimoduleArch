@@ -4,6 +4,7 @@ import '../data/datasources/cards_api_client.dart';
 import '../data/datasources/remote_card_datasource.dart';
 import '../data/repositories/card_repository_impl.dart';
 import '../domain/repositories/card_repository.dart';
+import '../domain/usecases/get_cards_usecase.dart';
 
 /// Riverpod providers for the cards feature.
 abstract final class CardProviders {
@@ -25,5 +26,10 @@ abstract final class CardProviders {
     return CardRepositoryImpl(
       remoteDataSource: ref.watch(CardProviders.remoteDataSource),
     );
+  });
+
+  /// Use case to retrieve the list of cards.
+  static final getCardsUseCase = Provider<GetCardsUseCase>((ref) {
+    return GetCardsUseCase(repository: ref.watch(CardProviders.repository));
   });
 }

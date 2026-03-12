@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:security/security.dart';
 
 import '../di/main_shell_providers.dart';
-import '../domain/usecases/get_shell_config_usecase.dart';
 import '../presentation/shell/bloc/main_shell_bloc.dart';
 import '../presentation/shell/page/main_shell_page.dart';
 
@@ -30,8 +29,8 @@ abstract final class MainShellRoutes {
 
     return BlocProvider(
       create: (_) => MainShellBloc(
-        getShellConfigUseCase: GetShellConfigUseCase(
-          repository: container.read(MainShellProviders.repository),
+        getShellConfigUseCase: container.read(
+          MainShellProviders.getShellConfigUseCase,
         ),
         onLogout: () async {
           await container

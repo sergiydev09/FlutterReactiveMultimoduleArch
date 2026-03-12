@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../di/payments_providers.dart';
 import '../domain/entities/payment.dart';
-import '../domain/usecases/execute_payment_usecase.dart';
 import '../presentation/new_payment/bloc/new_payment_bloc.dart';
 import '../presentation/new_payment/page/new_payment_page.dart';
 import '../presentation/payment_confirm/page/payment_confirm_page.dart';
@@ -24,11 +23,10 @@ abstract final class PaymentRoutes {
         path: newPayment,
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
-          final paymentRepo = container.read(PaymentProviders.repository);
           return BlocProvider(
             create: (_) => NewPaymentBloc(
-              executePaymentUseCase: ExecutePaymentUseCase(
-                repository: paymentRepo,
+              executePaymentUseCase: container.read(
+                PaymentProviders.executePaymentUseCase,
               ),
             ),
             child: const NewPaymentPage(),
@@ -42,11 +40,10 @@ abstract final class PaymentRoutes {
         builder: (context, state) {
           final payment = state.extra! as Payment;
           final container = ProviderScope.containerOf(context);
-          final paymentRepo = container.read(PaymentProviders.repository);
           return BlocProvider(
             create: (_) => NewPaymentBloc(
-              executePaymentUseCase: ExecutePaymentUseCase(
-                repository: paymentRepo,
+              executePaymentUseCase: container.read(
+                PaymentProviders.executePaymentUseCase,
               ),
             ),
             child: PaymentConfirmPage(payment: payment),

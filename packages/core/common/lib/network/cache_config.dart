@@ -9,7 +9,7 @@ class CacheConfig {
   /// Cached responses are kept for 5 minutes by default.
   static CacheOptions get defaultOptions => CacheOptions(
     store: MemCacheStore(),
-    hitCacheOnErrorExcept: [401, 403],
+    hitCacheOnNetworkFailure: true,
     maxStale: const Duration(minutes: 5),
   );
 }

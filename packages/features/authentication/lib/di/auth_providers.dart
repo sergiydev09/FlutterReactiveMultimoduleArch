@@ -6,6 +6,8 @@ import '../data/datasources/remote_auth_datasource.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/usecases/biometric_login_usecase.dart';
+import '../domain/usecases/login_usecase.dart';
+import '../domain/usecases/logout_usecase.dart';
 
 /// Riverpod providers for the authentication feature.
 abstract final class AuthProviders {
@@ -38,5 +40,15 @@ abstract final class AuthProviders {
     return BiometricLoginUseCase(
       repository: ref.watch(AuthProviders.repository),
     );
+  });
+
+  /// Use case for credential login.
+  static final loginUseCase = Provider<LoginUseCase>((ref) {
+    return LoginUseCase(repository: ref.watch(AuthProviders.repository));
+  });
+
+  /// Use case for logout.
+  static final logoutUseCase = Provider<LogoutUseCase>((ref) {
+    return LogoutUseCase(repository: ref.watch(AuthProviders.repository));
   });
 }

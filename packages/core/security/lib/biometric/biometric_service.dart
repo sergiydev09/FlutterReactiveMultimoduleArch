@@ -52,10 +52,8 @@ class BiometricService {
 
       return await _localAuth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
+        biometricOnly: true,
+        persistAcrossBackgrounding: true,
       );
     } on Exception catch (e) {
       developer.log('Biometric authentication failed: $e', name: _tag);

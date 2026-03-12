@@ -7,8 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:security/security.dart';
 import '../di/auth_providers.dart';
-import '../domain/usecases/login_usecase.dart';
-import '../domain/usecases/logout_usecase.dart';
 import '../presentation/forgot_password/page/forgot_password_page.dart';
 import '../presentation/login/bloc/login_bloc.dart';
 import '../presentation/login/page/login_page.dart';
@@ -97,10 +95,9 @@ class _LoginBlocScopeState extends ConsumerState<LoginBlocScope> {
   }
 
   LoginBloc _createBloc() {
-    final authRepo = ref.read(AuthProviders.repository);
     return LoginBloc(
-      loginUseCase: LoginUseCase(repository: authRepo),
-      logoutUseCase: LogoutUseCase(repository: authRepo),
+      loginUseCase: ref.read(AuthProviders.loginUseCase),
+      logoutUseCase: ref.read(AuthProviders.logoutUseCase),
       biometricLoginUseCase: ref.read(AuthProviders.biometricLoginUseCase),
     );
   }
