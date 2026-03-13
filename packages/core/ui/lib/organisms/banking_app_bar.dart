@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import '../tokens/typography.dart';
+import '../utils/preview_wrapper.dart';
 
 /// A styled app bar consistent with the banking design system.
 ///
@@ -72,4 +74,55 @@ class BankingAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
     );
   }
+
+// --- Previews ---
+
+  @Preview(
+    name: 'Standard App Bar',
+    group: 'BankingAppBar',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget standardPreview() => const BankingAppBar(
+        title: 'Transactions',
+      );
+
+  @Preview(
+    name: 'App Bar with Actions',
+    group: 'BankingAppBar',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget actionsPreview() => BankingAppBar(
+        title: 'Home',
+        showBackButton: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none_rounded),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.person_outline_rounded),
+            onPressed: () {},
+          ),
+        ],
+      );
+
+  @Preview(
+    name: 'Colored Background App Bar',
+    group: 'BankingAppBar',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget coloredPreview() => BankingAppBar(
+        title: 'Summary',
+        backgroundColor: Colors.indigo,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none_rounded),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.person_outline_rounded),
+            onPressed: () {},
+          ),
+        ],
+      );
 }
