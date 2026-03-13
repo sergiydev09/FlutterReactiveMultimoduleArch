@@ -15,14 +15,15 @@ final routerProvider = Provider<GoRouter>((ref) {
   ref.watch(CommonProviders.localeChangeNotifier);
 
   return GoRouter(
-    initialLocation: AuthRoutes.login,
+    initialLocation: '/${AuthRoutes.login}',
     redirect: (context, state) {
       final isAuthRoute =
-          state.matchedLocation == AuthRoutes.login ||
-          state.matchedLocation == AuthRoutes.forgotPassword;
+          state.matchedLocation == '/${AuthRoutes.login}' ||
+          state.matchedLocation ==
+              '/${AuthRoutes.login}/${AuthRoutes.forgotPassword}';
 
-      if (!isSessionActive && !isAuthRoute) return AuthRoutes.login;
-      if (isSessionActive && isAuthRoute) return GlobalPositionRoutes.home;
+      if (!isSessionActive && !isAuthRoute) return '/${AuthRoutes.login}';
+      if (isSessionActive && isAuthRoute) return '/${GlobalPositionRoutes.globalPosition}';
 
       return null;
     },

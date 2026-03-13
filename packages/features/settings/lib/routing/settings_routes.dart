@@ -9,15 +9,16 @@ import '../presentation/settings/page/settings_page.dart';
 
 /// Route paths and route definitions for settings.
 abstract final class SettingsRoutes {
-  // -- Paths --
-  static const settings = '/settings';
+  // -- Route names --
+  static const settings = 'settings';
 
   // -- Routes --
 
   static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: settings,
+        name: settings,
+        path: '/$settings',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           final initialBiometricEnabled =

@@ -65,7 +65,7 @@ class MockShellConfigDataSource implements ShellConfigDataSource {
           id: 'home',
           titleKey: 'nav.home',
           icon: MenuIcon.home,
-          route: '/globalposition',
+          route: '/global-position',
         ),
         BottomTab(
           id: 'payments',

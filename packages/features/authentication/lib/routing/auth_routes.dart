@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:common/common.dart';
 import 'package:domain/entities/user.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:security/security.dart';
+
 import '../di/auth_providers.dart';
 import '../presentation/forgot_password/page/forgot_password_page.dart';
 import '../presentation/login/bloc/login_bloc.dart';
@@ -13,10 +15,9 @@ import '../presentation/login/page/login_page.dart';
 
 /// Route paths, callback providers, and route definitions for authentication.
 abstract final class AuthRoutes {
-  // -- Paths --
-  static const login = '/login';
-  static const _forgotPasswordSegment = 'forgot-password';
-  static const forgotPassword = '/login/$_forgotPasswordSegment';
+  // -- Route names --
+  static const login = 'login';
+  static const forgotPassword = 'forgot-password';
 
   // -- Config providers (overridden per entry point) --
 
@@ -28,7 +29,8 @@ abstract final class AuthRoutes {
   static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: login,
+        name: login,
+        path: '/$login',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           return LoginBlocScope(
@@ -45,12 +47,13 @@ abstract final class AuthRoutes {
                     .refresh(),
               );
             },
-            onForgotPassword: () => context.go(forgotPassword),
+            onForgotPassword: () => context.goNamed(forgotPassword),
           );
         },
         routes: [
           GoRoute(
-            path: _forgotPasswordSegment,
+            name: forgotPassword,
+            path: forgotPassword,
             builder: (context, state) => const ForgotPasswordPage(),
           ),
         ],

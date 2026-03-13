@@ -10,12 +10,14 @@ import '../presentation/global_position/page/global_position_page.dart';
 
 /// Route paths and route definitions for the global position feature.
 abstract final class GlobalPositionRoutes {
-  static const home = '/globalposition';
+  // -- Route names --
+  static const globalPosition = 'global-position';
 
   static final routes = FeatureRoutes(
     shellRoutes: [
       GoRoute(
-        path: home,
+        name: globalPosition,
+        path: '/$globalPosition',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           return BlocProvider(
@@ -26,14 +28,16 @@ abstract final class GlobalPositionRoutes {
             )..add(const LoadGlobalPosition()),
             child: GlobalPositionPage(
               onAccountTap: (account) {
-                unawaited(context.push(
-                  '/accounts/${account.id}',
+                unawaited(context.pushNamed(
+                  'account-detail',
+                  pathParameters: {'id': account.id},
                   extra: account.name,
                 ));
               },
               onTransactionTap: (tx) {
-                unawaited(context.push(
-                  '/accounts/${tx.accountId}/transactions/${tx.id}',
+                unawaited(context.pushNamed(
+                  'account-transaction',
+                  pathParameters: {'id': tx.accountId, 'txId': tx.id},
                   extra: tx,
                 ));
               },

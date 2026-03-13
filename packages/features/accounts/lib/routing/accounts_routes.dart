@@ -17,23 +17,20 @@ import '../presentation/transaction_detail/page/transaction_web_detail_page.dart
 
 /// Route paths and route definitions for the accounts feature.
 abstract final class AccountRoutes {
-  static const accounts = '/accounts';
+  // -- Route names --
+  static const accounts = 'accounts';
+  static const accountDetail = 'account-detail';
+  static const accountTransaction = 'account-transaction';
+
+  // -- Path segments (private) --
   static const _idSegment = ':id';
   static const _transactionsSegment = 'transactions/:txId';
-
-  /// Returns the path for a specific account detail.
-  static String accountById(String id) => '/accounts/$id';
-
-  /// Returns the path for a specific transaction detail.
-  static String transaction({
-    required String accountId,
-    required String txId,
-  }) => '/accounts/$accountId/transactions/$txId';
 
   static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: accounts,
+        name: accounts,
+        path: '/$accounts',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           return BlocProvider(
@@ -45,6 +42,7 @@ abstract final class AccountRoutes {
         },
         routes: [
           GoRoute(
+            name: accountDetail,
             path: _idSegment,
             builder: (context, state) {
               final container = ProviderScope.containerOf(context);
@@ -70,11 +68,9 @@ abstract final class AccountRoutes {
                 child: AccountDetailPage(
                   accountName: accountName,
                   onTransactionTap: (tx) {
-                    unawaited(context.push(
-                      AccountRoutes.transaction(
-                        accountId: accountId,
-                        txId: tx.id,
-                      ),
+                    unawaited(context.pushNamed(
+                      accountTransaction,
+                      pathParameters: {'id': accountId, 'txId': tx.id},
                       extra: tx,
                     ));
                   },
@@ -83,6 +79,7 @@ abstract final class AccountRoutes {
             },
             routes: [
               GoRoute(
+                name: accountTransaction,
                 path: _transactionsSegment,
                 builder: (context, state) {
                   final transaction = state.extra as Transaction?;

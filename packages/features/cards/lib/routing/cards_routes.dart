@@ -11,7 +11,11 @@ import '../presentation/cards_list/page/cards_list_page.dart';
 
 /// Route paths and route definitions for the cards feature.
 abstract final class CardRoutes {
-  static const cards = '/cards';
+  // -- Route names --
+  static const cards = 'cards';
+  static const cardDetail = 'card-detail';
+
+  // -- Path segments (private) --
   static const _idSegment = ':id';
 
   /// Returns the path for a specific card detail.
@@ -20,7 +24,8 @@ abstract final class CardRoutes {
   static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: cards,
+        name: cards,
+        path: '/$cards',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           return BlocProvider(
@@ -33,6 +38,7 @@ abstract final class CardRoutes {
         },
         routes: [
           GoRoute(
+            name: cardDetail,
             path: _idSegment,
             builder: (context, state) {
               final card = state.extra as CardEntity?;

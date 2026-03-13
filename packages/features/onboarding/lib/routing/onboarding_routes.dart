@@ -10,12 +10,14 @@ import '../presentation/onboarding/page/onboarding_page.dart';
 
 /// Route paths and route definitions for onboarding.
 abstract final class OnboardingRoutes {
-  static const onboarding = '/onboarding';
+  // -- Route names --
+  static const onboarding = 'onboarding';
 
   static final routes = FeatureRoutes(
     fullScreenRoutes: [
       GoRoute(
-        path: onboarding,
+        name: onboarding,
+        path: '/$onboarding',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
           return BlocProvider(

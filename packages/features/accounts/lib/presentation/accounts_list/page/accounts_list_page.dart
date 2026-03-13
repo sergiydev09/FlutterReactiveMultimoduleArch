@@ -43,8 +43,9 @@ class AccountsListPage extends StatelessWidget {
                 final account = state.accounts[index];
                 return _AccountListTile(
                   account: account,
-                  onTap: () => context.push(
-                    AccountRoutes.accountById(account.id),
+                  onTap: () => context.pushNamed(
+                    AccountRoutes.accountDetail,
+                    pathParameters: {'id': account.id},
                     extra: account.name,
                   ),
                 );
