@@ -50,6 +50,7 @@ dependencies:
 dev_dependencies:
   bloc_test: any
   build_runner: any
+  flutter_launcher_icons: ^0.14.3
   flutter_test:
     sdk: flutter
   freezed: any
@@ -121,6 +122,13 @@ melos:
         -t lib/main_prod.dart
         --obfuscate
         --split-debug-info=build/symbols/
+      exec:
+        packageFilters:
+          scope: mobile_app
+
+    icons:
+      description: Generate launcher icons for all flavors
+      run: dart run flutter_launcher_icons
       exec:
         packageFilters:
           scope: mobile_app
