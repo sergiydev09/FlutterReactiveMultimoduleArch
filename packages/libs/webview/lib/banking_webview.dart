@@ -1,27 +1,30 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import './js_bridge.dart';
 import './webview_config.dart';
 import './webview_event.dart';
+import './webview_cookie_manager.dart';
+import './webview_source.dart';
 
 /// A configurable WebView widget for banking-related web content.
 ///
-/// Loads a remote [url] and optionally communicates with the page
-/// via a bidirectional [JsBridge].
+/// Loads content from a [source] (URL or HTML) and optionally
+/// communicates with the page via a bidirectional [JsBridge].
 ///
 /// When [initialData] is provided, its result is sent to the web page
 /// via the JS bridge once the page finishes loading.
 class BankingWebView extends StatefulWidget {
   const BankingWebView({
-    required this.url,
+    required this.source,
     super.key,
     this.config = const WebViewConfig(),
     this.onEvent,
     this.initialData,
   });
 
-  /// The URL to load.
-  final String url;
+  /// The source of the content to load (URL or HTML).
+  final WebViewSource source;
 
   /// WebView configuration.
   final WebViewConfig config;
@@ -51,7 +54,9 @@ class _BankingWebViewState extends State<BankingWebView> {
   }
 
   void _onWebViewCreated(InAppWebViewController controller) {
-    _bridge?.register(controller);
+    if (widget.config.enableJavaScript) {
+      _bridge?.register(controller);
+    }
   }
 
   Future<void> _onLoadStop(InAppWebViewController controller, WebUri? url) async {
@@ -66,25 +71,88 @@ class _BankingWebViewState extends State<BankingWebView> {
   }
 
   @override
+  void dispose() {
+    if (widget.config.clearCookiesOnDispose) {
+      final source = widget.source;
+      if (source is WebViewUrlSource) {
+        BankingCookieManager.clearBankingSession(source.url);
+      }
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    URLRequest? initialUrlRequest;
+    InAppWebViewInitialData? initialData;
+
+    switch (widget.source) {
+      case WebViewUrlSource source:
+        initialUrlRequest = source.toUrlRequest();
+      case WebViewHtmlSource source:
+        initialData = source.toInitialData();
+    }
+
     return Stack(
       children: [
         InAppWebView(
-          initialUrlRequest: URLRequest(url: WebUri(widget.url)),
+          initialUrlRequest: initialUrlRequest,
+          initialData: initialData,
           initialSettings: InAppWebViewSettings(
             javaScriptEnabled: widget.config.enableJavaScript,
             supportZoom: widget.config.enableZoom,
             userAgent: widget.config.userAgent,
             useShouldOverrideUrlLoading: true,
+            supportMultipleWindows: widget.config.supportMultipleWindows,
+            javaScriptCanOpenWindowsAutomatically: false,
+            isInspectable: kDebugMode,
           ),
           onWebViewCreated: _onWebViewCreated,
           shouldOverrideUrlLoading: (controller, navigationAction) async {
             final navUrl = navigationAction.request.url?.toString() ?? '';
+
+            // Priority 1: Navigation Actions (chain-of-responsibility via delegate)
+            final result = await widget.config.navigationDelegate(
+              controller,
+              navigationAction,
+              onEvent: widget.onEvent,
+            );
+            if (result != null) return result;
+
+            // Priority 2: Domain Allow-list
             if (!widget.config.isAllowedUrl(navUrl)) {
               return NavigationActionPolicy.CANCEL;
             }
+
             widget.onEvent?.call(WebViewNavigateEvent(url: navUrl));
             return NavigationActionPolicy.ALLOW;
+          },
+          onReceivedServerTrustAuthRequest: (controller, challenge) async {
+            // Strict SSL Layer for Banking: Cancel if there's any trust issue.
+            // In a real banking app, we don't want to proceed with invalid certs.
+            debugPrint(
+              'SSL trust challenge for: ${challenge.protectionSpace.host}',
+            );
+
+            widget.onEvent?.call(
+              const WebViewCustomEvent(name: 'SECURITY_SSL_ERROR'),
+            );
+
+            return ServerTrustAuthResponse(
+              action: ServerTrustAuthResponseAction.CANCEL,
+            );
+          },
+          onCreateWindow: (controller, createWindowAction) async { // for _blank and other webs opening. TODO: (Ask sergiy if allowed url's must be checked here too)
+            final urlToOpen = createWindowAction.request.url?.toString();
+            if (urlToOpen != null && widget.config.isAllowedUrl(urlToOpen)) {
+              widget.onEvent?.call(
+                WebViewCustomEvent(
+                  name: 'OPEN_NEW_WINDOW',
+                  data: {'url': urlToOpen},
+                ),
+              );
+            }
+            return true;
           },
           onLoadStart: (controller, url) {
             setState(() {

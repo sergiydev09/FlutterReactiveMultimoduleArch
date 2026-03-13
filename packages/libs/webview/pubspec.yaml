@@ -15,6 +15,7 @@ dependencies:
   flutter_inappwebview:
   security:
     path: ../../core/security
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

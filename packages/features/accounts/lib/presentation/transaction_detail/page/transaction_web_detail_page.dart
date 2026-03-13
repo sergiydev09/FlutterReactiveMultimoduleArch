@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:ui/tokens/colors.dart';
 import 'package:webview_lib/webview_lib.dart';
+import 'package:webview_lib/webview_source.dart';
 
 import '../../../domain/repositories/account_repository.dart';
 
@@ -166,8 +167,11 @@ class _TransactionWebDetailPageState extends State<TransactionWebDetailPage> {
     }
 
     return BankingWebView(
-      url: _url!,
-      config: const WebViewConfig(allowedDomains: []),
+      source: WebViewUrlSource(_url!),
+      config: const WebViewConfig(
+        allowedDomains: [],
+        enableJavaScript: true
+      ),
       onEvent: _handleEvent,
       initialData: () async {
         final token = await widget.sessionManager.getToken();
