@@ -166,8 +166,11 @@ class _TransactionWebDetailPageState extends State<TransactionWebDetailPage> {
     }
 
     return BankingWebView(
-      url: _url!,
-      config: const WebViewConfig(allowedDomains: []),
+      source: WebViewHtmlSource(_url!),
+      config: const WebViewConfig(
+        allowedDomains: [],
+        enableJavaScript: true
+      ),
       onEvent: _handleEvent,
       initialData: () async {
         final token = await widget.sessionManager.getToken();
