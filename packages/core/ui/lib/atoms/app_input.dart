@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widget_previews.dart';
+import '../utils/preview_wrapper.dart';
 
 /// A styled text input field wrapping [TextFormField].
 ///
@@ -102,4 +104,48 @@ class AppInput extends StatelessWidget {
       ),
     );
   }
+
+// --- Previews ---
+
+  @Preview(
+    name: 'Standard Input',
+    group: 'AppInput',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget standardPreview() => const AppInput(
+        label: 'Username',
+        hint: 'Enter your username',
+      );
+
+  @Preview(
+    name: 'Input with Icon',
+    group: 'AppInput',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget iconPreview() => const AppInput(
+        label: 'Search',
+        hint: 'Search transactions...',
+        prefixIcon: Icon(Icons.search),
+      );
+
+  @Preview(
+    name: 'Password Input',
+    group: 'AppInput',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget passwordPreview() => const AppInput(
+        label: 'Password',
+        obscureText: true,
+        suffixIcon: Icon(Icons.visibility_off),
+      );
+
+  @Preview(
+    name: 'Error State',
+    group: 'AppInput',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget errorPreview() => const AppInput(
+        label: 'Email',
+        errorText: 'Invalid email address',
+      );
 }

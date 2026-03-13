@@ -1,5 +1,6 @@
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import './webview_event.dart';
+import 'webview_lib.dart' show BankingWebView, WebViewConfig;
 
 /// Contract for a single navigation action.
 ///

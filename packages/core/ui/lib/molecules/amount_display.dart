@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import '../theme/banking_color_extension.dart';
 import '../tokens/typography.dart';
+import '../utils/preview_wrapper.dart';
 
 /// Displays a formatted currency amount with sign-aware coloring.
 ///
@@ -68,4 +70,35 @@ class AmountDisplay extends StatelessWidget {
 
     return '$buffer,$decimalPart';
   }
+
+// --- Previews ---
+
+  @Preview(
+    name: 'Positive Amount',
+    group: 'AmountDisplay',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget positivePreview() => const AmountDisplay(
+        amount: 1450.50,
+      );
+
+  @Preview(
+    name: 'Negative Amount',
+    group: 'AmountDisplay',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget negativePreview() => const AmountDisplay(
+        amount: -25.99,
+      );
+
+  @Preview(
+    name: 'Compact Preview',
+    group: 'AmountDisplay',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget compactPreview() => const AmountDisplay(
+        amount: 50,
+        compact: true,
+      );
+
 }

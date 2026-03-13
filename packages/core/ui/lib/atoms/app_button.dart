@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import '../tokens/spacing.dart';
 import '../tokens/typography.dart';
+import '../utils/preview_wrapper.dart';
 
 /// Button variant types.
 enum AppButtonVariant {
@@ -120,4 +122,71 @@ class AppButton extends StatelessWidget {
       ),
     };
   }
+
+// --- Previews ---
+
+  @Preview(
+    name: 'Primary Button',
+    group: 'AppButton',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget primaryPreview() => AppButton(
+        label: 'Primary Button',
+        onPressed: () {},
+      );
+
+  @Preview(
+    name: 'Secondary Button',
+    group: 'AppButton',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget secondaryPreview() => AppButton(
+        label: 'Secondary Button',
+        variant: AppButtonVariant.secondary,
+        onPressed: () {},
+      );
+
+  @Preview(
+    name: 'Outline Button',
+    group: 'AppButton',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget outlinePreview() => AppButton(
+        label: 'Outline Button',
+        variant: AppButtonVariant.outline,
+        onPressed: () {},
+      );
+
+  @Preview(
+    name: 'Loading Button',
+    group: 'AppButton',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget loadingPreview() => AppButton(
+        label: 'Loading...',
+        isLoading: true,
+        onPressed: () {},
+      );
+
+  @Preview(
+    name: 'Button with Icon',
+    group: 'AppButton',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget iconPreview() => AppButton(
+        label: 'Send Money',
+        icon: Icons.send,
+        onPressed: () {},
+      );
+
+  @Preview(
+    name: 'Small Button (Not Full Width)',
+    group: 'AppButton',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget smallPreview() => AppButton(
+        label: 'Small',
+        fullWidth: false,
+        onPressed: () {},
+      );
 }

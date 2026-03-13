@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import './js_bridge.dart';
 import './webview_config.dart';
-import './webview_event.dart';
 import './webview_cookie_manager.dart';
+import './webview_event.dart';
 import './webview_source.dart';
 
 /// A configurable WebView widget for banking-related web content.
@@ -87,9 +87,9 @@ class _BankingWebViewState extends State<BankingWebView> {
     InAppWebViewInitialData? initialData;
 
     switch (widget.source) {
-      case WebViewUrlSource source:
+      case final WebViewUrlSource source:
         initialUrlRequest = source.toUrlRequest();
-      case WebViewHtmlSource source:
+      case final WebViewHtmlSource source:
         initialData = source.toInitialData();
     }
 

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import '../theme/banking_color_extension.dart';
 import '../tokens/radii.dart';
+import '../utils/preview_wrapper.dart';
 
 /// A shimmer loading placeholder that displays an animated gradient sweep
 /// to indicate content is loading.
@@ -78,3 +80,25 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
     );
   }
 }
+
+// --- Previews ---
+
+@Preview(
+  name: 'Standard Shimmer',
+  group: 'ShimmerLoading',
+  wrapper: appPreviewWrapper,
+)
+Widget shimmerStandardPreview() => const ShimmerLoading(width: 200);
+
+@Preview(
+  name: 'Card Shimmer',
+  group: 'ShimmerLoading',
+  wrapper: appPreviewWrapper,
+)
+Widget shimmerCardPreview() => const Column(
+      children: [
+        ShimmerLoading(height: 100),
+        SizedBox(height: 8),
+        ShimmerLoading(width: 150),
+      ],
+    );

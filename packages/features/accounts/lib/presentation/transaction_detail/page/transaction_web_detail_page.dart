@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:ui/tokens/colors.dart';
 import 'package:webview_lib/webview_lib.dart';
-import 'package:webview_lib/webview_source.dart';
 
 import '../../../domain/repositories/account_repository.dart';
 

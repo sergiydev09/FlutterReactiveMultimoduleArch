@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import '../tokens/typography.dart';
+import '../utils/preview_wrapper.dart';
 
 /// Predefined text style variants.
 enum AppTextVariant {
@@ -80,4 +82,25 @@ class AppText extends StatelessWidget {
       textAlign: textAlign,
     );
   }
+
+// --- Previews ---
+
+  @Preview(
+    name: 'Typography System',
+    group: 'AppText',
+    wrapper: appPreviewWrapper,
+  )
+  static Widget typoPreview() => const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppText('Headline Large', variant: AppTextVariant.headlineLarge),
+          AppText('Headline Medium', variant: AppTextVariant.headlineMedium),
+          AppText('Title Large', variant: AppTextVariant.titleLarge),
+          AppText('Title Medium', variant: AppTextVariant.titleMedium),
+          AppText('Body Large', variant: AppTextVariant.bodyLarge),
+          AppText('Body Medium'),
+          AppText('Label Large', variant: AppTextVariant.labelLarge),
+          AppText('Label Small', variant: AppTextVariant.labelSmall),
+        ],
+      );
 }
