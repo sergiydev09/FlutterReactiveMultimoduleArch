@@ -1,55 +1,117 @@
 # WebView Library (`webview_lib`)
 
-A robust, security-focused WebView infrastructure for the banking application based on `flutter_inappwebview`.
+A security-focused WebView infrastructure for the banking application based on `flutter_inappwebview`.
+
+---
 
 ## Core Components
 
 ### `BankingWebView`
-The primary widget for displaying web content. It integrates security policies, navigation interception, and a bidirectional JavaScript bridge.
+
+The primary widget for displaying web content. Integrates SSL pinning, cookie injection, domain enforcement, and a bidirectional JavaScript bridge.
 
 ```dart
 BankingWebView(
-  source: WebViewHtmlSource(htmlContent), // or WebViewUrlSource('https://...')
+  source: WebViewUrlSource(
+    'https://banking-app.com/payments',
+    headers: {'X-App-Version': '1.0.0'},
+  ),
   config: WebViewConfig(
     enableJavaScript: true,
-    allowedDomains: ['trusted-bank.com'],
+    allowedDomains: ['banking-app.com'],
+    cookieJar: ref.read(cookieJarProvider),
+    sslPinHashes: ['base64EncodedSha256OfSpki=='],
+    navigationDelegate: WebViewNavigationDelegate(
+      actions: [TelNavigationAction(), MailToNavigationAction()],
+    ),
   ),
-  onEvent: (event) => print('Action from JS: ${event.name}'),
+  onEvent: (event) {
+    if (event is WebViewSessionExpiredEvent) {
+      context.go('/login');
+    }
+  },
+  initialData: () async => {'user': 'Juan', 'tier': 'Gold'},
 )
 ```
 
+---
+
 ### `WebViewConfig`
-Centralized configuration for the WebView.
-- **`allowedDomains`**: (List<String>) Domains allowed for navigation. **Empty list allows all** (use with caution).
-- **`enableJavaScript`**: (bool) Defaults to `false` for security.
-- **`navigationDelegate`**: Orchestrates custom URL scheme handling.
+
+Centralised, immutable configuration passed to `BankingWebView`.
+
+| Field | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `allowedDomains` | `List<String>` | `['banking-app.com', ...]` | Domains the WebView may navigate to. Empty list allows all — **avoid in production**. |
+| `enableJavaScript` | `bool` | `false` | Enables JavaScript. Disable unless the content requires it. |
+| `enableZoom` | `bool` | `false` | Enables pinch-to-zoom. |
+| `supportMultipleWindows` | `bool` | `false` | Allows pop-up windows (`target="_blank"`, `window.open`). |
+| `clearCookiesOnDispose` | `bool` | `true` | Deletes session cookies and clears cache on widget disposal. |
+| `userAgent` | `String?` | `null` | Custom user-agent string. |
+| `navigationDelegate` | `WebViewNavigationDelegate` | empty delegate | Chain-of-responsibility handler for non-browser URL schemes. |
+| `cookieJar` | `CookieJar?` | `null` | Dio `CookieJar` to sync into the native cookie store on `onWebViewCreated`. No-op for `WebViewHtmlSource`. |
+| `sslPinHashes` | `List<String>` | `[]` | SHA-256 hashes (base64) of trusted certificates or SPKI keys. Empty falls back to OS certificate validation. |
+
+---
 
 ### `WebViewSource`
+
 Defines what content to load:
-- **`WebViewUrlSource`**: Loads a remote URL with optional HTTP headers.
-- **`WebViewHtmlSource`**: Loads a static HTML string with an optional base URL.
+
+- **`WebViewUrlSource(url, {headers})`** — loads a remote URL with optional HTTP headers.
+- **`WebViewHtmlSource(html, {baseUrl})`** — loads a static HTML string with an optional base URL.
 
 ---
 
 ## Navigation Actions & Delegation
 
-The library uses a delegation pattern to handle non-browser navigation (e.g., opening native apps).
+### `BankNavigationAction`
+
+Interface for intercepting navigation. Implement two methods:
+
+```dart
+class TransactionSuccessAction implements BankNavigationAction {
+  const TransactionSuccessAction({required this.onSuccess});
+  final VoidCallback onSuccess;
+
+  @override
+  bool matches(String url) => url.contains('/transaction/success');
+
+  @override
+  Future<WebViewNavigationPolicy> onMatch(String url) async {
+    onSuccess();
+    return WebViewNavigationPolicy.cancel; // stop WebView from navigating
+  }
+}
+```
+
+`WebViewNavigationPolicy.allow` lets the WebView proceed; `.cancel` stops it (use after handling the URL natively).
 
 ### `WebViewNavigationDelegate`
-Holds a list of `BankNavigationAction` implementations. When a navigation occurs, it iterates through them to see if any can handle the URL.
 
-### Standard Navigation Actions
-Include the following in your `WebViewConfig` to support native app launching:
+Holds an ordered list of `BankNavigationAction`s. The first matching action wins (chain-of-responsibility). If no action matches, the domain allow-list is checked next.
+
+### Built-in Navigation Actions
+
+| Class | Schemes handled |
+| :--- | :--- |
+| `TelNavigationAction` | `tel:` |
+| `MailToNavigationAction` | `mailto:` |
+| `SmsNavigationAction` | `sms:`, `smsto:` |
+| `MapsNavigationAction` | `geo:`, `maps:`, `comgooglemaps:` (falls back to Apple Maps) |
+| `AppStoreNavigationAction` | `market:`, `play:`, `itms-apps:`, `itms:` |
+
+All actions accept an optional `launcher` parameter for testing.
 
 ```dart
 WebViewConfig(
   navigationDelegate: WebViewNavigationDelegate(
     actions: [
-      TelNavigationAction(),      // Handles tel:
-      MailToNavigationAction(),   // Handles mailto:
-      SmsNavigationAction(),      // Handles sms: and smsto:
-      MapsNavigationAction(),     // Handles geo:, maps:, and comgooglemaps:
-      AppStoreNavigationAction(),  // Handles market:, itms-apps:, etc.
+      TelNavigationAction(),
+      MailToNavigationAction(),
+      SmsNavigationAction(),
+      MapsNavigationAction(),
+      AppStoreNavigationAction(),
     ],
   ),
 )
@@ -59,122 +121,205 @@ WebViewConfig(
 
 ## JavaScript Bridge
 
-Bidirectional communication between Flutter and the web page.
+### Sending data to the web page
 
-### Sending data to Web
-The `BankingWebView` calls `window.onFlutterData(jsonString)` in JS whenever the `initialData` or reactive updates are sent.
+Provide `initialData` — it is called once after `onLoadStop` and the result is sent to the page as `window.onFlutterData(jsonString)`.
 
-**Flutter Example:**
+**Flutter:**
 ```dart
 BankingWebView(
   // ...
   initialData: () async => {
-    'user': {'name': 'John Doe', 'tier': 'Gold'},
+    'user': {'name': 'Juan García', 'tier': 'Gold'},
     'preferences': {'darkMode': true},
   },
 )
 ```
 
-**JavaScript Example:**
+**JavaScript:**
 ```js
 window.onFlutterData = function(payload) {
   const data = JSON.parse(payload);
-  console.log('User name:', data.user.name);
+  console.log('User:', data.user.name);
 };
 ```
 
-### Receiving events from Web
-The web page can send events to Flutter using the `FlutterBridge` handler.
+### Receiving events from the web page
 
-**JavaScript Example:**
+The page calls the `FlutterBridge` handler. Flutter receives a `WebViewCustomEvent`.
+
+**JavaScript:**
 ```js
-function onPaymentClick() {
-  window.flutter_inappwebview.callHandler('FlutterBridge', {
-    action: 'process_payment',
-    data: { amount: 50.0, currency: 'EUR' }
-  });
-}
+window.flutter_inappwebview.callHandler('FlutterBridge', {
+  action: 'process_payment',
+  data: { amount: 50.0, currency: 'EUR' }
+});
 ```
 
-**Flutter Example:**
+**Flutter:**
 ```dart
 onEvent: (event) {
-  if (event.name == 'process_payment') {
+  if (event is WebViewCustomEvent && event.name == 'process_payment') {
     final amount = event.data?['amount'];
-    // Trigger Flutter logic...
+    // trigger Flutter logic
   }
 }
 ```
+
+> JavaScript must be enabled (`enableJavaScript: true`) for the bridge to function.
 
 ---
 
 ## Cookie Management
 
-Use `BankingCookieManager` to handle secure session cookies. This is handled separately from the configuration and should be called before loading the WebView.
+`BankingCookieManager` is the anti-corruption layer between Dio's `CookieJar` and the WebView's native cookie store.
 
-### Injecting Secure Cookies
+### Automatic injection via `WebViewConfig.cookieJar`
+
+The recommended approach. Pass the shared `CookieJar` (from `CommonProviders.cookieJar`) in the config. Cookies are injected automatically in `onWebViewCreated`, before the first request fires.
+
 ```dart
-await BankingCookieManager.injectSecureCookies(
-  url: 'https://api.banking-app.com',
-  cookies: [
-    BankingCookie(
-      name: 'session_id',
-      value: 'abc-123-xyz',
-      domain: 'banking-app.com',
-    ),
-  ],
+WebViewConfig(
+  cookieJar: ref.read(cookieJarProvider),
+)
+```
+
+### Manual injection
+
+Use `BankingCookieManager` directly if you need finer control:
+
+```dart
+final manager = BankingCookieManager();
+
+// Sync Dio cookies into the WebView for a given URL
+await manager.injectFromCookieJar(
+  url: 'https://banking-app.com',
+  cookieJar: ref.read(cookieJarProvider),
+);
+
+// Clear session for a specific URL (also clears cache)
+await manager.clearBankingSession('https://banking-app.com');
+
+// Nuclear option — wipe all cookies and cache
+await manager.clearAllWebData();
+```
+
+`sameSite` is enforced as `STRICT` on every injected cookie regardless of the server's flag (defence-in-depth).
+
+### Testing
+
+Inject fakes to avoid touching the native layer:
+
+```dart
+final manager = BankingCookieManager(
+  cookieManager: fakeCookieManager,
+  clearCache: () async {},
 );
 ```
 
-### Clearing Session
+---
+
+## SSL Pinning
+
+SSL pinning is configured via `WebViewConfig.sslPinHashes` — a flat list of SHA-256 hashes shared with `EnvironmentConfig.certificatePinHashes`. The validation logic lives entirely in `CertificatePinning.validatePins` (`package:common`) and is reused by both the WebView and the Dio `HttpClient`.
+
+### Rules
+
+| Scenario | Behaviour |
+| :--- | :--- |
+| `sslPinHashes` is empty, no OS SSL error | ✅ Allowed |
+| `sslPinHashes` is empty, OS SSL error detected | ❌ Blocked — `SECURITY_SSL_ERROR` |
+| `sslPinHashes` non-empty, server provides no X.509 certificate | ❌ Blocked — `SECURITY_SSL_MISSING` |
+| `sslPinHashes` non-empty, no hash matches | ❌ Blocked — `SECURITY_SSL_PINNING_FAILED` |
+| `sslPinHashes` non-empty, at least one hash matches | ✅ Allowed |
+
+### Two pinning strategies
+
+**Certificate pinning** — SHA-256 of the full DER-encoded X.509 certificate. Tied to a specific cert; must be updated on every renewal.
+
+**Public key pinning (recommended)** — SHA-256 of the SubjectPublicKeyInfo (SPKI) DER bytes. Survives certificate renewals as long as the same key pair is reused.
+
+Both hash types can coexist in the same `sslPinHashes` list. The WebView checks both cert and SPKI hashes. The native `HttpClient` (Dio) only checks certificate hashes — `dart:io` does not expose SPKI bytes directly.
+
+### Usage
+
 ```dart
-// Deletes cookies for the URL and clears the WebView cache
-await BankingCookieManager.clearBankingSession('https://api.banking-app.com');
+WebViewConfig(
+  sslPinHashes: [
+    'base64EncodedSha256OfSpki==',   // SPKI hash (preferred — WebView only)
+    'base64EncodedSha256OfDer==',    // cert hash (works on both WebView and HttpClient)
+  ],
+)
+```
+
+Pass the same list from `EnvironmentConfig` to keep pinning consistent across the app:
+
+```dart
+WebViewConfig(
+  sslPinHashes: environmentConfig.certificatePinHashes,
+)
+```
+
+### Obtaining hashes
+
+**Certificate hash:**
+```sh
+openssl s_client -connect host:443 </dev/null 2>/dev/null \
+  | openssl x509 -outform DER \
+  | openssl dgst -sha256 -binary \
+  | openssl base64
+```
+
+**Public key (SPKI) hash:**
+```sh
+openssl s_client -connect host:443 </dev/null 2>/dev/null \
+  | openssl x509 -pubkey -noout \
+  | openssl pkey -pubin -outform DER \
+  | openssl dgst -sha256 -binary \
+  | openssl base64
 ```
 
 ---
 
-## Advanced Security
+## Events
 
-### SSL Strictness
-By default, `BankingWebView` implements a **Strict SSL Layer**. Any certificate challenge that is not trusted by the OS is automatically cancelled to prevent MITM attacks. 
+`onEvent` receives typed `WebViewEvent` values. Use exhaustive pattern matching:
 
-Whenever an SSL error occurs, a `SECURITY_SSL_ERROR` event is emitted via the `onEvent` callback.
-
-### Domain Enforcement
-Navigation to any domain not in the `allowedDomains` list is cancelled. If a link with `target="_blank"` or `window.open()` is clicked, it will only open if the domain is allowed, otherwise it's blocked.
-
----
-
-## Lifecycle & Custom Events
-
-The library emits several built-in events that you can listen to in the `onEvent` callback:
-
-| Event Class | Condition | Typical Action |
-| :--- | :--- | :--- |
-| `WebViewSessionExpiredEvent` | HTTP 401 received | Redirect to Login |
-| `WebViewNavigateEvent` | Successful navigation | Update breadcrumbs / Analytics |
-| `WebViewCloseEvent` | `window.close()` called | Close the current screen |
-| `SECURITY_SSL_ERROR` | Certificate trust failed | Alert user of insecure connection |
-
-**Example: Handling Session Expiry**
 ```dart
 onEvent: (event) {
-  if (event is WebViewSessionExpiredEvent) {
-    // Show session expired dialog or logout
-    context.read<AuthBloc>().add(LogoutRequested());
+  switch (event) {
+    case WebViewSessionExpiredEvent():
+      context.go('/login');
+    case WebViewCloseEvent():
+      Navigator.of(context).pop();
+    case WebViewNavigateEvent(:final url):
+      analytics.logPageView(url);
+    case WebViewCustomEvent(:final name, :final data):
+      _handleBridgeEvent(name, data);
   }
 }
 ```
 
+### Built-in events
+
+| Event class | Trigger | Typical action |
+| :--- | :--- | :--- |
+| `WebViewSessionExpiredEvent` | HTTP 401 received | Redirect to login |
+| `WebViewCloseEvent` | `window.close()` called | Pop the current screen |
+| `WebViewNavigateEvent` | Successful allowed navigation | Analytics / breadcrumbs |
+| `WebViewCustomEvent(name: 'OPEN_NEW_WINDOW')` | `target="_blank"` on an allowed domain | Open in-app browser |
+| `WebViewCustomEvent(name: 'SECURITY_SSL_ERROR')` | OS SSL error, no pin configured | Alert user |
+| `WebViewCustomEvent(name: 'SECURITY_SSL_MISSING')` | Pinned host provided no certificate | Alert user |
+| `WebViewCustomEvent(name: 'SECURITY_SSL_PINNING_FAILED')` | None of the configured pins matched | Alert + log incident |
+
 ---
 
-## Platform-Specific Setup (CRITICAL)
-
-To ensure `url_launcher` can open external apps, you **must** configure package visibility.
+## Platform-Specific Setup
 
 ### Android (`AndroidManifest.xml`)
-Add the following inside the `<queries>` block:
+
+Required to launch external apps via `url_launcher`:
+
 ```xml
 <queries>
     <intent><action android:name="android.intent.action.DIAL"/><data android:scheme="tel"/></intent>
@@ -187,7 +332,7 @@ Add the following inside the `<queries>` block:
 ```
 
 ### iOS (`Info.plist`)
-Add the `LSApplicationQueriesSchemes` key:
+
 ```xml
 <key>LSApplicationQueriesSchemes</key>
 <array>
@@ -204,7 +349,10 @@ Add the `LSApplicationQueriesSchemes` key:
 ---
 
 ## Security Best Practices
-1. **Prefer `const` Configs**: `WebViewConfig` and `WebViewNavigationDelegate` support `const` for performance.
-2. **Restrict Domains**: Always populate `allowedDomains` in production.
-3. **Disable JS if possible**: Keep `enableJavaScript` as `false` unless the content requires it.
-4. **Cookie Hygiene**: Use `clearCookiesOnDispose` (enabled by default) to protect user sessions.
+
+1. **Restrict domains** — always populate `allowedDomains` in staging and production.
+2. **Disable JS unless required** — keep `enableJavaScript: false` for pure-content pages.
+3. **Prefer public key pinning** — SPKI hashes survive certificate renewals; certificate hashes require an app update on every cert rotation. Note: SPKI hashes are only validated in the WebView path; the native `HttpClient` only validates certificate hashes.
+4. **Always include at least two hashes** — one active, one backup — to avoid locking users out during key/cert rotation.
+5. **Use `cookieJar`** — pass the shared Dio `CookieJar` rather than injecting cookies manually.
+6. **`clearCookiesOnDispose: true`** (default) — protects the session when the user leaves the WebView screen.

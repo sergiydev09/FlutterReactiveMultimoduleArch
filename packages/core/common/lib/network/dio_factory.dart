@@ -1,6 +1,8 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import '../config/environment.dart';
 import './auth_interceptor.dart';
 import './cache_config.dart';
@@ -22,6 +24,7 @@ class DioFactory {
     required Future<String?> Function() tokenProvider,
     required Future<String?> Function() tokenRefresher,
     required void Function() onAuthFailure,
+    CookieJar? cookieJar,
   }) {
     final dio = Dio(
       BaseOptions(
@@ -42,6 +45,11 @@ class DioFactory {
       );
       (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient =
           () => pinnedClient;
+    }
+
+    // Cookie interceptor – captures Set-Cookie responses and sends stored cookies.
+    if (cookieJar != null) {
+      dio.interceptors.add(CookieManager(cookieJar));
     }
 
     // Auth interceptor – handles token injection and 401 refresh.
