@@ -6,6 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../bloc/settings_bloc.dart';
 
@@ -115,31 +117,15 @@ class SettingsPage extends StatelessWidget {
               // Logout button.
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: state.status.isLoggingOut
-                        ? null
-                        : () => context
-                            .read<SettingsBloc>()
-                            .add(const LogoutRequested()),
-                    icon: state.status.isLoggingOut
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.logout),
-                    label: Text(LocaleKeys.settings_logout.tr()),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: BankingColors.error,
-                      side: const BorderSide(color: BankingColors.error),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
+                child: BankButton(
+                  label: LocaleKeys.settings_logout.tr(),
+                  type: BankButtonType.outlined,
+                  isLoading: state.status.isLoggingOut,
+                  onPressed: state.status.isLoggingOut
+                      ? null
+                      : () => context
+                          .read<SettingsBloc>()
+                          .add(const LogoutRequested()),
                 ),
               ),
               const SizedBox(height: 32),

@@ -3,6 +3,8 @@ import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import './otp_config.dart';
 import './otp_result.dart';
@@ -261,47 +263,17 @@ class _OtpFlowWidgetState extends State<OtpFlowWidget> {
           // Verify button.
           SizedBox(
             width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: _isVerifying ? null : _verify,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: BankingColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                disabledBackgroundColor: BankingColors.primary.withValues(
-                  alpha: 0.6,
-                ),
-              ),
-              child: _isVerifying
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Text(
-                      LocaleKeys.otp_verify.tr(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+            child: BankButton(
+              label: LocaleKeys.otp_verify.tr(),
+              isLoading: _isVerifying,
+              onPressed: _verify,
             ),
           ),
           const SizedBox(height: 12),
-          TextButton(
+          BankButton(
+            label: LocaleKeys.otp_cancel.tr(),
+            type: BankButtonType.subtle,
             onPressed: _cancel,
-            child: Text(
-              LocaleKeys.otp_cancel.tr(),
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
-            ),
           ),
         ],
       ),

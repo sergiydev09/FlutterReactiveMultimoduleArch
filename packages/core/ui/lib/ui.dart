@@ -2,9 +2,10 @@
 library;
 
 // Atoms
-export 'atoms/app_button.dart';
 export 'atoms/app_input.dart';
 export 'atoms/app_text.dart';
+export 'atoms/buttons/bank_button/bank_button.dart';
+export 'atoms/buttons/bank_button/bank_button.types.dart';
 export 'molecules/amount_display.dart';
 export 'molecules/shimmer_loading.dart';
 export 'organisms/banking_app_bar.dart';
