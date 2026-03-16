@@ -8,6 +8,7 @@ export 'data/repositories/card_repository_impl.dart';
 export 'di/cards_providers.dart';
 export 'domain/repositories/card_repository.dart';
 export 'domain/usecases/get_cards_usecase.dart';
+export 'domain/usecases/toggle_card_status_usecase.dart';
 export 'presentation/card_detail/page/card_detail_page.dart';
 export 'presentation/cards_list/bloc/cards_list_bloc.dart';
 export 'presentation/cards_list/page/cards_list_page.dart';

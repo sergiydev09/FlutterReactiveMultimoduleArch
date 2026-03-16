@@ -2,8 +2,8 @@ import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/card_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../domain/repositories/card_repository.dart';
 import '../../../domain/usecases/get_cards_usecase.dart';
+import '../../../domain/usecases/toggle_card_status_usecase.dart';
 
 part 'cards_list_event.dart';
 part 'cards_list_state.dart';
@@ -13,16 +13,16 @@ part 'generated/cards_list_bloc.freezed.dart';
 class CardsListBloc extends Bloc<CardsListEvent, CardsListState> {
   CardsListBloc({
     required GetCardsUseCase getCardsUseCase,
-    required CardRepository cardRepository,
+    required ToggleCardStatusUseCase toggleCardStatusUseCase,
   }) : _getCardsUseCase = getCardsUseCase,
-       _cardRepository = cardRepository,
+       _toggleCardStatusUseCase = toggleCardStatusUseCase,
        super(const CardsListState()) {
     on<LoadCards>(_onLoadCards);
     on<ToggleCardStatus>(_onToggleCardStatus);
   }
 
   final GetCardsUseCase _getCardsUseCase;
-  final CardRepository _cardRepository;
+  final ToggleCardStatusUseCase _toggleCardStatusUseCase;
 
   Future<void> _onLoadCards(
     LoadCards event,
@@ -50,7 +50,7 @@ class CardsListBloc extends Bloc<CardsListEvent, CardsListState> {
   ) async {
     if (state.status != CardsListStatus.loaded) return;
 
-    final result = await _cardRepository.toggleCardStatus(event.cardId);
+    final result = await _toggleCardStatusUseCase(event.cardId);
 
     result.match(
       (failure) => emit(state.copyWith(

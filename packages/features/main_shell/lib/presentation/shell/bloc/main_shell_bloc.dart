@@ -1,10 +1,10 @@
 import 'package:common/usecases/usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:security/security.dart';
 
 import '../../../domain/entities/shell_config.dart';
 import '../../../domain/usecases/get_shell_config_usecase.dart';
-import '../../../domain/usecases/shell_logout_usecase.dart';
 
 part 'main_shell_event.dart';
 part 'main_shell_state.dart';
@@ -14,7 +14,7 @@ part 'generated/main_shell_bloc.freezed.dart';
 class MainShellBloc extends Bloc<MainShellEvent, MainShellState> {
   MainShellBloc({
     required GetShellConfigUseCase getShellConfigUseCase,
-    required ShellLogoutUseCase logoutUseCase,
+    required LogoutUseCase logoutUseCase,
   })  : _getShellConfigUseCase = getShellConfigUseCase,
         _logoutUseCase = logoutUseCase,
         super(const MainShellState()) {
@@ -23,7 +23,7 @@ class MainShellBloc extends Bloc<MainShellEvent, MainShellState> {
   }
 
   final GetShellConfigUseCase _getShellConfigUseCase;
-  final ShellLogoutUseCase _logoutUseCase;
+  final LogoutUseCase _logoutUseCase;
 
   Future<void> _onStarted(
     ShellStarted event,

@@ -2739,6 +2739,32 @@ class AmountDisplay extends StatelessWidget {
 }
 ```
 
+### Reusable Component Pattern
+
+Every widget in the design system follows this file structure:
+
+```
+atoms/<group>/
+  <name>.dart              # Public API + part declarations
+  <name>.types.dart        # Public enums — standalone file, no part of
+  <name>_styles.dart       # Visual tokens — part of, never exported
+  <name>_variants.dart     # Private widgets — part of, never exported
+  <name>_test.dart         # Widget tests — never exported
+  index.dart               # Exports only .dart and .types.dart
+```
+
+Rules:
+- One Figma component = one public file. Variants are enums, not separate files.
+- `part of` for styles and variants — shared scope without exposing implementation externally.
+- `.types.dart` is standalone — other components can import enums without pulling in the widget.
+- `onPressed == null` = disabled. Idiomatic Flutter pattern, no extra prop needed.
+- No business logic in widgets — they emit events, they don't process them.
+- Consumers always use `import 'package:ui/ui.dart'` — never import internal files directly.
+
+Barrel chain: `atoms/<group>/index.dart` → `atoms/index.dart` → `ui.dart`
+
+Use `BankButton` as the reference implementation when creating new components.
+
 ### Widgetbook (Storybook para Flutter)
 
 ```yaml

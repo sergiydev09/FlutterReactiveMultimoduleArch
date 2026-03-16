@@ -3,6 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../../domain/entities/payment.dart';
 import '../bloc/new_payment_bloc.dart';
@@ -212,24 +214,10 @@ class _NewPaymentPageState extends State<NewPaymentPage> {
             // Submit button.
             SizedBox(
               width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
+              child: BankButton(
+                label: LocaleKeys.payments_new_submit.tr(),
                 onPressed: _onSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: BankingColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 2,
-                ),
-                child: Text(
-                  LocaleKeys.payments_new_submit.tr(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                size: BankButtonSize.large,
               ),
             ),
           ],

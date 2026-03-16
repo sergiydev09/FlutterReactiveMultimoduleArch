@@ -1,8 +1,8 @@
 import 'package:common/usecases/usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:security/security.dart';
 import '../../../domain/usecases/get_biometrics_status_usecase.dart';
-import '../../../domain/usecases/settings_logout_usecase.dart';
 import '../../../domain/usecases/toggle_biometrics_usecase.dart';
 
 part 'settings_event.dart';
@@ -14,7 +14,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc({
     required GetBiometricsStatusUseCase getBiometricsStatusUseCase,
     required ToggleBiometricsUseCase toggleBiometricsUseCase,
-    required SettingsLogoutUseCase logoutUseCase,
+    required LogoutUseCase logoutUseCase,
   })  : _getBiometricsStatusUseCase = getBiometricsStatusUseCase,
         _toggleBiometricsUseCase = toggleBiometricsUseCase,
         _logoutUseCase = logoutUseCase,
@@ -28,7 +28,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   final GetBiometricsStatusUseCase _getBiometricsStatusUseCase;
   final ToggleBiometricsUseCase _toggleBiometricsUseCase;
-  final SettingsLogoutUseCase _logoutUseCase;
+  final LogoutUseCase _logoutUseCase;
 
   Future<void> _onSettingsStarted(
     SettingsStarted event,

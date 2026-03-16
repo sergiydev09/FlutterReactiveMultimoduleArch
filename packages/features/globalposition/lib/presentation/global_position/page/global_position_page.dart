@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:promotions/domain/promo_banner.dart';
 import 'package:promotions/presentation/promo_carousel.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../widgets/account_card.dart';
 import '../../widgets/quick_actions.dart';
@@ -89,17 +90,13 @@ class GlobalPositionPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+            BankButton(
+              label: LocaleKeys.common_retry.tr(),
               onPressed: () {
                 context.read<GlobalPositionBloc>().add(
                   const LoadGlobalPosition(),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: BankingColors.primary,
-                foregroundColor: Colors.white,
-              ),
-              child: Text(LocaleKeys.common_retry.tr()),
             ),
           ],
         ),

@@ -1,29 +1,34 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:common/error/failures.dart';
+import 'package:common/usecases/usecase.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:security/security.dart';
 import 'package:settings/domain/repositories/settings_repository.dart';
 import 'package:settings/domain/usecases/get_biometrics_status_usecase.dart';
-import 'package:settings/domain/usecases/settings_logout_usecase.dart';
 import 'package:settings/domain/usecases/toggle_biometrics_usecase.dart';
 import 'package:settings/presentation/settings/bloc/settings_bloc.dart';
 
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
+class MockLogoutDataSource extends Mock implements LogoutDataSource {}
+
 void main() {
   late MockSettingsRepository repository;
+  late MockLogoutDataSource logoutDataSource;
   late GetBiometricsStatusUseCase getBiometricsStatusUseCase;
   late ToggleBiometricsUseCase toggleBiometricsUseCase;
-  late SettingsLogoutUseCase logoutUseCase;
+  late LogoutUseCase logoutUseCase;
 
   setUp(() {
     repository = MockSettingsRepository();
+    logoutDataSource = MockLogoutDataSource();
     getBiometricsStatusUseCase =
         GetBiometricsStatusUseCase(repository: repository);
     toggleBiometricsUseCase =
         ToggleBiometricsUseCase(repository: repository);
-    logoutUseCase = SettingsLogoutUseCase(repository: repository);
+    logoutUseCase = LogoutUseCase(logoutDataSource: logoutDataSource);
   });
 
   SettingsBloc buildBloc() => SettingsBloc(
@@ -148,8 +153,8 @@ void main() {
     blocTest<SettingsBloc, SettingsState>(
       'emits loggingOut then stays in loggingOut on success '
       '(router handles navigation)',
-      setUp: () => when(() => repository.logout())
-          .thenAnswer((_) async => const Right(null)),
+      setUp: () =>
+          when(() => logoutDataSource.logout()).thenAnswer((_) async {}),
       build: buildBloc,
       act: (bloc) => bloc.add(const LogoutRequested()),
       expect: () => [
@@ -159,16 +164,15 @@ void main() {
 
     blocTest<SettingsBloc, SettingsState>(
       'emits error when logout fails',
-      setUp: () => when(() => repository.logout()).thenAnswer(
-        (_) async => const Left(Failure.server(message: 'Logout failed')),
-      ),
+      setUp: () => when(() => logoutDataSource.logout())
+          .thenThrow(Exception('Logout failed')),
       build: buildBloc,
       act: (bloc) => bloc.add(const LogoutRequested()),
       expect: () => [
         const SettingsState(status: SettingsStatus.loggingOut),
         const SettingsState(
           status: SettingsStatus.error,
-          errorMessage: 'Logout failed',
+          errorMessage: 'Exception: Logout failed',
         ),
       ],
     );

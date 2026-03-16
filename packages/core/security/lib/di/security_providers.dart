@@ -11,6 +11,7 @@ import '../session/user_info.dart';
 import '../session/user_session_notifier.dart';
 import '../storage/secure_storage_service.dart';
 import '../threat_detection/device_threat_detector.dart';
+import '../usecases/logout_usecase.dart';
 
 /// Riverpod providers for the security module.
 abstract final class SecurityProviders {
@@ -60,6 +61,16 @@ abstract final class SecurityProviders {
     return LogoutDataSourceImpl(
       sessionManager: ref.read(sessionManager.notifier),
       userSessionNotifier: ref.read(userSession.notifier),
+    );
+  });
+
+  /// Shared use case that clears the active session and user state.
+  ///
+  /// Inject this directly into any BLoC that needs to log out the user.
+  /// Do NOT create a feature-specific logout use case — use this one.
+  static final logoutUseCase = Provider<LogoutUseCase>((ref) {
+    return LogoutUseCase(
+      logoutDataSource: ref.read(logoutDataSource),
     );
   });
 

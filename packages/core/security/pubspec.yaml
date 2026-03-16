@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod:
+  fpdart:
   flutter_secure_storage:
   local_auth:
   # Local threat detection (no telemetry)

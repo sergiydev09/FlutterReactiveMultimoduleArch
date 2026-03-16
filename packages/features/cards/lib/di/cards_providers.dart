@@ -5,6 +5,7 @@ import '../data/datasources/remote_card_datasource.dart';
 import '../data/repositories/card_repository_impl.dart';
 import '../domain/repositories/card_repository.dart';
 import '../domain/usecases/get_cards_usecase.dart';
+import '../domain/usecases/toggle_card_status_usecase.dart';
 
 /// Riverpod providers for the cards feature.
 abstract final class CardProviders {
@@ -31,5 +32,13 @@ abstract final class CardProviders {
   /// Use case to retrieve the list of cards.
   static final getCardsUseCase = Provider<GetCardsUseCase>((ref) {
     return GetCardsUseCase(repository: ref.watch(CardProviders.repository));
+  });
+
+  /// Use case to toggle a card's active/blocked status.
+  static final toggleCardStatusUseCase =
+      Provider<ToggleCardStatusUseCase>((ref) {
+    return ToggleCardStatusUseCase(
+      repository: ref.watch(CardProviders.repository),
+    );
   });
 }

@@ -3,6 +3,8 @@ import 'package:common/utils/formatters.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../../domain/entities/payment.dart';
 import '../../new_payment/bloc/new_payment_bloc.dart';
@@ -111,8 +113,9 @@ class PaymentConfirmPage extends StatelessWidget {
                 // Confirm button.
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
+                  child: BankButton(
+                    label: LocaleKeys.payments_confirm_submit.tr(),
+                    isLoading: isProcessing,
                     onPressed: isProcessing
                         ? null
                         : () {
@@ -120,50 +123,16 @@ class PaymentConfirmPage extends StatelessWidget {
                               const ConfirmPayment(),
                             );
                           },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BankingColors.secondary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 2,
-                    ),
-                    child: isProcessing
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            LocaleKeys.payments_confirm_submit.tr(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                    size: BankButtonSize.large,
                   ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton(
-                    onPressed: isProcessing
-                        ? null
-                        : () => Navigator.of(context).pop(),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: BankingColors.primary,
-                      side: const BorderSide(color: BankingColors.primary),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(LocaleKeys.payments_confirm_cancel.tr()),
+                  child: BankButton(
+                    label: LocaleKeys.payments_confirm_cancel.tr(),
+                    type: BankButtonType.outlined,
+                    onPressed: isProcessing ? null : () => Navigator.of(context).pop(),
                   ),
                 ),
               ],

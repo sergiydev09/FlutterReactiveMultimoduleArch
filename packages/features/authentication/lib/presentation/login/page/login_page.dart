@@ -5,6 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../widgets/environment_selector.dart';
 import '../bloc/login_bloc.dart';
@@ -189,15 +191,11 @@ class _LoginPageState extends State<LoginPage> {
                     // Forgot password.
                     Align(
                       alignment: Alignment.centerRight,
-                      child: TextButton(
+                      child: BankButton(
+                        label: LocaleKeys.login_forgot_password.tr(),
+                        type: BankButtonType.subtle,
                         onPressed: widget.onForgotPassword,
-                        child: Text(
-                          LocaleKeys.login_forgot_password.tr(),
-                          style: const TextStyle(
-                            color: BankingColors.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        size: BankButtonSize.small,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -207,35 +205,11 @@ class _LoginPageState extends State<LoginPage> {
                         final isLoading = state.status == LoginStatus.loading;
                         return SizedBox(
                           width: double.infinity,
-                          height: 52,
-                          child: ElevatedButton(
+                          child: BankButton(
+                            label: LocaleKeys.login_submit.tr(),
+                            isLoading: isLoading,
                             onPressed: isLoading ? null : _onLogin,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: BankingColors.primary,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 2,
-                            ),
-                            child: isLoading
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                : Text(
-                                    LocaleKeys.login_submit.tr(),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                            size: BankButtonSize.large,
                           ),
                         );
                       },
@@ -243,21 +217,17 @@ class _LoginPageState extends State<LoginPage> {
                     if (widget.isBiometricEnabled) ...[
                       const SizedBox(height: 16),
                       // Biometric login.
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          context.read<LoginBloc>().add(
-                            const BiometricLoginRequested(),
-                          );
-                        },
-                        icon: const Icon(Icons.fingerprint),
-                        label: Text(LocaleKeys.login_biometric.tr()),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: BankingColors.primary,
-                          side: const BorderSide(color: BankingColors.primary),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          minimumSize: const Size(double.infinity, 48),
+                      SizedBox(
+                        width: double.infinity,
+                        child: BankButton(
+                          label: LocaleKeys.login_biometric.tr(),
+                          type: BankButtonType.ghost,
+                          icon: Icons.fingerprint,
+                          onPressed: () {
+                            context.read<LoginBloc>().add(
+                              const BiometricLoginRequested(),
+                            );
+                          },
                         ),
                       ),
                     ],

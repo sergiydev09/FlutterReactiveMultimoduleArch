@@ -2,6 +2,7 @@ import 'package:common/routing/feature_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:security/security.dart';
 import '../di/settings_providers.dart';
 import '../presentation/settings/bloc/settings_bloc.dart';
 import '../presentation/settings/page/settings_page.dart';
@@ -27,7 +28,7 @@ abstract final class SettingsRoutes {
                   container.read(SettingsProviders.getBiometricsStatusUseCase),
               toggleBiometricsUseCase:
                   container.read(SettingsProviders.toggleBiometricsUseCase),
-              logoutUseCase: container.read(SettingsProviders.logoutUseCase),
+              logoutUseCase: container.read(SecurityProviders.logoutUseCase),
             )..add(const SettingsStarted()),
             child: const SettingsPage(),
           );

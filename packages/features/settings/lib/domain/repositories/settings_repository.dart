@@ -8,7 +8,4 @@ abstract class SettingsRepository {
 
   /// Toggles the biometric login preference and returns the new value.
   Future<Either<Failure, bool>> toggleBiometrics();
-
-  /// Clears the active session and user data (logout).
-  Future<Either<Failure, void>> logout();
 }

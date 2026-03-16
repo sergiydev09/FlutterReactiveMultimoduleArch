@@ -31,7 +31,8 @@ abstract final class CardRoutes {
           return BlocProvider(
             create: (_) => CardsListBloc(
               getCardsUseCase: container.read(CardProviders.getCardsUseCase),
-              cardRepository: container.read(CardProviders.repository),
+              toggleCardStatusUseCase:
+                  container.read(CardProviders.toggleCardStatusUseCase),
             )..add(const LoadCards()),
             child: const CardsListPage(),
           );
@@ -46,8 +47,10 @@ abstract final class CardRoutes {
                 final container = ProviderScope.containerOf(context);
                 return BlocProvider(
                   create: (_) => CardsListBloc(
-                    getCardsUseCase: container.read(CardProviders.getCardsUseCase),
-                    cardRepository: container.read(CardProviders.repository),
+                    getCardsUseCase:
+                        container.read(CardProviders.getCardsUseCase),
+                    toggleCardStatusUseCase:
+                        container.read(CardProviders.toggleCardStatusUseCase),
                   )..add(const LoadCards()),
                   child: CardDetailPage(card: card),
                 );
