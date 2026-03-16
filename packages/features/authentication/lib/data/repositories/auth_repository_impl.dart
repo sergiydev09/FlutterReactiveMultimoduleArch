@@ -5,6 +5,7 @@ import 'package:domain/entities/user.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:security/biometric/biometric_service.dart';
 import 'package:security/biometric/device_credential_service.dart';
+import 'package:security/session/logout_datasource.dart';
 import 'package:security/session/session_manager.dart';
 import 'package:security/session/user_storage_keys.dart';
 import 'package:security/storage/secure_storage_service.dart';
@@ -21,6 +22,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.deviceCredentialService,
     required this.sessionManager,
     required this.secureStorage,
+    required this.logoutDataSource,
   });
 
   final RemoteAuthDataSource remoteDataSource;
@@ -28,6 +30,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final DeviceCredentialService deviceCredentialService;
   final SessionManager sessionManager;
   final SecureStorageService secureStorage;
+  final LogoutDataSource logoutDataSource;
 
   // ---------------------------------------------------------------------------
   // Credential login
@@ -53,8 +56,13 @@ class AuthRepositoryImpl implements AuthRepository {
       });
 
   @override
-  Future<Either<Failure, void>> logout() =>
-      safeApiCall(() => remoteDataSource.logout(''));
+  Future<Either<Failure, void>> logout() async {
+    // Revoke the token on the server, then always clear local session so the
+    // user is logged out even when the API call fails (e.g. no connectivity).
+    final result = await safeApiCall(() => remoteDataSource.logout(''));
+    await logoutDataSource.logout();
+    return result;
+  }
 
   // ---------------------------------------------------------------------------
   // Biometric login

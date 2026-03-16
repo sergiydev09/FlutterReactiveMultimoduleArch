@@ -18,10 +18,13 @@ abstract final class NotificationRoutes {
         path: '/$notifications',
         builder: (context, state) {
           final container = ProviderScope.containerOf(context);
-          final notifRepo = container.read(NotificationProviders.repository);
           return BlocProvider(
             create: (_) => NotificationsBloc(
-              notificationRepository: notifRepo,
+              getNotificationsUseCase:
+                  container.read(NotificationProviders.getNotificationsUseCase),
+              markNotificationAsReadUseCase: container.read(
+                NotificationProviders.markNotificationAsReadUseCase,
+              ),
             )..add(const LoadNotifications()),
             child: const NotificationsPage(),
           );

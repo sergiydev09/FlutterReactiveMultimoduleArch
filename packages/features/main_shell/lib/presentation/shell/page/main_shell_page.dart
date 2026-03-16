@@ -4,6 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 
 import '../../../domain/entities/bottom_tab.dart';
@@ -97,8 +99,10 @@ class _ShellScaffold extends StatelessWidget {
         title: Text(title),
         actions: [
           if (isHome && notificationsRoute != null)
-            IconButton(
-              icon: const Icon(Icons.notifications_outlined),
+            BankButton(
+              label: 'Notificaciones',
+              type: BankButtonType.icon,
+              icon: Icons.notifications_outlined,
               onPressed: () => context.go(notificationsRoute),
             ),
         ],
@@ -152,23 +156,13 @@ class _ShellScaffold extends StatelessWidget {
           const Spacer(),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  context.read<MainShellBloc>().add(const LogoutRequested());
-                },
-                icon: const Icon(Icons.logout),
-                label: Text('common.logout'.tr()),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: BankingColors.error,
-                  side: const BorderSide(color: BankingColors.error),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
+            child: BankButton(
+              label: 'common.logout'.tr(),
+              type: BankButtonType.outlined,
+              onPressed: () {
+                Navigator.pop(context);
+                context.read<MainShellBloc>().add(const LogoutRequested());
+              },
             ),
           ),
           const SizedBox(height: 8),

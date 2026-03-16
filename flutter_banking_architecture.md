@@ -927,9 +927,293 @@ context.go('/payments/new?accountId=${account.id}');
 | `bankapp://settings` | `/settings` | settings | Sí |
 | `bankapp://notifications` | `/notifications` | notifications | Sí |
 
+### Patrón BLoC + GoRoute (reglas estrictas)
+
+El router instancia BLoCs únicamente como capa de wiring de dependencias. No contiene lógica de negocio.
+
+#### Reglas
+
+| Permitido en el router | Prohibido en el router |
+|------------------------|------------------------|
+| `BlocProvider(create: (_) => MyBloc(useCase: container.read(...)))` | Callbacks con lógica de negocio (`onLogout: () => sessionManager.clear()`) |
+| `..add(const InitialEvent())` para disparar la carga inicial | Leer primitivos de Riverpod y pasarlos al BLoC (`initialValue: container.read(myProvider).value`) |
+| Callbacks de navegación (`onTap: () => context.push(...)`) | Lógica condicional o cómputos dentro del builder |
+| `ProviderScope.containerOf(context).read(MyProviders.useCase)` | Pasar `VoidCallback` que modifica estado externo |
+
+#### Estructura canónica de un GoRoute con BLoC
+
+```dart
+// packages/features/<name>/lib/routing/<name>_routes.dart
+GoRoute(
+  name: routeName,
+  path: '/$routeName',
+  builder: (context, state) {
+    final container = ProviderScope.containerOf(context);
+
+    return BlocProvider(
+      create: (_) => MyFeatureBloc(
+        // Solo use cases o repositories — nunca primitivos ni callbacks con lógica
+        getDataUseCase: container.read(MyFeatureProviders.getDataUseCase),
+        saveDataUseCase: container.read(MyFeatureProviders.saveDataUseCase),
+      )..add(const MyFeatureStarted()),  // evento inicial para cargar estado
+      child: const MyFeaturePage(),      // la page no recibe callbacks de negocio
+    );
+  },
+)
+```
+
+#### Qué va dónde
+
+**Business logic → UseCase / Repository**
+
+```dart
+// ✅ Correcto: el BLoC llama al use case
+Future<void> _onLogoutRequested(
+  LogoutRequested event,
+  Emitter<SettingsState> emit,
+) async {
+  emit(state.copyWith(status: SettingsStatus.loggingOut));
+  final result = await _logoutUseCase(const NoParams());
+  result.fold(
+    (failure) => emit(state.copyWith(status: SettingsStatus.error)),
+    (_) { /* GoRouter.redirect maneja la navegación al limpiar sesión */ },
+  );
+}
+
+// ❌ Incorrecto: lógica de negocio en el router
+MainShellBloc(
+  onLogout: () async {
+    await container.read(SecurityProviders.sessionManager.notifier).clearSession();
+    container.read(SecurityProviders.userSession.notifier).clear();
+  },
+)
+```
+
+**Estado inicial → evento `<Feature>Started`**
+
+```dart
+// ✅ Correcto: BLoC carga su propio estado al iniciarse
+BlocProvider(
+  create: (_) => SettingsBloc(
+    getBiometricsStatusUseCase: container.read(...),
+  )..add(const SettingsStarted()),  // dispara la carga
+  child: const SettingsPage(),
+)
+
+// ❌ Incorrecto: router lee el estado y lo pasa como primitivo
+BlocProvider(
+  create: (_) => SettingsBloc(
+    initialBiometricEnabled: container.read(SecurityProviders.biometricEnabled).value ?? false,
+    onBiometricToggle: () { container.read(...).toggle(); },
+  ),
+  child: SettingsPage(
+    onLogout: () async { ... },
+  ),
+)
+```
+
+**Callbacks en páginas → solo navegación**
+
+```dart
+// ✅ Correcto: callback de navegación en la página
+GlobalPositionPage(
+  onAccountTap: (account) => context.pushNamed(AccountsRoutes.accountDetail, ...),
+  onTransactionTap: (tx) => context.pushNamed(...),
+)
+
+// ❌ Incorrecto: callback con side-effects en la página
+SettingsPage(
+  onLogout: () async {
+    await sessionManager.clearSession();   // lógica de negocio
+    userSession.clear();                   // no pertenece aquí
+  },
+)
+```
+
+#### Estado del BLoC con status enum (patrón obligatorio)
+
+Todo BLoC que realice operaciones asíncronas debe tener un `<Feature>Status` enum con al menos `initial`, `loading`, `loaded`, `error`. Las operaciones adicionales añaden sus propios valores (ej. `loggingOut`).
+
+```dart
+enum SettingsStatus { initial, loading, loaded, loggingOut, error }
+
+extension SettingsStatusX on SettingsStatus {
+  bool get isInitial    => this == SettingsStatus.initial;
+  bool get isLoading    => this == SettingsStatus.loading;
+  bool get isLoaded     => this == SettingsStatus.loaded;
+  bool get isLoggingOut => this == SettingsStatus.loggingOut;
+  bool get isError      => this == SettingsStatus.error;
+}
+
+@freezed
+abstract class SettingsState with _$SettingsState {
+  const factory SettingsState({
+    @Default(SettingsStatus.initial) SettingsStatus status,
+    // ... campos del dominio con @Default
+    String? errorMessage,
+  }) = _SettingsState;
+
+  const SettingsState._();  // necesario para getters computados
+}
+```
+
+La UI usa `state.status.isLoggingOut` (no `state.status == SettingsStatus.loggingOut`) gracias a la extension.
+
 ---
 
-## 8. Networking y Capa de Datos
+## 8. Convenciones de la capa común (Common layer)
+
+### Regla: los features nunca importan datasources de otros features
+
+Los datasources de cada feature son internos a su paquete. Ningún feature puede importar el datasource, API client, DTO ni repositorio de otro feature. La comunicación entre features ocurre exclusivamente a través del router (`context.go / context.push`) y de las entidades de dominio compartidas en `core/domain`.
+
+```
+✅  accounts   → core/common   (safeApiCall, DioFactory, Failure)
+✅  accounts   → core/security (SecureStorageService, SessionManager)
+❌  payments   → accounts/data/datasources  (PROHIBIDO)
+❌  globalposition → authentication/data/datasources  (PROHIBIDO)
+```
+
+### Criterio para mover un método a la capa común
+
+Un método de datasource es candidato a `core/common` o `core/security` cuando se cumplen **las tres** condiciones:
+
+1. **Duplicado** — la misma implementación aparece en dos o más features.
+2. **Sin dependencia específica de feature** — no referencia DTOs, entidades ni tipos de dominio propios de ningún feature.
+3. **Infraestructura compartida** — opera sobre servicios transversales (HTTP, almacenamiento seguro, sesión, biometría).
+
+Si un método necesita una ligera adaptación por feature, se extrae la lógica común a la capa compartida y se dejan wrappers feature-específicos en cada datasource de feature.
+
+### Estructura de carpetas
+
+```
+packages/core/common/lib/
+├── di/common_providers.dart          # Riverpod providers: Dio, environment, locale
+├── error/failures.dart               # Sealed Failure (ServerFailure, AuthFailure, …)
+├── network/
+│   ├── safe_api_call.dart            # safeApiCall<T>() — Either<Failure, T>
+│   ├── dio_factory.dart              # DioFactory.create()
+│   ├── auth_interceptor.dart
+│   ├── dio_exception_mapper.dart
+│   ├── logging_interceptor.dart
+│   ├── cache_config.dart
+│   └── certificate_pinning.dart
+└── usecases/usecase.dart             # UseCase<T, Params> + NoParams
+
+packages/core/security/lib/
+├── di/security_providers.dart        # SecurityProviders (incluye logoutDataSource)
+├── session/
+│   ├── logout_datasource.dart        # LogoutDataSource + LogoutDataSourceImpl
+│   ├── session_manager.dart
+│   └── user_session_notifier.dart
+└── …
+```
+
+### Ejemplo antes/después: `logout()` movido a la capa común
+
+**Antes** — duplicado en dos repository implementations de features distintos:
+
+```dart
+// settings/data/repositories/settings_repository_impl.dart
+Future<Either<Failure, void>> logout() async {
+  try {
+    await sessionManager.clearSession();  // ← duplicado
+    userSessionNotifier.clear();          // ← duplicado
+    return const Right(null);
+  } on Exception catch (e) { … }
+}
+
+// main_shell/data/repositories/shell_session_repository_impl.dart
+Future<Either<Failure, void>> logout() async {
+  try {
+    await sessionManager.clearSession();  // ← copia exacta
+    userSessionNotifier.clear();          // ← copia exacta
+    return const Right(null);
+  } on Exception catch (e) { … }
+}
+```
+
+**Después** — implementación única en `core/security`, inyectada en ambos features:
+
+```dart
+// core/security/lib/session/logout_datasource.dart
+abstract class LogoutDataSource { Future<void> logout(); }
+
+class LogoutDataSourceImpl implements LogoutDataSource {
+  const LogoutDataSourceImpl({
+    required this.sessionManager,
+    required this.userSessionNotifier,
+  });
+  @override
+  Future<void> logout() async {
+    await sessionManager.clearSession();
+    userSessionNotifier.clear();
+  }
+}
+
+// core/security/lib/di/security_providers.dart
+static final logoutDataSource = Provider<LogoutDataSource>((ref) {
+  return LogoutDataSourceImpl(
+    sessionManager: ref.read(sessionManager.notifier),
+    userSessionNotifier: ref.read(userSession.notifier),
+  );
+});
+```
+
+Cada feature recibe `LogoutDataSource` por inyección de constructor en su repository impl y delega a él — sin conocer `SessionManager` ni `UserSessionNotifier` directamente.
+
+### Justificación
+
+La infraestructura compartida vive en `core/common` o `core/security`. Los datasources de feature manejan solo las preocupaciones específicas de su dominio de negocio (endpoints API, DTOs, claves de persistencia). Cuando la misma operación de infraestructura aparece en más de un feature, es señal de que pertenece a la capa core, no por reutilización en sí, sino porque la preocupación (cierre de sesión, almacenamiento seguro, HTTP) es transversal y es responsabilidad de la infraestructura, no del dominio de ningún feature.
+
+### Cross-feature use cases
+
+La misma regla aplica a la capa de use cases: si un use case opera sobre infraestructura compartida y es usado por más de un feature, pertenece a `core/security` o `core/common`.
+
+**Criterios (los tres deben cumplirse para mover a core):**
+
+| # | Criterio | ✅ Mover a core | ❌ Mantener en feature |
+|---|----------|----------------|----------------------|
+| 1 | Duplicado | Misma lógica en ≥2 features | Exclusivo de un feature |
+| 2 | Sin dominio específico | No referencia DTOs ni entidades del feature | Necesita tipos del feature |
+| 3 | Infraestructura transversal | Sesión, storage seguro, biometría | Endpoint o entidad de negocio propia |
+
+**Estructura de carpetas en `core/security`:**
+
+```
+packages/core/security/lib/
+├── di/security_providers.dart        # SecurityProviders (incluye logoutUseCase)
+├── session/
+│   ├── logout_datasource.dart        # LogoutDataSource + LogoutDataSourceImpl
+│   ├── session_manager.dart
+│   └── user_session_notifier.dart
+└── usecases/
+    └── logout_usecase.dart           # LogoutUseCase — compartido entre settings y main_shell
+```
+
+**Registro en `SecurityProviders`:**
+
+```dart
+static final logoutUseCase = Provider<LogoutUseCase>((ref) {
+  return LogoutUseCase(logoutDataSource: ref.read(logoutDataSource));
+});
+```
+
+**Acceso desde el router de cualquier feature:**
+
+```dart
+// settings/routing/settings_routes.dart
+logoutUseCase: container.read(SecurityProviders.logoutUseCase),
+
+// main_shell/routing/main_shell_routes.dart
+logoutUseCase: container.read(SecurityProviders.logoutUseCase),
+```
+
+**Nota sobre `AuthLogoutUseCase`:** el use case de logout del feature `authentication` es `AuthLogoutUseCase`, distinto de `LogoutUseCase`. Su responsabilidad incluye revocar el token en el servidor (llamada API) además de limpiar la sesión local. No es candidato a la capa común porque depende de `AuthRepository` y su lógica es exclusiva del dominio de autenticación.
+
+---
+
+## 9. Networking y Capa de Datos
 
 ### HTTP Client: Dio
 
@@ -1149,7 +1433,7 @@ Resumen: **freezed en domain** (Model, sin serialización) + **freezed en data**
 
 ---
 
-## 9. Internacionalización (i18n)
+## 10. Internacionalización (i18n)
 
 ### easy_localization + deltas remotos
 
@@ -1352,7 +1636,7 @@ Text(LocaleKeys.notificationsCount.plural(notificationCount))
 
 ---
 
-## 10. WebViews Integradas
+## 11. WebViews Integradas
 
 ### ¿Por qué WebViews en una app bancaria?
 
@@ -1644,7 +1928,7 @@ WebView autenticada se abre
 
 ---
 
-## 11. Concurrencia e Isolates
+## 12. Concurrencia e Isolates
 
 ### Modelo de hilos en Dart vs Kotlin/Swift
 
@@ -1830,7 +2114,7 @@ class GlobalPositionBloc extends Bloc<GlobalPositionEvent, GlobalPositionState> 
 
 ---
 
-## 12. Seguridad
+## 13. Seguridad
 
 ### 12.1 Certificate Pinning (SSL Pinning)
 
@@ -2060,7 +2344,7 @@ class SessionManager {
 
 ---
 
-## 13. Testing
+## 14. Testing
 
 ### Estrategia de Testing
 
@@ -2252,7 +2536,7 @@ melos exec -- genhtml coverage/lcov.info -o coverage/html
 
 ---
 
-## 14. UI (Design System)
+## 15. UI (Design System)
 
 ### Estructura del paquete UI
 
@@ -2455,6 +2739,32 @@ class AmountDisplay extends StatelessWidget {
 }
 ```
 
+### Reusable Component Pattern
+
+Every widget in the design system follows this file structure:
+
+```
+atoms/<group>/
+  <name>.dart              # Public API + part declarations
+  <name>.types.dart        # Public enums — standalone file, no part of
+  <name>_styles.dart       # Visual tokens — part of, never exported
+  <name>_variants.dart     # Private widgets — part of, never exported
+  <name>_test.dart         # Widget tests — never exported
+  index.dart               # Exports only .dart and .types.dart
+```
+
+Rules:
+- One Figma component = one public file. Variants are enums, not separate files.
+- `part of` for styles and variants — shared scope without exposing implementation externally.
+- `.types.dart` is standalone — other components can import enums without pulling in the widget.
+- `onPressed == null` = disabled. Idiomatic Flutter pattern, no extra prop needed.
+- No business logic in widgets — they emit events, they don't process them.
+- Consumers always use `import 'package:ui/ui.dart'` — never import internal files directly.
+
+Barrel chain: `atoms/<group>/index.dart` → `atoms/index.dart` → `ui.dart`
+
+Use `BankButton` as the reference implementation when creating new components.
+
 ### Widgetbook (Storybook para Flutter)
 
 ```yaml
@@ -2475,7 +2785,7 @@ Widgetbook permite visualizar y testear todos los componentes del design system 
 
 ---
 
-## 15. CI/CD y DevOps
+## 16. CI/CD y DevOps
 
 ### Plataforma recomendada: GitHub Actions + Codemagic
 
@@ -2595,7 +2905,7 @@ class EnvConfig {
 
 ---
 
-## 16. Developer Experience
+## 17. Developer Experience
 
 ### Git Hooks con Lefthook
 
@@ -2678,7 +2988,7 @@ apps/mobile_app/              @platform-team
 
 ---
 
-## 17. Tabla Resumen de Dependencias
+## 18. Tabla Resumen de Dependencias
 
 ### Core
 
@@ -2762,6 +3072,183 @@ apps/mobile_app/              @platform-team
 | Icons | `flutter_svg` | SVG icons del design system |
 | Animations | `flutter_animate` | Animaciones declarativas |
 | Shimmer | `shimmer` | Loading placeholders |
+
+---
+
+---
+
+## 19. Capa común — Convenciones extendidas
+
+### Either: implementación de las extensiones
+
+Las extensiones `.toRight()` / `.toLeft()` que se usan en repositories y use cases viven en:
+
+```
+packages/core/common/lib/extensions/either_extensions.dart
+```
+
+```dart
+extension RightExtension<T> on T {
+  Either<L, T> toRight<L>() => Right(this);
+}
+
+extension LeftExtension on Failure {
+  Either<Failure, R> toLeft<R>() => Left(this);
+}
+```
+
+Exportadas desde el barrel: `package:common/common.dart`. La forma de extensión lee de izquierda a derecha con el valor como sujeto de la expresión, evitando la asimetría sintáctica de `Right(value)` / `Left(value)`.
+
+**Scope:** repository implementations (`data/repositories/`) y use cases (`domain/usecases/`). En tests, `Right(...)` / `Left(...)` son válidos para mayor claridad en las aserciones.
+
+### Estructura detallada de `core/common` y `core/security`
+
+```
+packages/core/common/lib/
+├── di/
+│   └── common_providers.dart         # Riverpod providers: Dio, environment, locale
+├── error/
+│   └── failures.dart                 # Sealed Failure class (ServerFailure, AuthFailure, …)
+├── network/
+│   ├── safe_api_call.dart            # safeApiCall<T>() — wraps any call in Either<Failure, T>
+│   ├── dio_factory.dart              # DioFactory.create() — configured Dio instance
+│   ├── auth_interceptor.dart         # Token injection + 401 refresh
+│   ├── dio_exception_mapper.dart     # DioException → Failure mapping
+│   ├── logging_interceptor.dart      # Dev-only request/response logging
+│   ├── cache_config.dart             # In-memory 5-minute cache
+│   └── certificate_pinning.dart      # SSL certificate pinning
+└── usecases/
+    └── usecase.dart                  # UseCase<T, Params> base class + NoParams
+
+packages/core/security/lib/
+├── di/
+│   └── security_providers.dart       # SecurityProviders (includes logoutDataSource, logoutUseCase)
+├── session/
+│   ├── logout_datasource.dart        # LogoutDataSource (abstract) + LogoutDataSourceImpl
+│   ├── session_manager.dart          # SessionManager interface + SessionManagerNotifier
+│   └── user_session_notifier.dart    # UserSessionNotifier
+└── usecases/
+    └── logout_usecase.dart           # LogoutUseCase — shared between settings and main_shell
+```
+
+### Rationale: por qué la infraestructura compartida pertenece a core
+
+La infraestructura compartida vive en `core/common` o `core/security`. Los datasources de cada feature manejan sólo las preocupaciones de su dominio de negocio (endpoints API, DTOs, claves de persistencia). Cuando la misma operación de infraestructura aparece en más de un feature, es señal de que la preocupación (cierre de sesión, almacenamiento seguro, HTTP) es transversal y pertenece a la capa core — no simplemente por reutilización, sino porque es responsabilidad de la infraestructura, no del dominio de ningún feature.
+
+Cuando el mismo logout se duplicó en `settings` y `main_shell`, se creó el riesgo de que las dos implementaciones divergieran — una limpiando la sesión de usuario, la otra no. Un único `LogoutUseCase` en `core/security` es la implementación autoritativa consumida por cualquier feature que la necesite.
+
+### Ejemplo completo: refactor `logoutDataSource`
+
+**Antes** — duplicado en dos repository implementations:
+
+```dart
+// packages/features/settings/lib/data/repositories/settings_repository_impl.dart
+class SettingsRepositoryImpl implements SettingsRepository {
+  SettingsRepositoryImpl({
+    required this.sessionManager,       // security dependency
+    required this.userSessionNotifier,  // security dependency
+    …
+  });
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await sessionManager.clearSession();   // ← duplicado
+      userSessionNotifier.clear();           // ← duplicado
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(Failure.server(message: e.toString()));
+    }
+  }
+}
+
+// packages/features/main_shell/lib/data/repositories/shell_session_repository_impl.dart
+class ShellSessionRepositoryImpl implements ShellSessionRepository {
+  ShellSessionRepositoryImpl({
+    required this.sessionManager,       // same security dependency
+    required this.userSessionNotifier,  // same security dependency
+  });
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await sessionManager.clearSession();   // ← copia exacta
+      userSessionNotifier.clear();           // ← copia exacta
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(Failure.server(message: e.toString()));
+    }
+  }
+}
+```
+
+**Después** — implementación única en `core/security`, inyectada en ambos features:
+
+```dart
+// packages/core/security/lib/session/logout_datasource.dart
+abstract class LogoutDataSource {
+  Future<void> logout();
+}
+
+class LogoutDataSourceImpl implements LogoutDataSource {
+  const LogoutDataSourceImpl({
+    required this.sessionManager,
+    required this.userSessionNotifier,
+  });
+
+  final SessionManager sessionManager;
+  final UserSessionNotifier userSessionNotifier;
+
+  @override
+  Future<void> logout() async {
+    await sessionManager.clearSession();
+    userSessionNotifier.clear();
+  }
+}
+
+// packages/core/security/lib/di/security_providers.dart
+static final logoutDataSource = Provider<LogoutDataSource>((ref) {
+  return LogoutDataSourceImpl(
+    sessionManager: ref.read(sessionManager.notifier),
+    userSessionNotifier: ref.read(userSession.notifier),
+  );
+});
+```
+
+```dart
+// packages/features/settings/lib/data/repositories/settings_repository_impl.dart
+class SettingsRepositoryImpl implements SettingsRepository {
+  SettingsRepositoryImpl({
+    required this.logoutDataSource,  // single injection point
+    …
+  });
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await logoutDataSource.logout();
+      return null.toRight();
+    } on Exception catch (e) {
+      return Failure.server(message: e.toString()).toLeft();
+    }
+  }
+}
+
+// packages/features/main_shell/lib/data/repositories/shell_session_repository_impl.dart
+class ShellSessionRepositoryImpl implements ShellSessionRepository {
+  ShellSessionRepositoryImpl({required this.logoutDataSource});
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await logoutDataSource.logout();
+      return null.toRight();
+    } on Exception catch (e) {
+      return Failure.server(message: e.toString()).toLeft();
+    }
+  }
+}
+```
 
 ---
 

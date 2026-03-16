@@ -4,6 +4,7 @@ import 'package:domain/entities/transaction.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../account_transactions/bloc/account_transactions_bloc.dart';
 import '../../widgets/account_info_header.dart';
@@ -51,9 +52,9 @@ class AccountDetailPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(detailState.errorMessage),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  BankButton(
+                    label: LocaleKeys.common_back.tr(),
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(LocaleKeys.common_back.tr()),
                   ),
                 ],
               ),

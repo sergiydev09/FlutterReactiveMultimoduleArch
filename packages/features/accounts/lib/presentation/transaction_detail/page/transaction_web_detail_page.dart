@@ -4,6 +4,8 @@ import 'dart:developer' as developer;
 import 'package:domain/entities/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:security/session/session_manager.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import 'package:webview_lib/webview_lib.dart';
 import 'package:webview_lib/webview_source.dart';
@@ -103,16 +105,20 @@ class _TransactionWebDetailPageState extends State<TransactionWebDetailPage> {
           '"${widget.transaction.description}". ¿Deseas continuar?',
         ),
         actions: [
-          TextButton(
+          BankButton(
+            label: 'Cancelar',
+            type: BankButtonType.subtle,
+            size: BankButtonSize.small,
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancelar'),
           ),
-          FilledButton(
+          BankButton(
+            label: 'Confirmar',
+            type: BankButtonType.solid,
+            size: BankButtonSize.small,
             onPressed: () {
               Navigator.of(context).pop();
               _showSnackBar('Disputa iniciada correctamente');
             },
-            child: const Text('Confirmar'),
           ),
         ],
       ),

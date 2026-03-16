@@ -32,6 +32,7 @@ abstract final class AuthProviders {
       deviceCredentialService: ref.watch(SecurityProviders.deviceCredential),
       sessionManager: ref.read(SecurityProviders.sessionManager.notifier),
       secureStorage: ref.watch(SecurityProviders.secureStorage),
+      logoutDataSource: ref.read(SecurityProviders.logoutDataSource),
     );
   });
 
@@ -48,7 +49,7 @@ abstract final class AuthProviders {
   });
 
   /// Use case for logout.
-  static final logoutUseCase = Provider<LogoutUseCase>((ref) {
-    return LogoutUseCase(repository: ref.watch(AuthProviders.repository));
+  static final logoutUseCase = Provider<AuthLogoutUseCase>((ref) {
+    return AuthLogoutUseCase(repository: ref.watch(AuthProviders.repository));
   });
 }

@@ -4,6 +4,7 @@ import 'package:domain/entities/notification_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
 import 'package:ui/tokens/colors.dart';
 import '../bloc/notifications_bloc.dart';
 
@@ -43,17 +44,13 @@ class NotificationsPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(state.errorMessage),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                BankButton(
+                  label: LocaleKeys.common_retry.tr(),
                   onPressed: () {
                     context.read<NotificationsBloc>().add(
                       const LoadNotifications(),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: BankingColors.primary,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text(LocaleKeys.common_retry.tr()),
                 ),
               ],
             ),

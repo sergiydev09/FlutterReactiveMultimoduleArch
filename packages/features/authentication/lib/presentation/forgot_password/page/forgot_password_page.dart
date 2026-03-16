@@ -1,6 +1,8 @@
 import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 
 /// Page for initiating the password recovery flow.
@@ -95,23 +97,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
-            height: 52,
-            child: ElevatedButton(
+            child: BankButton(
+              label: LocaleKeys.forgot_password_submit.tr(),
               onPressed: _onSubmit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: BankingColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(
-                LocaleKeys.forgot_password_submit.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              size: BankButtonSize.large,
             ),
           ),
         ],
@@ -154,17 +143,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         const SizedBox(height: 32),
         SizedBox(
           width: double.infinity,
-          height: 48,
-          child: OutlinedButton(
+          child: BankButton(
+            label: LocaleKeys.forgot_password_back.tr(),
+            type: BankButtonType.outlined,
             onPressed: () => Navigator.of(context).pop(),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: BankingColors.primary,
-              side: const BorderSide(color: BankingColors.primary),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Text(LocaleKeys.forgot_password_back.tr()),
           ),
         ),
       ],

@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:common/di/common_providers.dart';
 import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../bloc/settings_bloc.dart';
 
@@ -12,14 +16,10 @@ class SettingsPage extends StatelessWidget {
   const SettingsPage({
     super.key,
     this.onAbout,
-    this.onLogout,
   });
 
   /// Callback when the "About" item is tapped.
   final VoidCallback? onAbout;
-
-  /// Callback when the "Logout" item is tapped.
-  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -117,21 +117,15 @@ class SettingsPage extends StatelessWidget {
               // Logout button.
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: onLogout,
-                    icon: const Icon(Icons.logout),
-                    label: Text(LocaleKeys.settings_logout.tr()),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: BankingColors.error,
-                      side: const BorderSide(color: BankingColors.error),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
+                child: BankButton(
+                  label: LocaleKeys.settings_logout.tr(),
+                  type: BankButtonType.outlined,
+                  isLoading: state.status.isLoggingOut,
+                  onPressed: state.status.isLoggingOut
+                      ? null
+                      : () => context
+                          .read<SettingsBloc>()
+                          .add(const LogoutRequested()),
                 ),
               ),
               const SizedBox(height: 32),
@@ -159,7 +153,7 @@ class SettingsPage extends StatelessWidget {
       }
     }
 
-    showModalBottomSheet<void>(
+    unawaited(showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -185,31 +179,34 @@ class SettingsPage extends StatelessWidget {
                   label: 'Español',
                   locale: const Locale('es'),
                   isSelected: currentLocale.languageCode == 'es',
-                  onTap: () =>
-                      onLanguageSelected(const Locale('es'), sheetContext),
+                  onTap: () => unawaited(
+                    onLanguageSelected(const Locale('es'), sheetContext),
+                  ),
                 ),
                 _LanguageOption(
                   flag: '🇬🇧',
                   label: 'English',
                   locale: const Locale('en'),
                   isSelected: currentLocale.languageCode == 'en',
-                  onTap: () =>
-                      onLanguageSelected(const Locale('en'), sheetContext),
+                  onTap: () => unawaited(
+                    onLanguageSelected(const Locale('en'), sheetContext),
+                  ),
                 ),
                 _LanguageOption(
                   flag: '🇵🇹',
                   label: 'Português',
                   locale: const Locale('pt'),
                   isSelected: currentLocale.languageCode == 'pt',
-                  onTap: () =>
-                      onLanguageSelected(const Locale('pt'), sheetContext),
+                  onTap: () => unawaited(
+                    onLanguageSelected(const Locale('pt'), sheetContext),
+                  ),
                 ),
               ],
             ),
           ),
         );
       },
-    );
+    ));
   }
 }
 
