@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import './webview_navigation_delegate.dart';
@@ -7,7 +6,7 @@ import './webview_navigation_delegate.dart';
 /// Collection of standard [BankNavigationAction] implementations that handle
 /// common URI schemes a banking WebView may encounter.
 ///
-/// These are intentionally framework-agnostic at the feature level:
+/// These are framework-agnostic at the feature level:
 /// simply add the ones you need to `WebViewConfig.navigationDelegate`.
 ///
 /// ```dart
@@ -23,16 +22,15 @@ import './webview_navigation_delegate.dart';
 /// ```
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Default launcher
 // ---------------------------------------------------------------------------
 
-/// Shared helper: launches [uri] with [LaunchMode.externalApplication] so the
-/// OS always routes to the correct native app, avoiding the in-app browser on
-/// iOS. Logs a warning in debug mode if the launch fails.
+/// Default URL launcher used by all actions. Launches [uri] via the OS so it
+/// always routes to the correct native app.
 ///
-/// We avoid using `canLaunchUrl` here to prevent silent failures on platforms
-/// where it might return false even if the app exists (like iOS simulators).
-Future<void> _launch(Uri uri) async {
+/// We avoid `canLaunchUrl` here to prevent silent failures on platforms where
+/// it might return false even if the app exists (e.g. iOS simulators).
+Future<void> _defaultLaunch(Uri uri) async {
   try {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   } on Exception catch (e) {
@@ -51,15 +49,18 @@ Future<void> _launch(Uri uri) async {
 ///
 /// Example URL: `tel:+34900123456`
 class TelNavigationAction implements BankNavigationAction {
-  const TelNavigationAction();
+  TelNavigationAction({Future<void> Function(Uri)? launcher})
+      : _launcher = launcher ?? _defaultLaunch;
+
+  final Future<void> Function(Uri) _launcher;
 
   @override
   bool matches(String url) => url.startsWith('tel:');
 
   @override
-  Future<NavigationActionPolicy> onMatch(String url) async {
-    await _launch(Uri.parse(url));
-    return NavigationActionPolicy.CANCEL;
+  Future<WebViewNavigationPolicy> onMatch(String url) async {
+    await _launcher(Uri.parse(url));
+    return WebViewNavigationPolicy.cancel;
   }
 }
 
@@ -67,15 +68,18 @@ class TelNavigationAction implements BankNavigationAction {
 ///
 /// Example URL: `mailto:soporte@banco.com?subject=Ayuda`
 class MailToNavigationAction implements BankNavigationAction {
-  const MailToNavigationAction();
+  MailToNavigationAction({Future<void> Function(Uri)? launcher})
+      : _launcher = launcher ?? _defaultLaunch;
+
+  final Future<void> Function(Uri) _launcher;
 
   @override
   bool matches(String url) => url.startsWith('mailto:');
 
   @override
-  Future<NavigationActionPolicy> onMatch(String url) async {
-    await _launch(Uri.parse(url));
-    return NavigationActionPolicy.CANCEL;
+  Future<WebViewNavigationPolicy> onMatch(String url) async {
+    await _launcher(Uri.parse(url));
+    return WebViewNavigationPolicy.cancel;
   }
 }
 
@@ -85,18 +89,21 @@ class MailToNavigationAction implements BankNavigationAction {
 ///
 /// Example URL: `sms:+34600000000` or `smsto:+34600000000`
 class SmsNavigationAction implements BankNavigationAction {
-  const SmsNavigationAction();
+  SmsNavigationAction({Future<void> Function(Uri)? launcher})
+      : _launcher = launcher ?? _defaultLaunch;
+
+  final Future<void> Function(Uri) _launcher;
 
   @override
   bool matches(String url) =>
       url.startsWith('sms:') || url.startsWith('smsto:');
 
   @override
-  Future<NavigationActionPolicy> onMatch(String url) async {
+  Future<WebViewNavigationPolicy> onMatch(String url) async {
     // Normalise smsto: → sms: for cross-platform compatibility.
     final normalized = url.replaceFirst('smsto:', 'sms:');
-    await _launch(Uri.parse(normalized));
-    return NavigationActionPolicy.CANCEL;
+    await _launcher(Uri.parse(normalized));
+    return WebViewNavigationPolicy.cancel;
   }
 }
 
@@ -116,7 +123,14 @@ class SmsNavigationAction implements BankNavigationAction {
 /// - `maps:?q=Elche`
 /// - `comgooglemaps://?q=Elche`
 class MapsNavigationAction implements BankNavigationAction {
-  const MapsNavigationAction();
+  MapsNavigationAction({
+    Future<void> Function(Uri)? launcher,
+    Future<bool> Function(Uri)? canLaunch,
+  })  : _launcher = launcher ?? _defaultLaunch,
+        _canLaunch = canLaunch ?? canLaunchUrl;
+
+  final Future<void> Function(Uri) _launcher;
+  final Future<bool> Function(Uri) _canLaunch;
 
   @override
   bool matches(String url) =>
@@ -125,13 +139,13 @@ class MapsNavigationAction implements BankNavigationAction {
       url.startsWith('comgooglemaps:');
 
   @override
-  Future<NavigationActionPolicy> onMatch(String url) async {
+  Future<WebViewNavigationPolicy> onMatch(String url) async {
     if (url.startsWith('comgooglemaps:')) {
       await _handleGoogleMaps(url);
     } else {
-      await _launch(Uri.parse(url));
+      await _launcher(Uri.parse(url));
     }
-    return NavigationActionPolicy.CANCEL;
+    return WebViewNavigationPolicy.cancel;
   }
 
   /// Tries to open Google Maps; falls back to Apple Maps (`maps:`) if not
@@ -139,15 +153,15 @@ class MapsNavigationAction implements BankNavigationAction {
   Future<void> _handleGoogleMaps(String url) async {
     final googleUri = Uri.parse(url);
     try {
-      if (await canLaunchUrl(googleUri)) {
-        await launchUrl(googleUri, mode: LaunchMode.externalApplication);
+      if (await _canLaunch(googleUri)) {
+        await _launcher(googleUri);
         return;
       }
     } on Exception catch (_) {}
-    
+
     // Fallback to Apple Maps.
     final appleMapsSuffix = url.substring('comgooglemaps:'.length);
-    await _launch(Uri.parse('maps:$appleMapsSuffix'));
+    await _launcher(Uri.parse('maps:$appleMapsSuffix'));
   }
 }
 
@@ -165,7 +179,10 @@ class MapsNavigationAction implements BankNavigationAction {
 /// - `market://details?id=com.tu.banco`
 /// - `itms-apps://itunes.apple.com/app/id123456789`
 class AppStoreNavigationAction implements BankNavigationAction {
-  const AppStoreNavigationAction();
+  AppStoreNavigationAction({Future<void> Function(Uri)? launcher})
+      : _launcher = launcher ?? _defaultLaunch;
+
+  final Future<void> Function(Uri) _launcher;
 
   @override
   bool matches(String url) =>
@@ -175,8 +192,8 @@ class AppStoreNavigationAction implements BankNavigationAction {
       url.startsWith('itms:');
 
   @override
-  Future<NavigationActionPolicy> onMatch(String url) async {
-    await _launch(Uri.parse(url));
-    return NavigationActionPolicy.CANCEL;
+  Future<WebViewNavigationPolicy> onMatch(String url) async {
+    await _launcher(Uri.parse(url));
+    return WebViewNavigationPolicy.cancel;
   }
 }

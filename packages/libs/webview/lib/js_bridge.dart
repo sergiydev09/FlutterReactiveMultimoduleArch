@@ -41,10 +41,9 @@ class JsBridge {
     InAppWebViewController controller,
     Map<String, dynamic> data,
   ) async {
-    final jsonString = jsonEncode(data);
-    final escaped = jsonString.replaceAll(r'\', r'\\').replaceAll("'", r"\'");
-    await controller.evaluateJavascript(
-      source: "if(window.onFlutterData) window.onFlutterData('$escaped');",
+    await controller.callAsyncJavaScript(
+      functionBody: 'if(window.onFlutterData) window.onFlutterData(JSON.stringify(flutterData));',
+      arguments: {'flutterData': data},
     );
     developer.log('Sent data to web: ${data.keys}', name: _tag);
   }

@@ -8,9 +8,11 @@ environment:
 resolution: workspace
 
 dependencies:
+  cookie_jar:
   crypto:
   dio:
   dio_cache_interceptor:
+  dio_cookie_manager:
   easy_localization:
   flutter:
     sdk: flutter

@@ -4,13 +4,53 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 
-/// Configures SSL certificate pinning for [HttpClient].
+// ──────────────────────────────────────────────────────────────────────────────
+// SSL validation result types
+// ──────────────────────────────────────────────────────────────────────────────
+
+/// Result of an SSL trust validation performed by [CertificatePinning.validatePins].
+sealed class SslValidationResult {
+  const SslValidationResult();
+}
+
+/// The server trust challenge passed — the connection should be allowed.
+final class SslValidationAllowed extends SslValidationResult {
+  const SslValidationAllowed();
+}
+
+/// The server trust challenge failed — the connection should be blocked.
+final class SslValidationBlocked extends SslValidationResult {
+  const SslValidationBlocked(this.reason);
+
+  /// Why the validation was blocked.
+  final SslBlockReason reason;
+}
+
+/// Describes why an SSL validation was blocked.
+enum SslBlockReason {
+  /// The OS detected a certificate error and no pins were configured.
+  sslError,
+
+  /// The server provided no parseable X.509 certificate.
+  missingCertificate,
+
+  /// A pin list was configured but none of the pins matched the server cert.
+  pinningFailed,
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Certificate pinning utilities
+// ──────────────────────────────────────────────────────────────────────────────
+
+/// SSL certificate-pinning utilities shared by all transport layers.
 ///
-/// Validates the server's certificate SHA-256 hash against a list of
-/// trusted hashes. If none match, the connection is rejected.
+/// Both the native [HttpClient] (Dio) and the WebView use [validatePins] and
+/// [sha256Fingerprint] so the pinning logic lives in a single place.
 ///
-/// This prevents MitM attacks even if a rogue CA certificate is installed
-/// on the device.
+/// **Validation rules**
+/// - No [pinHashes] configured → allow if [hasSslError] is false, block otherwise.
+/// - [pinHashes] configured but no cert bytes provided → block ([SslBlockReason.missingCertificate]).
+/// - [pinHashes] configured → allow if any cert or SPKI hash matches, block otherwise.
 class CertificatePinning {
   const CertificatePinning._();
 
@@ -20,32 +60,88 @@ class CertificatePinning {
   /// the provided SHA-256 [pinHashes].
   ///
   /// If [pinHashes] is empty, returns a default [HttpClient] with no pinning.
+  ///
+  /// **Important — certificate hashes only**: `dart:io`'s [X509Certificate] does
+  /// not expose the SubjectPublicKeyInfo (SPKI) DER bytes, so only full
+  /// certificate hashes are checked here. All hashes in [pinHashes] must be
+  /// SHA-256 fingerprints of the full DER-encoded certificate (not SPKI hashes).
+  /// Use the WebView path ([validatePins] with [spkiDerBytes]) for SPKI pinning.
   static HttpClient createPinnedHttpClient(List<String> pinHashes) {
     if (pinHashes.isEmpty) return HttpClient();
 
     return HttpClient()
       ..badCertificateCallback = (cert, host, port) {
-        final certHash = _sha256Fingerprint(cert);
-        final matches = pinHashes.any(
-          (pin) => pin.toUpperCase() == certHash.toUpperCase(),
+        final result = validatePins(
+          pinHashes: pinHashes,
+          certDerBytes: cert.der,
         );
 
-        if (!matches) {
+        if (result is SslValidationBlocked) {
           developer.log(
-            'Certificate pinning failed for $host:$port. '
-            'Hash: $certHash',
+            'Certificate pinning failed for $host:$port.',
             name: _tag,
           );
         }
 
-        return matches;
+        return result is SslValidationAllowed;
       };
   }
 
-  /// Computes the SHA-256 hash of the certificate's DER-encoded bytes.
-  static String _sha256Fingerprint(X509Certificate cert) {
-    final bytes = cert.der;
-    final digest = sha256.convert(bytes);
+  /// Validates DER-encoded certificate bytes against a flat list of SHA-256
+  /// [pinHashes] (base64-encoded).
+  ///
+  /// Pass [certDerBytes] for certificate pinning and/or [spkiDerBytes] for
+  /// public-key (SPKI) pinning. At least one must be non-null when
+  /// [pinHashes] is non-empty, otherwise [SslBlockReason.missingCertificate]
+  /// is returned.
+  ///
+  /// Set [hasSslError] to true when the OS already reported an SSL error for
+  /// the connection — used to block un-pinned hosts that fail OS validation.
+  static SslValidationResult validatePins({
+    required List<String> pinHashes,
+    List<int>? certDerBytes,
+    List<int>? spkiDerBytes,
+    bool hasSslError = false,
+  }) {
+    if (pinHashes.isEmpty) {
+      return hasSslError
+          ? const SslValidationBlocked(SslBlockReason.sslError)
+          : const SslValidationAllowed();
+    }
+
+    if (certDerBytes == null && spkiDerBytes == null) {
+      return const SslValidationBlocked(SslBlockReason.missingCertificate);
+    }
+
+    if (certDerBytes != null) {
+      final certHash = sha256Fingerprint(certDerBytes);
+      if (pinHashes.contains(certHash)) {
+        developer.log('SSL pinning OK [cert]', name: _tag);
+        return const SslValidationAllowed();
+      }
+    }
+
+    if (spkiDerBytes != null) {
+      final keyHash = sha256Fingerprint(spkiDerBytes);
+      if (pinHashes.contains(keyHash)) {
+        developer.log('SSL pinning OK [pubkey]', name: _tag);
+        return const SslValidationAllowed();
+      }
+    }
+
+    developer.log(
+      'CRITICAL SSL ALERT (Possible MitM). No configured pin matched. Blocking connection.',
+      name: _tag,
+    );
+    return const SslValidationBlocked(SslBlockReason.pinningFailed);
+  }
+
+  /// Computes the SHA-256 fingerprint of [derBytes] as a base64-encoded string.
+  ///
+  /// Accepts any DER-encoded bytes — typically a full certificate or a
+  /// SubjectPublicKeyInfo (SPKI) block for public-key pinning.
+  static String sha256Fingerprint(List<int> derBytes) {
+    final digest = sha256.convert(derBytes);
     return base64Encode(digest.bytes);
   }
 }
