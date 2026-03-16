@@ -1166,6 +1166,51 @@ Cada feature recibe `LogoutDataSource` por inyección de constructor en su repos
 
 La infraestructura compartida vive en `core/common` o `core/security`. Los datasources de feature manejan solo las preocupaciones específicas de su dominio de negocio (endpoints API, DTOs, claves de persistencia). Cuando la misma operación de infraestructura aparece en más de un feature, es señal de que pertenece a la capa core, no por reutilización en sí, sino porque la preocupación (cierre de sesión, almacenamiento seguro, HTTP) es transversal y es responsabilidad de la infraestructura, no del dominio de ningún feature.
 
+### Cross-feature use cases
+
+La misma regla aplica a la capa de use cases: si un use case opera sobre infraestructura compartida y es usado por más de un feature, pertenece a `core/security` o `core/common`.
+
+**Criterios (los tres deben cumplirse para mover a core):**
+
+| # | Criterio | ✅ Mover a core | ❌ Mantener en feature |
+|---|----------|----------------|----------------------|
+| 1 | Duplicado | Misma lógica en ≥2 features | Exclusivo de un feature |
+| 2 | Sin dominio específico | No referencia DTOs ni entidades del feature | Necesita tipos del feature |
+| 3 | Infraestructura transversal | Sesión, storage seguro, biometría | Endpoint o entidad de negocio propia |
+
+**Estructura de carpetas en `core/security`:**
+
+```
+packages/core/security/lib/
+├── di/security_providers.dart        # SecurityProviders (incluye logoutUseCase)
+├── session/
+│   ├── logout_datasource.dart        # LogoutDataSource + LogoutDataSourceImpl
+│   ├── session_manager.dart
+│   └── user_session_notifier.dart
+└── usecases/
+    └── logout_usecase.dart           # LogoutUseCase — compartido entre settings y main_shell
+```
+
+**Registro en `SecurityProviders`:**
+
+```dart
+static final logoutUseCase = Provider<LogoutUseCase>((ref) {
+  return LogoutUseCase(logoutDataSource: ref.read(logoutDataSource));
+});
+```
+
+**Acceso desde el router de cualquier feature:**
+
+```dart
+// settings/routing/settings_routes.dart
+logoutUseCase: container.read(SecurityProviders.logoutUseCase),
+
+// main_shell/routing/main_shell_routes.dart
+logoutUseCase: container.read(SecurityProviders.logoutUseCase),
+```
+
+**Nota sobre `AuthLogoutUseCase`:** el use case de logout del feature `authentication` es `AuthLogoutUseCase`, distinto de `LogoutUseCase`. Su responsabilidad incluye revocar el token en el servidor (llamada API) además de limpiar la sesión local. No es candidato a la capa común porque depende de `AuthRepository` y su lógica es exclusiva del dominio de autenticación.
+
 ---
 
 ## 9. Networking y Capa de Datos
@@ -3001,6 +3046,183 @@ apps/mobile_app/              @platform-team
 | Icons | `flutter_svg` | SVG icons del design system |
 | Animations | `flutter_animate` | Animaciones declarativas |
 | Shimmer | `shimmer` | Loading placeholders |
+
+---
+
+---
+
+## 19. Capa común — Convenciones extendidas
+
+### Either: implementación de las extensiones
+
+Las extensiones `.toRight()` / `.toLeft()` que se usan en repositories y use cases viven en:
+
+```
+packages/core/common/lib/extensions/either_extensions.dart
+```
+
+```dart
+extension RightExtension<T> on T {
+  Either<L, T> toRight<L>() => Right(this);
+}
+
+extension LeftExtension on Failure {
+  Either<Failure, R> toLeft<R>() => Left(this);
+}
+```
+
+Exportadas desde el barrel: `package:common/common.dart`. La forma de extensión lee de izquierda a derecha con el valor como sujeto de la expresión, evitando la asimetría sintáctica de `Right(value)` / `Left(value)`.
+
+**Scope:** repository implementations (`data/repositories/`) y use cases (`domain/usecases/`). En tests, `Right(...)` / `Left(...)` son válidos para mayor claridad en las aserciones.
+
+### Estructura detallada de `core/common` y `core/security`
+
+```
+packages/core/common/lib/
+├── di/
+│   └── common_providers.dart         # Riverpod providers: Dio, environment, locale
+├── error/
+│   └── failures.dart                 # Sealed Failure class (ServerFailure, AuthFailure, …)
+├── network/
+│   ├── safe_api_call.dart            # safeApiCall<T>() — wraps any call in Either<Failure, T>
+│   ├── dio_factory.dart              # DioFactory.create() — configured Dio instance
+│   ├── auth_interceptor.dart         # Token injection + 401 refresh
+│   ├── dio_exception_mapper.dart     # DioException → Failure mapping
+│   ├── logging_interceptor.dart      # Dev-only request/response logging
+│   ├── cache_config.dart             # In-memory 5-minute cache
+│   └── certificate_pinning.dart      # SSL certificate pinning
+└── usecases/
+    └── usecase.dart                  # UseCase<T, Params> base class + NoParams
+
+packages/core/security/lib/
+├── di/
+│   └── security_providers.dart       # SecurityProviders (includes logoutDataSource, logoutUseCase)
+├── session/
+│   ├── logout_datasource.dart        # LogoutDataSource (abstract) + LogoutDataSourceImpl
+│   ├── session_manager.dart          # SessionManager interface + SessionManagerNotifier
+│   └── user_session_notifier.dart    # UserSessionNotifier
+└── usecases/
+    └── logout_usecase.dart           # LogoutUseCase — shared between settings and main_shell
+```
+
+### Rationale: por qué la infraestructura compartida pertenece a core
+
+La infraestructura compartida vive en `core/common` o `core/security`. Los datasources de cada feature manejan sólo las preocupaciones de su dominio de negocio (endpoints API, DTOs, claves de persistencia). Cuando la misma operación de infraestructura aparece en más de un feature, es señal de que la preocupación (cierre de sesión, almacenamiento seguro, HTTP) es transversal y pertenece a la capa core — no simplemente por reutilización, sino porque es responsabilidad de la infraestructura, no del dominio de ningún feature.
+
+Cuando el mismo logout se duplicó en `settings` y `main_shell`, se creó el riesgo de que las dos implementaciones divergieran — una limpiando la sesión de usuario, la otra no. Un único `LogoutUseCase` en `core/security` es la implementación autoritativa consumida por cualquier feature que la necesite.
+
+### Ejemplo completo: refactor `logoutDataSource`
+
+**Antes** — duplicado en dos repository implementations:
+
+```dart
+// packages/features/settings/lib/data/repositories/settings_repository_impl.dart
+class SettingsRepositoryImpl implements SettingsRepository {
+  SettingsRepositoryImpl({
+    required this.sessionManager,       // security dependency
+    required this.userSessionNotifier,  // security dependency
+    …
+  });
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await sessionManager.clearSession();   // ← duplicado
+      userSessionNotifier.clear();           // ← duplicado
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(Failure.server(message: e.toString()));
+    }
+  }
+}
+
+// packages/features/main_shell/lib/data/repositories/shell_session_repository_impl.dart
+class ShellSessionRepositoryImpl implements ShellSessionRepository {
+  ShellSessionRepositoryImpl({
+    required this.sessionManager,       // same security dependency
+    required this.userSessionNotifier,  // same security dependency
+  });
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await sessionManager.clearSession();   // ← copia exacta
+      userSessionNotifier.clear();           // ← copia exacta
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(Failure.server(message: e.toString()));
+    }
+  }
+}
+```
+
+**Después** — implementación única en `core/security`, inyectada en ambos features:
+
+```dart
+// packages/core/security/lib/session/logout_datasource.dart
+abstract class LogoutDataSource {
+  Future<void> logout();
+}
+
+class LogoutDataSourceImpl implements LogoutDataSource {
+  const LogoutDataSourceImpl({
+    required this.sessionManager,
+    required this.userSessionNotifier,
+  });
+
+  final SessionManager sessionManager;
+  final UserSessionNotifier userSessionNotifier;
+
+  @override
+  Future<void> logout() async {
+    await sessionManager.clearSession();
+    userSessionNotifier.clear();
+  }
+}
+
+// packages/core/security/lib/di/security_providers.dart
+static final logoutDataSource = Provider<LogoutDataSource>((ref) {
+  return LogoutDataSourceImpl(
+    sessionManager: ref.read(sessionManager.notifier),
+    userSessionNotifier: ref.read(userSession.notifier),
+  );
+});
+```
+
+```dart
+// packages/features/settings/lib/data/repositories/settings_repository_impl.dart
+class SettingsRepositoryImpl implements SettingsRepository {
+  SettingsRepositoryImpl({
+    required this.logoutDataSource,  // single injection point
+    …
+  });
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await logoutDataSource.logout();
+      return null.toRight();
+    } on Exception catch (e) {
+      return Failure.server(message: e.toString()).toLeft();
+    }
+  }
+}
+
+// packages/features/main_shell/lib/data/repositories/shell_session_repository_impl.dart
+class ShellSessionRepositoryImpl implements ShellSessionRepository {
+  ShellSessionRepositoryImpl({required this.logoutDataSource});
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await logoutDataSource.logout();
+      return null.toRight();
+    } on Exception catch (e) {
+      return Failure.server(message: e.toString()).toLeft();
+    }
+  }
+}
+```
 
 ---
 
