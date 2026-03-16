@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common/di/common_providers.dart';
 import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -12,14 +14,10 @@ class SettingsPage extends StatelessWidget {
   const SettingsPage({
     super.key,
     this.onAbout,
-    this.onLogout,
   });
 
   /// Callback when the "About" item is tapped.
   final VoidCallback? onAbout;
-
-  /// Callback when the "Logout" item is tapped.
-  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -121,8 +119,18 @@ class SettingsPage extends StatelessWidget {
                   width: double.infinity,
                   height: 48,
                   child: OutlinedButton.icon(
-                    onPressed: onLogout,
-                    icon: const Icon(Icons.logout),
+                    onPressed: state.status.isLoggingOut
+                        ? null
+                        : () => context
+                            .read<SettingsBloc>()
+                            .add(const LogoutRequested()),
+                    icon: state.status.isLoggingOut
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.logout),
                     label: Text(LocaleKeys.settings_logout.tr()),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: BankingColors.error,
@@ -159,7 +167,7 @@ class SettingsPage extends StatelessWidget {
       }
     }
 
-    showModalBottomSheet<void>(
+    unawaited(showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -185,31 +193,34 @@ class SettingsPage extends StatelessWidget {
                   label: 'Español',
                   locale: const Locale('es'),
                   isSelected: currentLocale.languageCode == 'es',
-                  onTap: () =>
-                      onLanguageSelected(const Locale('es'), sheetContext),
+                  onTap: () => unawaited(
+                    onLanguageSelected(const Locale('es'), sheetContext),
+                  ),
                 ),
                 _LanguageOption(
                   flag: '🇬🇧',
                   label: 'English',
                   locale: const Locale('en'),
                   isSelected: currentLocale.languageCode == 'en',
-                  onTap: () =>
-                      onLanguageSelected(const Locale('en'), sheetContext),
+                  onTap: () => unawaited(
+                    onLanguageSelected(const Locale('en'), sheetContext),
+                  ),
                 ),
                 _LanguageOption(
                   flag: '🇵🇹',
                   label: 'Português',
                   locale: const Locale('pt'),
                   isSelected: currentLocale.languageCode == 'pt',
-                  onTap: () =>
-                      onLanguageSelected(const Locale('pt'), sheetContext),
+                  onTap: () => unawaited(
+                    onLanguageSelected(const Locale('pt'), sheetContext),
+                  ),
                 ),
               ],
             ),
           ),
         );
       },
-    );
+    ));
   }
 }
 

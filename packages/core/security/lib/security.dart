@@ -11,6 +11,7 @@ export 'di/security_providers.dart';
 export 'notifiers/biometric_enabled_notifier.dart';
 export 'screen/screen_protection_service.dart';
 export 'security_initializer.dart';
+export 'session/logout_datasource.dart';
 export 'session/session_manager.dart';
 export 'session/user_info.dart';
 export 'session/user_session_notifier.dart';

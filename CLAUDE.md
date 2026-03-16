@@ -100,6 +100,16 @@ packages/features/<name>/lib/
 - Implementación en `data/repositories/`
 - SIEMPRE retorna `Either<Failure, T>` — NUNCA lanza excepciones
 - Catch de `DioException` → `ServerFailure`, catch genérico → `ServerFailure`
+- **SIEMPRE** usar `.toRight()` / `.toLeft()` — NUNCA `Right(value)` / `Left(value)` directamente
+  ```dart
+  // ✅
+  return value.toRight();
+  return Failure.server(message: e.toString()).toLeft();
+  // ❌
+  return Right(value);
+  return Left(Failure.server(message: e.toString()));
+  ```
+  Extensiones en `package:common/common.dart` (`RightExtension<T>`, `LeftExtension on Failure`)
 
 ### DTO → Entity
 - DTOs (data layer) tienen `.toEntity()` y `factory .fromJson(Map<String, dynamic>)`
@@ -120,6 +130,37 @@ packages/features/<name>/lib/
 - BlocProviders se instancian en la función de routing del feature PER ROUTE (NUNCA en páginas)
 - Auth guard en `GoRouter.redirect` (NO en páginas individuales)
 - Comunicación entre features: `context.go()` / `context.push()` + `extra`
+
+#### BLoC en el router — reglas estrictas
+
+El router **solo** hace wiring de dependencias. Nunca contiene lógica de negocio.
+
+```dart
+// ✅ CORRECTO
+BlocProvider(
+  create: (_) => MyBloc(
+    getDataUseCase: container.read(MyProviders.getDataUseCase),  // solo use cases / repositories
+  )..add(const MyBlocStarted()),  // evento inicial
+  child: const MyPage(),          // página sin callbacks de negocio
+)
+
+// ❌ INCORRECTO — callback con side-effects en el constructor del BLoC
+BlocProvider(
+  create: (_) => MyBloc(
+    initialValue: container.read(myProvider).value,  // primitivo leído de Riverpod
+    onAction: () { container.read(myProvider.notifier).doSomething(); },  // callback con lógica
+  ),
+)
+
+// ❌ INCORRECTO — callback con lógica de negocio en la página
+MyPage(
+  onLogout: () async { await sessionManager.clearSession(); },
+)
+```
+
+- **Estado inicial** → BLoC lo carga en `_on<Feature>Started` via UseCase, NUNCA como primitivo pasado desde el router
+- **Acciones de negocio** (logout, toggle, submit) → eventos BLoC que llaman a UseCases, NUNCA callbacks en la página
+- **Callbacks de navegación** (`onTap`, `onAccountTap`) → sí están permitidos en páginas, son responsabilidad del router
 
 ## Failure types (sealed class)
 

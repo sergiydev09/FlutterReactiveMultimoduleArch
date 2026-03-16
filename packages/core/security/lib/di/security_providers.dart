@@ -5,6 +5,7 @@ import '../biometric/device_credential_service.dart';
 import '../clipboard/clipboard_protection_service.dart';
 import '../notifiers/biometric_enabled_notifier.dart';
 import '../screen/screen_protection_service.dart';
+import '../session/logout_datasource.dart';
 import '../session/session_manager.dart';
 import '../session/user_info.dart';
 import '../session/user_session_notifier.dart';
@@ -48,6 +49,19 @@ abstract final class SecurityProviders {
       AsyncNotifierProvider<UserSessionNotifier, UserInfo?>(
     UserSessionNotifier.new,
   );
+
+  /// Datasource that performs a full session logout.
+  ///
+  /// Clears session tokens via [SessionManager.clearSession] and resets
+  /// the in-memory user identity via [UserSessionNotifier.clear].
+  /// Use this in feature repositories instead of depending directly on both
+  /// session notifiers.
+  static final logoutDataSource = Provider<LogoutDataSource>((ref) {
+    return LogoutDataSourceImpl(
+      sessionManager: ref.read(sessionManager.notifier),
+      userSessionNotifier: ref.read(userSession.notifier),
+    );
+  });
 
   // ---------------------------------------------------------------------------
   // Biometrics
