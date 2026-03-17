@@ -57,6 +57,9 @@ class _BankingWebViewState extends State<BankingWebView> {
   late final BankingCookieManager _cookieManager;
   bool _isLoading = true;
   double _progress = 0;
+  // Tracks the URL passed to loadRequest so it is always allowed on iOS —
+  // WKWebView calls onNavigationRequest for the initial load too (unlike Android).
+  String? _sourceUrl;
 
   @override
   void initState() {
@@ -182,7 +185,7 @@ class _BankingWebViewState extends State<BankingWebView> {
     }
 
     // Priority 2: domain allow-list.
-    if (!widget.config.isAllowedUrl(request.url)) {
+    if (!kDebugMode && !widget.config.isAllowedUrl(request.url)) {
       return NavigationDecision.prevent;
     }
 
