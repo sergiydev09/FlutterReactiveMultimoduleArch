@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:common/di/common_providers.dart';
 import 'package:common/routing/feature_routes.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,10 @@ abstract final class AccountRoutes {
                     )..add(TransactionWebDetailStarted(
                         transactionId: transaction.id,
                       )),
-                    child: TransactionWebDetailPage(transaction: transaction),
+                    child: TransactionWebDetailPage(
+                      transaction: transaction,
+                      cookieJar: container.read(CommonProviders.cookieJar),
+                    ),
                   );
                 },
               ),

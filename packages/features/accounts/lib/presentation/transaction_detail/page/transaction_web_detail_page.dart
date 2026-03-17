@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +20,12 @@ import '../bloc/transaction_web_detail_bloc.dart';
 class TransactionWebDetailPage extends StatelessWidget {
   const TransactionWebDetailPage({
     required this.transaction,
+    required this.cookieJar,
     super.key,
   });
 
   final Transaction transaction;
+  final CookieJar cookieJar;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class TransactionWebDetailPage extends StatelessWidget {
               transaction: transaction,
               url: state.url!,
               token: state.token ?? '',
+              cookieJar: cookieJar,
             ),
         },
       ),
@@ -84,11 +88,13 @@ class _WebViewBody extends StatelessWidget {
     required this.transaction,
     required this.url,
     required this.token,
+    required this.cookieJar,
   });
 
   final Transaction transaction;
   final String url;
   final String token;
+  final CookieJar cookieJar;
 
   static const _tag = 'TransactionWebDetail';
 
@@ -103,6 +109,7 @@ class _WebViewBody extends StatelessWidget {
           'pre-api.banking-app.com',
           'api.banking-app.com',
         ],
+        cookieJar: cookieJar,
         supportMultipleWindows: true,
         enableJavaScript: true,
         navigationDelegate: WebViewNavigationDelegate(

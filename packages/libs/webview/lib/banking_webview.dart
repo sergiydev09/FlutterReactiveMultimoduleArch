@@ -193,10 +193,7 @@ class _BankingWebViewState extends State<BankingWebView> {
   @override
   void dispose() {
     if (widget.config.clearCookiesOnDispose) {
-      final source = widget.source;
-      if (source is WebViewUrlSource) {
-        unawaited(_cookieManager.clearBankingSession(source.url));
-      }
+      unawaited(_cookieManager.clearAllWebData());
       unawaited(_controller.clearCache());
     }
     super.dispose();
@@ -204,23 +201,35 @@ class _BankingWebViewState extends State<BankingWebView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        WebViewWidget(controller: _controller),
-        if (_isLoading)
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: LinearProgressIndicator(
-              value: _progress > 0 ? _progress : null,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).primaryColor,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final canGoBack = await _controller.canGoBack();
+        if (canGoBack) {
+          await _controller.goBack();
+        } else if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Stack(
+        children: [
+          WebViewWidget(controller: _controller),
+          if (_isLoading)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: LinearProgressIndicator(
+                value: _progress > 0 ? _progress : null,
+                backgroundColor: Colors.grey.shade200,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor,
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

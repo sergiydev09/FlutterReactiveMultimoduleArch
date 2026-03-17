@@ -10,6 +10,7 @@ resolution: workspace
 dependencies:
   common:
     path: ../../core/common
+  cookie_jar:
   dio:
   easy_localization:
   domain:

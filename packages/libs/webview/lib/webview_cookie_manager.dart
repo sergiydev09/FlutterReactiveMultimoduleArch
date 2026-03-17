@@ -62,18 +62,6 @@ class BankingCookieManager {
     }
   }
 
-  /// Clears all banking-related session cookies.
-  ///
-  /// Note: [WebViewCookieManager] only supports a global clear — all cookies
-  /// across all domains are removed, not just those for the banking URL.
-  /// Cache clearing is handled separately by [BankingWebView.dispose].
-  ///
-  /// TODO: scope this to [url] once webview_flutter adds per-domain deletion.
-  // ignore: avoid_unused_parameters
-  Future<void> clearBankingSession(String url) async {
-    await _cookieManager.clearCookies();
-  }
-
   /// Purges all cookies from the cookie storage.
   /// Cache clearing is handled separately by [BankingWebView.dispose].
   Future<void> clearAllWebData() async {
