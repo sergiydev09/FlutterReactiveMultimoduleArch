@@ -7,6 +7,7 @@ import '../domain/repositories/account_repository.dart';
 import '../domain/usecases/get_account_detail_usecase.dart';
 import '../domain/usecases/get_account_transactions_usecase.dart';
 import '../domain/usecases/get_accounts_usecase.dart';
+import '../domain/usecases/get_transaction_detail_url_usecase.dart';
 
 /// Riverpod providers for the accounts feature.
 abstract final class AccountProviders {
@@ -43,5 +44,10 @@ abstract final class AccountProviders {
   /// Use case to retrieve account transactions.
   static final getAccountTransactionsUseCase = Provider<GetAccountTransactionsUseCase>((ref) {
     return GetAccountTransactionsUseCase(repository: ref.watch(AccountProviders.repository));
+  });
+
+  /// Use case to fetch the WebView URL for the transaction detail screen.
+  static final getTransactionDetailUrlUseCase = Provider<GetTransactionDetailUrlUseCase>((ref) {
+    return GetTransactionDetailUrlUseCase(repository: ref.watch(AccountProviders.repository));
   });
 }

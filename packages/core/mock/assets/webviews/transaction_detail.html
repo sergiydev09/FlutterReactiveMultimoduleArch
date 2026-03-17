@@ -160,6 +160,95 @@
     }
 
     #content { display: none; }
+
+    .test-zone {
+      margin: 16px;
+      border: 2px dashed var(--warning);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .test-zone-header {
+      background: rgba(255,152,0,0.12);
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--warning);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .test-zone-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .test-group-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 4px;
+    }
+
+    .btn-test {
+      background: rgba(255,152,0,0.08);
+      color: var(--warning);
+      border: 1.5px solid rgba(255,152,0,0.4);
+    }
+
+    .btn-test-danger {
+      background: rgba(229,57,53,0.07);
+      color: var(--danger);
+      border: 1.5px solid rgba(229,57,53,0.3);
+    }
+
+    .btn-test-neutral {
+      background: rgba(26,58,92,0.06);
+      color: var(--primary);
+      border: 1.5px solid rgba(26,58,92,0.25);
+    }
+
+    .btn-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn-link:active { opacity: 0.7; }
+
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      z-index: 100;
+    }
+
+    #toast.visible { opacity: 1; }
   </style>
 </head>
 <body>
@@ -212,7 +301,64 @@
       Disputar cargo
     </button>
   </div>
+
+  <!-- ── Test zone ─────────────────────────────────────────── -->
+  <div class="test-zone">
+    <div class="test-zone-header" onclick="toggleTestZone()">
+      Zona de pruebas (mock)
+      <span id="testZoneArrow">▼</span>
+    </div>
+    <div class="test-zone-body" id="testZoneBody">
+
+      <!-- Bridge events -->
+      <span class="test-group-label">Bridge JS → Flutter</span>
+
+      <button class="btn btn-test" onclick="sendAction('process_payment', {amount: 99.99, currency: 'EUR'})">
+        Enviar evento con datos
+      </button>
+      <button class="btn btn-test" onclick="sendAction('custom_action', {key: 'value', flag: true, count: 3})">
+        Evento custom con payload
+      </button>
+      <button class="btn btn-test-neutral" onclick="checkBridge()">
+        Verificar bridge registrado
+      </button>
+
+      <!-- Standard bridge events -->
+      <span class="test-group-label" style="margin-top:8px">Eventos estándar (bridge directo)</span>
+
+      <button class="btn btn-test-danger" onclick="sendAction('CLOSE')">
+        CLOSE → WebViewCloseEvent
+      </button>
+      <button class="btn btn-test" onclick="sendAction('OPEN_NEW_WINDOW', {url: 'https://www.google.com'})">
+        OPEN_NEW_WINDOW → abrir en navegador
+      </button>
+
+      <!-- target="_blank" link (rewritten in-frame by BlankTargetLinksJsAction injection) -->
+      <span class="test-group-label" style="margin-top:8px">target="_blank" (inyección JS)</span>
+
+      <a class="btn btn-link btn-test-neutral"
+         href="https://www.google.com"
+         target="_blank">
+        Enlace _blank → onNavigationRequest
+      </a>
+
+      <!-- Native scheme links -->
+      <span class="test-group-label" style="margin-top:8px">Esquemas nativos (TelAction / MailToAction)</span>
+
+      <a class="btn btn-link btn-test-neutral" href="tel:+34600000000">
+        tel: → TelNavigationAction
+      </a>
+      <a class="btn btn-link btn-test-neutral" href="mailto:soporte@banking.com">
+        mailto: → MailToNavigationAction
+      </a>
+      <a class="btn btn-link btn-test-neutral" href="sms:+34600000000">
+        sms: → SmsNavigationAction
+      </a>
+    </div>
+  </div>
 </div>
+
+<div id="toast"></div>
 
 <script>
   const statusLabels = {
@@ -294,13 +440,41 @@
     }
   }
 
-  // Send actions back to Flutter
-  function sendAction(action) {
-    if (window.flutter_inappwebview) {
-      window.flutter_inappwebview.callHandler('FlutterBridge', {
-        action: action,
-        data: { timestamp: new Date().toISOString() }
-      });
+  // ── Toast helper ──────────────────────────────────────────
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('visible');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(function() { el.classList.remove('visible'); }, 2500);
+  }
+
+  // ── Test zone toggle ──────────────────────────────────────
+  function toggleTestZone() {
+    const body = document.getElementById('testZoneBody');
+    const arrow = document.getElementById('testZoneArrow');
+    const hidden = body.style.display === 'none';
+    body.style.display = hidden ? 'flex' : 'none';
+    arrow.textContent = hidden ? '▼' : '▶';
+  }
+
+  // ── Send actions back to Flutter ──────────────────────────
+  function sendAction(action, extraData) {
+    const data = Object.assign({ timestamp: new Date().toISOString() }, extraData || {});
+    if (window.FlutterBridge) {
+      window.FlutterBridge.postMessage(JSON.stringify({ action: action, data: data }));
+      showToast('Bridge → ' + action);
+    } else {
+      showToast('FlutterBridge no disponible');
+    }
+  }
+
+  // ── Verify bridge is registered ───────────────────────────
+  function checkBridge() {
+    if (window.FlutterBridge) {
+      showToast('FlutterBridge registrado');
+    } else {
+      showToast('FlutterBridge NO disponible');
     }
   }
 </script>
