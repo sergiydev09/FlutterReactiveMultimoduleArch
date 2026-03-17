@@ -1,6 +1,6 @@
 # WebView Library (`webview_lib`)
 
-A security-focused WebView infrastructure for the banking application based on `flutter_inappwebview`.
+A security-focused WebView infrastructure for the banking application based on `webview_flutter`.
 
 ---
 
@@ -49,7 +49,7 @@ Centralised, immutable configuration passed to `BankingWebView`.
 | `clearCookiesOnDispose` | `bool` | `true` | Deletes session cookies and clears cache on widget disposal. |
 | `userAgent` | `String?` | `null` | Custom user-agent string. |
 | `navigationDelegate` | `WebViewNavigationDelegate` | empty delegate | Chain-of-responsibility handler for non-browser URL schemes. |
-| `cookieJar` | `CookieJar?` | `null` | Dio `CookieJar` to sync into the native cookie store on `onWebViewCreated`. No-op for `WebViewHtmlSource`. |
+| `cookieJar` | `CookieJar?` | `null` | Dio `CookieJar` to sync into the native cookie store during `initState`, before the first request fires. No-op for `WebViewHtmlSource`. |
 | `sslPinHashes` | `List<String>` | `[]` | SHA-256 hashes (base64) of trusted certificates or SPKI keys. Empty falls back to OS certificate validation. |
 
 ---
@@ -123,7 +123,7 @@ WebViewConfig(
 
 ### Sending data to the web page
 
-Provide `initialData` — it is called once after `onLoadStop` and the result is sent to the page as `window.onFlutterData(jsonString)`.
+Provide `initialData` — it is called once after `onPageFinished` and the result is sent to the page as `window.onFlutterData(jsonString)`.
 
 **Flutter:**
 ```dart
@@ -146,14 +146,14 @@ window.onFlutterData = function(payload) {
 
 ### Receiving events from the web page
 
-The page calls the `FlutterBridge` handler. Flutter receives a `WebViewCustomEvent`.
+The page posts a JSON-serialised message to `window.FlutterBridge`. Flutter receives a `WebViewCustomEvent`.
 
 **JavaScript:**
 ```js
-window.flutter_inappwebview.callHandler('FlutterBridge', {
+window.FlutterBridge.postMessage(JSON.stringify({
   action: 'process_payment',
   data: { amount: 50.0, currency: 'EUR' }
-});
+}));
 ```
 
 **Flutter:**
@@ -176,7 +176,7 @@ onEvent: (event) {
 
 ### Automatic injection via `WebViewConfig.cookieJar`
 
-The recommended approach. Pass the shared `CookieJar` (from `CommonProviders.cookieJar`) in the config. Cookies are injected automatically in `onWebViewCreated`, before the first request fires.
+The recommended approach. Pass the shared `CookieJar` (from `CommonProviders.cookieJar`) in the config. Cookies are injected automatically during `initState`, before the first request fires.
 
 ```dart
 WebViewConfig(
@@ -197,24 +197,21 @@ await manager.injectFromCookieJar(
   cookieJar: ref.read(cookieJarProvider),
 );
 
-// Clear session for a specific URL (also clears cache)
+// Clear session cookies for a specific URL
 await manager.clearBankingSession('https://banking-app.com');
 
 // Nuclear option — wipe all cookies and cache
 await manager.clearAllWebData();
 ```
 
-`sameSite` is enforced as `STRICT` on every injected cookie regardless of the server's flag (defence-in-depth).
+> **Note:** `webview_flutter`'s `WebViewCookie` does not support `httpOnly` or `sameSite` attributes. These must be enforced by the server. `BankingCookieManager` sets `name`, `value`, `domain`, and `path` only.
 
 ### Testing
 
-Inject fakes to avoid touching the native layer:
+Inject a fake `WebViewCookieManager` to avoid touching the native layer:
 
 ```dart
-final manager = BankingCookieManager(
-  cookieManager: fakeCookieManager,
-  clearCache: () async {},
-);
+final manager = BankingCookieManager(cookieManager: fakeCookieManager);
 ```
 
 ---
@@ -222,6 +219,8 @@ final manager = BankingCookieManager(
 ## SSL Pinning
 
 SSL pinning is configured via `WebViewConfig.sslPinHashes` — a flat list of SHA-256 hashes shared with `EnvironmentConfig.certificatePinHashes`. The validation logic lives entirely in `CertificatePinning.validatePins` (`package:common`) and is reused by both the WebView and the Dio `HttpClient`.
+
+> **Platform limitation:** `webview_flutter` only surfaces certificate errors through `onSslAuthError`, which fires when the OS itself rejects the TLS handshake (e.g. self-signed or expired certificates). Connections to OS-trusted certificates — including those with valid CA chains that you might still want to pin — do **not** trigger `onSslAuthError`. For stricter pinning on production traffic, consider supplementing with Dio's `HttpClient` pinning (configured in `CertificatePinning`) which runs on every request.
 
 ### Rules
 
@@ -233,22 +232,21 @@ SSL pinning is configured via `WebViewConfig.sslPinHashes` — a flat list of SH
 | `sslPinHashes` non-empty, no hash matches | ❌ Blocked — `SECURITY_SSL_PINNING_FAILED` |
 | `sslPinHashes` non-empty, at least one hash matches | ✅ Allowed |
 
-### Two pinning strategies
+### Pinning strategy — certificate hash only
 
-**Certificate pinning** — SHA-256 of the full DER-encoded X.509 certificate. Tied to a specific cert; must be updated on every renewal.
+Only **certificate hash pinning** is supported. `sslPinHashes` must contain SHA-256 fingerprints of the full DER-encoded X.509 certificate.
 
-**Public key pinning (recommended)** — SHA-256 of the SubjectPublicKeyInfo (SPKI) DER bytes. Survives certificate renewals as long as the same key pair is reused.
+**How it works:** `PlatformSslPinning.handle` extracts `SslAuthError.certificate.data` (DER bytes of the leaf cert) and passes them to `CertificatePinning.validatePins`, which computes `sha256(DER)` and checks it against `sslPinHashes`.
 
-Both hash types can coexist in the same `sslPinHashes` list. The WebView checks both cert and SPKI hashes. The native `HttpClient` (Dio) only checks certificate hashes — `dart:io` does not expose SPKI bytes directly.
+> **SPKI (public-key) pinning is not implemented.** Neither `SslAuthError` nor `dart:io`'s `X509Certificate` exposes the SubjectPublicKeyInfo bytes in Dart, so no code path in this library computes an SPKI hash. Do not add SPKI hashes to `sslPinHashes` — they will never match and will always block the connection.
+
+**Certificate pinning limitation:** a pinned cert hash must be updated in `sslPinHashes` (and a new app version released) on every certificate renewal, even if the server key pair doesn't change. Plan your certificate rotation accordingly.
 
 ### Usage
 
 ```dart
 WebViewConfig(
-  sslPinHashes: [
-    'base64EncodedSha256OfSpki==',   // SPKI hash (preferred — WebView only)
-    'base64EncodedSha256OfDer==',    // cert hash (works on both WebView and HttpClient)
-  ],
+  sslPinHashes: ['base64EncodedSha256OfDerCert=='],
 )
 ```
 
@@ -260,21 +258,11 @@ WebViewConfig(
 )
 ```
 
-### Obtaining hashes
+### Obtaining the certificate hash
 
-**Certificate hash:**
 ```sh
 openssl s_client -connect host:443 </dev/null 2>/dev/null \
   | openssl x509 -outform DER \
-  | openssl dgst -sha256 -binary \
-  | openssl base64
-```
-
-**Public key (SPKI) hash:**
-```sh
-openssl s_client -connect host:443 </dev/null 2>/dev/null \
-  | openssl x509 -pubkey -noout \
-  | openssl pkey -pubin -outform DER \
   | openssl dgst -sha256 -binary \
   | openssl base64
 ```
@@ -352,7 +340,7 @@ Required to launch external apps via `url_launcher`:
 
 1. **Restrict domains** — always populate `allowedDomains` in staging and production.
 2. **Disable JS unless required** — keep `enableJavaScript: false` for pure-content pages.
-3. **Prefer public key pinning** — SPKI hashes survive certificate renewals; certificate hashes require an app update on every cert rotation. Note: SPKI hashes are only validated in the WebView path; the native `HttpClient` only validates certificate hashes.
-4. **Always include at least two hashes** — one active, one backup — to avoid locking users out during key/cert rotation.
+3. **Plan certificate rotation** — only certificate hash pinning is implemented. Every cert renewal requires updating `sslPinHashes` and shipping a new app version. Always include at least two hashes (current + next) to allow overlap during rotation.
+4. **Always include at least two hashes** — one active, one for the next certificate — to avoid locking users out during rotation.
 5. **Use `cookieJar`** — pass the shared Dio `CookieJar` rather than injecting cookies manually.
 6. **`clearCookiesOnDispose: true`** (default) — protects the session when the user leaves the WebView screen.

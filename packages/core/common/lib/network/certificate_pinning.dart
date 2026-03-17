@@ -65,7 +65,7 @@ class CertificatePinning {
   /// not expose the SubjectPublicKeyInfo (SPKI) DER bytes, so only full
   /// certificate hashes are checked here. All hashes in [pinHashes] must be
   /// SHA-256 fingerprints of the full DER-encoded certificate (not SPKI hashes).
-  /// Use the WebView path ([validatePins] with [spkiDerBytes]) for SPKI pinning.
+  /// SPKI pinning is not supported on either transport path.
   static HttpClient createPinnedHttpClient(List<String> pinHashes) {
     if (pinHashes.isEmpty) return HttpClient();
 
