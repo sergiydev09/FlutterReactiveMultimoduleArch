@@ -1,6 +1,8 @@
 import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 
 /// Page showing the result of a payment (success or error).
@@ -114,61 +116,28 @@ class PaymentResultPage extends StatelessWidget {
               if (isSuccess) ...[
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
+                  child: BankButton(
+                    label: LocaleKeys.payments_result_go_home.tr(),
                     onPressed: onDone,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BankingColors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      LocaleKeys.payments_result_go_home.tr(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    size: BankButtonSize.large,
                   ),
                 ),
               ] else ...[
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
+                  child: BankButton(
+                    label: LocaleKeys.payments_result_retry.tr(),
                     onPressed: onRetry,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BankingColors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      LocaleKeys.payments_result_retry.tr(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    size: BankButtonSize.large,
                   ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton(
+                  child: BankButton(
+                    label: LocaleKeys.payments_result_cancel.tr(),
+                    type: BankButtonType.outlined,
                     onPressed: onDone,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: BankingColors.primary,
-                      side: const BorderSide(color: BankingColors.primary),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(LocaleKeys.payments_result_cancel.tr()),
                   ),
                 ),
               ],

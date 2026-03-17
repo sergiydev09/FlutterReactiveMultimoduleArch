@@ -32,12 +32,7 @@ abstract final class MainShellRoutes {
         getShellConfigUseCase: container.read(
           MainShellProviders.getShellConfigUseCase,
         ),
-        onLogout: () async {
-          await container
-              .read(SecurityProviders.sessionManager.notifier)
-              .clearSession();
-          container.read(SecurityProviders.userSession.notifier).clear();
-        },
+        logoutUseCase: container.read(SecurityProviders.logoutUseCase),
       )..add(const ShellStarted()),
       child: MainShellPage(
         userName: userInfo?.fullName ?? '',

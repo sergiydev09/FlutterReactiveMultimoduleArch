@@ -3,6 +3,8 @@ import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../bloc/onboarding_bloc.dart';
 
@@ -96,16 +98,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: TextButton(
+                    child: BankButton(
+                      label: isLastPage ? '' : LocaleKeys.onboarding_skip.tr(),
+                      type: BankButtonType.subtle,
+                      size: BankButtonSize.small,
                       onPressed: isLastPage ? null : _onSkip,
-                      child: Text(
-                        isLastPage ? '' : LocaleKeys.onboarding_skip.tr(),
-                        style: const TextStyle(
-                          color: BankingColors.onBackgroundLightSecondary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -152,26 +149,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
+                    child: BankButton(
+                      label: isLastPage
+                          ? LocaleKeys.onboarding_start.tr()
+                          : LocaleKeys.onboarding_next.tr(),
                       onPressed: () => _onNext(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: BankingColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: Text(
-                        isLastPage
-                            ? LocaleKeys.onboarding_start.tr()
-                            : LocaleKeys.onboarding_next.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      size: BankButtonSize.large,
                     ),
                   ),
                 ),

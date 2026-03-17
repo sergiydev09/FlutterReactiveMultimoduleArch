@@ -1,7 +1,9 @@
+import 'package:common/usecases/usecase.dart';
 import 'package:domain/entities/notification_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../domain/repositories/notification_repository.dart';
+import '../../../domain/usecases/get_notifications_usecase.dart';
+import '../../../domain/usecases/mark_notification_as_read_usecase.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
@@ -10,14 +12,17 @@ part 'generated/notifications_bloc.freezed.dart';
 /// BLoC for managing in-app notifications.
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc({
-    required NotificationRepository notificationRepository,
-  }) : _notificationRepository = notificationRepository,
+    required GetNotificationsUseCase getNotificationsUseCase,
+    required MarkNotificationAsReadUseCase markNotificationAsReadUseCase,
+  }) : _getNotificationsUseCase = getNotificationsUseCase,
+       _markNotificationAsReadUseCase = markNotificationAsReadUseCase,
        super(const NotificationsState()) {
     on<LoadNotifications>(_onLoad);
     on<MarkNotificationAsRead>(_onMarkAsRead);
   }
 
-  final NotificationRepository _notificationRepository;
+  final GetNotificationsUseCase _getNotificationsUseCase;
+  final MarkNotificationAsReadUseCase _markNotificationAsReadUseCase;
 
   Future<void> _onLoad(
     LoadNotifications event,
@@ -25,7 +30,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   ) async {
     emit(state.copyWith(status: NotificationsStatus.loading));
 
-    final result = await _notificationRepository.getNotifications();
+    final result = await _getNotificationsUseCase(const NoParams());
 
     result.match(
       (failure) => emit(state.copyWith(
@@ -45,9 +50,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   ) async {
     if (state.status != NotificationsStatus.loaded) return;
 
-    final result = await _notificationRepository.markAsRead(
-      event.notificationId,
-    );
+    final result =
+        await _markNotificationAsReadUseCase(event.notificationId);
 
     result.match(
       (failure) {

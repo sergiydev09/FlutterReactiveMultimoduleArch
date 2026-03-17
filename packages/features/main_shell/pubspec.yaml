@@ -24,8 +24,10 @@ dependencies:
     path: ../../core/ui
 
 dev_dependencies:
+  bloc_test:
   build_runner:
   flutter_test:
     sdk: flutter
   freezed:
+  mocktail:
   very_good_analysis:

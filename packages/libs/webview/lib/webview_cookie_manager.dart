@@ -1,76 +1,70 @@
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
-/// Data class representing a secure cookie for the Banking WebView.
-class BankingCookie {
-  const BankingCookie({
-    required this.name,
-    required this.value,
-    this.domain,
-    this.path = '/',
-    this.isSecure = true,
-    this.isHttpOnly = true,
-    this.sameSite = HTTPCookieSameSitePolicy.STRICT,
-  });
-
-  final String name;
-  final String value;
-  final String? domain;
-  final String path;
-  final bool isSecure;
-  final bool isHttpOnly;
-  final HTTPCookieSameSitePolicy sameSite;
-}
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 /// Utility class to manage WebView cookies and session state.
+///
+/// Acts as the anti-corruption layer between Dio's cookie model ([CookieJar])
+/// and the WebView's native cookie store ([WebViewCookieManager]).
+///
+/// [cookieManager] is injectable for testing. Defaults to the real
+/// [WebViewCookieManager] when omitted.
+///
+/// **Note — limitations vs flutter_inappwebview:**
+/// - `WebViewCookie` does not support `httpOnly` or `sameSite` attributes.
+///   The server must enforce these via `Set-Cookie` response headers.
+/// - Cookie deletion is global (`clearCookies()`) — there is no per-URL
+///   deletion in `webview_flutter`. Clearing affects all domains.
+/// - Cache clearing (`controller.clearCache()`) is an instance method on
+///   [WebViewController] and is handled by [BankingWebView] directly.
+///
+/// ```dart
+/// // Production use (default dependencies):
+/// final manager = BankingCookieManager();
+///
+/// // Test use (injected fake):
+/// final manager = BankingCookieManager(cookieManager: fakeCookieManager);
+/// ```
 class BankingCookieManager {
-  BankingCookieManager._();
+  BankingCookieManager({WebViewCookieManager? cookieManager})
+      : _cookieManager = cookieManager ?? WebViewCookieManager();
 
-  /// Injects a list of secure cookies for the given [url].
+  final WebViewCookieManager _cookieManager;
+
+  /// Syncs cookies from [cookieJar] for [url] into the WebView native cookie store.
   ///
-  /// By default, cookies are configured with:
-  /// - [isHttpOnly]: true, making it invisible to JavaScript (XSS protection).
-  /// - [isSecure]: true, ensuring it only travels over HTTPS.
-  /// - [sameSite]: STRICT, preventing CSRF attacks.
-  static Future<void> injectSecureCookies({
+  /// Call this before loading a [BankingWebView] that requires an authenticated
+  /// session previously captured by Dio (e.g. after a successful login request).
+  ///
+  /// Performs a global [clearCookies] before injecting to prevent ghost sessions.
+  /// Note: this clears cookies for all domains, not just the target URL.
+  ///
+  /// Security note: `httpOnly` and `sameSite: STRICT` cannot be set via
+  /// [WebViewCookie] — the server must enforce these via `Set-Cookie` headers.
+  Future<void> injectFromCookieJar({
     required String url,
-    required List<BankingCookie> cookies,
+    required CookieJar cookieJar,
   }) async {
-    final cookieManager = CookieManager.instance();
-    final webUri = WebUri(url);
+    final uri = Uri.parse(url);
+    final cookies = await cookieJar.loadForRequest(uri);
 
-    // 1. Prevent "ghost sessions" by deleting old cookies for this URL
-    await cookieManager.deleteCookies(url: webUri);
+    // Prevent ghost sessions before injecting new cookies.
+    await _cookieManager.clearCookies();
 
-    // 2. Set the new secure cookies
     for (final cookie in cookies) {
-      await cookieManager.setCookie(
-        url: webUri,
-        name: cookie.name,
-        value: cookie.value,
-        domain: cookie.domain,
-        path: cookie.path,
-        isSecure: cookie.isSecure,
-        isHttpOnly: cookie.isHttpOnly,
-        sameSite: cookie.sameSite,
+      await _cookieManager.setCookie(
+        WebViewCookie(
+          name: cookie.name,
+          value: cookie.value,
+          domain: cookie.domain ?? uri.host,
+          path: cookie.path ?? '/',
+        ),
       );
     }
   }
 
-  /// Clears all banking-related session data.
-  ///
-  /// Deletes cookies for the specified [url] and clears the webview cache.
-  static Future<void> clearBankingSession(String url) async {
-    final cookieManager = CookieManager.instance();
-    final webUri = WebUri(url);
-
-    await cookieManager.deleteCookies(url: webUri);
-    await InAppWebViewController.clearAllCache();
-  }
-
-  /// Purgues everything in the cookie storage and cache.
-  /// Use with caution.
-  static Future<void> clearAllWebData() async {
-    await CookieManager.instance().deleteAllCookies();
-    await InAppWebViewController.clearAllCache();
+  /// Purges all cookies from the cookie storage.
+  /// Cache clearing is handled separately by [BankingWebView.dispose].
+  Future<void> clearAllWebData() async {
+    await _cookieManager.clearCookies();
   }
 }

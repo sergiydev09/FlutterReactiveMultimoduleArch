@@ -2,6 +2,7 @@ import 'package:common/generated/locale_keys.g.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../widgets/credit_card_widget.dart';
 import '../bloc/cards_list_bloc.dart';
@@ -46,15 +47,11 @@ class CardsListPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   Text(state.errorMessage),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  BankButton(
+                    label: LocaleKeys.common_retry.tr(),
                     onPressed: () {
                       context.read<CardsListBloc>().add(const LoadCards());
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BankingColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: Text(LocaleKeys.common_retry.tr()),
                   ),
                 ],
               ),

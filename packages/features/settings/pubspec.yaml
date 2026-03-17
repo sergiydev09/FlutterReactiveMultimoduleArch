@@ -15,6 +15,7 @@ dependencies:
     sdk: flutter
   flutter_bloc:
   flutter_riverpod:
+  fpdart:
   freezed_annotation:
   go_router:
   security:
@@ -23,8 +24,10 @@ dependencies:
     path: ../../core/ui
 
 dev_dependencies:
+  bloc_test:
   build_runner:
   flutter_test:
     sdk: flutter
   freezed:
+  mocktail:
   very_good_analysis:

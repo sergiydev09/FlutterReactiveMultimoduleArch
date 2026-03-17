@@ -3,6 +3,8 @@ import 'package:domain/entities/card_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.dart';
+import 'package:ui/atoms/buttons/bank_button/bank_button.types.dart';
 import 'package:ui/tokens/colors.dart';
 import '../../cards_list/bloc/cards_list_bloc.dart';
 import '../../widgets/credit_card_widget.dart';
@@ -102,55 +104,30 @@ class CardDetailPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            context.read<CardsListBloc>().add(
-                              ToggleCardStatus(cardId: currentCard.id),
-                            );
-                          },
-                          icon: Icon(
-                            currentCard.isActive
-                                ? Icons.lock_outline
-                                : Icons.lock_open_outlined,
-                          ),
-                          label: Text(
-                            currentCard.isActive
-                                ? LocaleKeys.cards_detail_block_action.tr()
-                                : LocaleKeys.cards_detail_unblock_action.tr(),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: currentCard.isActive
-                                ? BankingColors.error
-                                : BankingColors.success,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        ),
+                      BankButton(
+                        label: currentCard.isActive
+                            ? LocaleKeys.cards_detail_block_action.tr()
+                            : LocaleKeys.cards_detail_unblock_action.tr(),
+                        type: BankButtonType.nestedIcon,
+                        icon: currentCard.isActive
+                            ? Icons.lock_outline
+                            : Icons.lock_open_outlined,
+                        onPressed: () {
+                          context.read<CardsListBloc>().add(
+                            ToggleCardStatus(cardId: currentCard.id),
+                          );
+                        },
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
                         width: double.infinity,
-                        height: 48,
-                        child: OutlinedButton.icon(
+                        child: BankButton(
+                          label: LocaleKeys.cards_detail_change_pin.tr(),
+                          type: BankButtonType.ghost,
+                          icon: Icons.pin_outlined,
                           onPressed: () {
                             // PIN change action.
                           },
-                          icon: const Icon(Icons.pin_outlined),
-                          label: Text(LocaleKeys.cards_detail_change_pin.tr()),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: BankingColors.primary,
-                            side: const BorderSide(
-                              color: BankingColors.primary,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
                         ),
                       ),
                     ],

@@ -15,7 +15,7 @@ part 'generated/login_bloc.freezed.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
     required LoginUseCase loginUseCase,
-    required LogoutUseCase logoutUseCase,
+    required AuthLogoutUseCase logoutUseCase,
     required BiometricLoginUseCase biometricLoginUseCase,
   }) : _loginUseCase = loginUseCase,
        _logoutUseCase = logoutUseCase,
@@ -28,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   final LoginUseCase _loginUseCase;
-  final LogoutUseCase _logoutUseCase;
+  final AuthLogoutUseCase _logoutUseCase;
   final BiometricLoginUseCase _biometricLoginUseCase;
 
   Future<void> _onLoginRequested(

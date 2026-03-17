@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:common/di/common_providers.dart';
 import 'package:common/routing/feature_routes.dart';
 import 'package:domain/entities/transaction.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import '../presentation/account_detail/page/account_detail_page.dart';
 import '../presentation/account_transactions/bloc/account_transactions_bloc.dart';
 import '../presentation/accounts_list/bloc/accounts_list_bloc.dart';
 import '../presentation/accounts_list/page/accounts_list_page.dart';
+import '../presentation/transaction_detail/bloc/transaction_web_detail_bloc.dart';
 import '../presentation/transaction_detail/page/transaction_web_detail_page.dart';
 
 /// Route paths and route definitions for the accounts feature.
@@ -91,13 +93,20 @@ abstract final class AccountRoutes {
                     );
                   }
                   final container = ProviderScope.containerOf(context);
-                  return TransactionWebDetailPage(
-                    transaction: transaction,
-                    sessionManager: container.read(
-                      SecurityProviders.sessionManager.notifier,
-                    ),
-                    accountRepository: container.read(
-                      AccountProviders.repository,
+                  return BlocProvider(
+                    create: (_) => TransactionWebDetailBloc(
+                      getTransactionDetailUrlUseCase: container.read(
+                        AccountProviders.getTransactionDetailUrlUseCase,
+                      ),
+                      sessionManager: container.read(
+                        SecurityProviders.sessionManager.notifier,
+                      ),
+                    )..add(TransactionWebDetailStarted(
+                        transactionId: transaction.id,
+                      )),
+                    child: TransactionWebDetailPage(
+                      transaction: transaction,
+                      cookieJar: container.read(CommonProviders.cookieJar),
                     ),
                   );
                 },

@@ -95,11 +95,69 @@ packages/features/<name>/lib/
 - Retorna `Future<Either<Failure, Type>>`
 - Usa `NoParams` cuando no hay parámetros
 
+### Cross-feature use cases
+
+Cualquier acción usada por más de un feature **debe vivir en la capa común** (`core/security` o `core/common`), no en cada feature.
+
+**Criterios para mover a la capa común (deben cumplirse los tres):**
+
+| Criterio | ✅ Mover a core | ❌ Mantener en feature |
+|----------|----------------|----------------------|
+| Duplicado | Misma lógica en ≥2 features | Lógica exclusiva de un feature |
+| Sin dominio específico | No referencia DTOs ni entidades del feature | Necesita tipos propios del feature |
+| Infraestructura transversal | Sesión, storage, biometría, HTTP genérico | Endpoint o dominio específico |
+
+**Antes (❌):**
+```dart
+// settings/domain/usecases/settings_logout_usecase.dart — DUPLICADO
+class SettingsLogoutUseCase extends UseCase<void, NoParams> { … }
+
+// main_shell/domain/usecases/shell_logout_usecase.dart — DUPLICADO
+class ShellLogoutUseCase extends UseCase<void, NoParams> { … }
+```
+
+**Después (✅):**
+```dart
+// core/security/lib/usecases/logout_usecase.dart — ÚNICO
+class LogoutUseCase extends UseCase<void, NoParams> { … }
+
+// En cada route: container.read(SecurityProviders.logoutUseCase)
+```
+
+Ubicación en `core/security`:
+```
+packages/core/security/lib/
+├── usecases/logout_usecase.dart   # Use case compartido
+└── di/security_providers.dart    # static final logoutUseCase = Provider(…)
+```
+
+**Caso especial — `AuthRepositoryImpl.logout()`:** permanece en el feature `authentication` porque incluye revocación del token en el servidor (llamada API específica del dominio de auth). Sin embargo, **siempre debe llamar a `logoutDataSource.logout()`** para garantizar que la sesión local se limpia aunque la llamada al servidor falle:
+
+```dart
+// ✅ Correcto
+Future<Either<Failure, void>> logout() async {
+  final result = await safeApiCall(() => remoteDataSource.logout(''));
+  await logoutDataSource.logout();  // siempre limpia sesión local
+  return result;
+}
+```
+
 ### Repository
 - Interfaz abstracta en `domain/repositories/`
 - Implementación en `data/repositories/`
 - SIEMPRE retorna `Either<Failure, T>` — NUNCA lanza excepciones
 - Catch de `DioException` → `ServerFailure`, catch genérico → `ServerFailure`
+- **SIEMPRE** usar `.toRight()` / `.toLeft()` — NUNCA `Right(value)` / `Left(value)` directamente
+  ```dart
+  // ✅
+  return value.toRight();
+  return Failure.server(message: e.toString()).toLeft();
+  // ❌
+  return Right(value);
+  return Left(Failure.server(message: e.toString()));
+  ```
+  Extensiones en `package:common/common.dart` (`RightExtension<T>`, `LeftExtension on Failure`)
+- **Scope:** repositories (`data/repositories/`) y use cases (`domain/usecases/`). En tests, `Right(...)` / `Left(...)` están permitidos para mayor claridad en las aserciones.
 
 ### DTO → Entity
 - DTOs (data layer) tienen `.toEntity()` y `factory .fromJson(Map<String, dynamic>)`
@@ -120,6 +178,37 @@ packages/features/<name>/lib/
 - BlocProviders se instancian en la función de routing del feature PER ROUTE (NUNCA en páginas)
 - Auth guard en `GoRouter.redirect` (NO en páginas individuales)
 - Comunicación entre features: `context.go()` / `context.push()` + `extra`
+
+#### BLoC en el router — reglas estrictas
+
+El router **solo** hace wiring de dependencias. Nunca contiene lógica de negocio.
+
+```dart
+// ✅ CORRECTO
+BlocProvider(
+  create: (_) => MyBloc(
+    getDataUseCase: container.read(MyProviders.getDataUseCase),  // solo use cases / repositories
+  )..add(const MyBlocStarted()),  // evento inicial
+  child: const MyPage(),          // página sin callbacks de negocio
+)
+
+// ❌ INCORRECTO — callback con side-effects en el constructor del BLoC
+BlocProvider(
+  create: (_) => MyBloc(
+    initialValue: container.read(myProvider).value,  // primitivo leído de Riverpod
+    onAction: () { container.read(myProvider.notifier).doSomething(); },  // callback con lógica
+  ),
+)
+
+// ❌ INCORRECTO — callback con lógica de negocio en la página
+MyPage(
+  onLogout: () async { await sessionManager.clearSession(); },
+)
+```
+
+- **Estado inicial** → BLoC lo carga en `_on<Feature>Started` via UseCase, NUNCA como primitivo pasado desde el router
+- **Acciones de negocio** (logout, toggle, submit) → eventos BLoC que llaman a UseCases, NUNCA callbacks en la página
+- **Callbacks de navegación** (`onTap`, `onAccountTap`) → sí están permitidos en páginas, son responsabilidad del router
 
 ## Failure types (sealed class)
 
@@ -163,6 +252,7 @@ melos deps:upgrade     # Actualizar dependencias
 8. **NUNCA** hardcodear tokens, API keys o secretos — usar SecureStorage o env config
 9. **NUNCA** usar `dynamic` — tipar siempre
 10. **NUNCA** hacer force push a main
+11. **NUNCA** duplicar un use case en dos features — si la acción opera sobre infraestructura transversal (sesión, storage, biometría) y aparece en ≥2 features, pertenece a `core/security` o `core/common`. Usar `SecurityProviders.logoutUseCase` para logout; extraer análogamente para otros casos.
 
 ## Convenciones de nombrado
 
@@ -180,6 +270,15 @@ melos deps:upgrade     # Actualizar dependencias
 | DataSource | `Remote<Feature>DataSource` | `RemoteAuthDataSource` |
 | DTO (data layer) | `<Entity>Dto` | `AuthTokenDto`, `AccountDto` |
 | Provider | `<tipo><feature>Provider` | `remoteAuthDataSourceProvider`, `authRepositoryProvider` |
+
+## Checklist antes de crear un nuevo use case
+
+Antes de crear cualquier use case en un feature, verificar:
+
+1. ¿Ya existe el mismo use case en `core/security` o `core/common`? → reutilizar
+2. ¿La acción opera exclusivamente sobre infraestructura compartida (sesión, storage, HTTP genérico)? → pertenece a core
+3. ¿Es probable que más de un feature necesite esta acción? → crear en core desde el inicio
+4. Si se crean ≥2 use cases con la misma lógica en distintos features → mover a core y eliminar duplicados
 
 ## Al crear un nuevo feature
 
