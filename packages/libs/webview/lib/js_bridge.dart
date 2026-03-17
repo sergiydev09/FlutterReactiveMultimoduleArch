@@ -3,18 +3,28 @@ import 'dart:developer' as developer;
 
 import 'package:webview_flutter/webview_flutter.dart';
 
+import './js_action.dart';
 import './webview_event.dart';
 
 /// Handles bidirectional JavaScript bridge communication between
 /// Flutter and the WebView content.
+///
+/// Incoming bridge messages are dispatched to the registered [actions] in
+/// order. The first action that returns a non-null [WebViewEvent] from
+/// [JsAction.handleBridgeMessage] wins; unhandled messages are logged and
+/// discarded.
 class JsBridge {
   JsBridge({
     required this.onEvent,
+    required this.actions,
     this.channelName = 'FlutterBridge',
   });
 
   /// Name of the JS channel registered in the WebView.
   final String channelName;
+
+  /// Ordered list of actions that can handle incoming bridge messages.
+  final List<JsAction> actions;
 
   /// Callback for events received from JS.
   final void Function(WebViewEvent event) onEvent;
@@ -73,8 +83,15 @@ class JsBridge {
       final action = payload['action'] as String? ?? 'unknown';
       final data = payload['data'] as Map<String, dynamic>?;
 
-      onEvent(WebViewCustomEvent(name: action, data: data));
-      developer.log('Received action: $action', name: _tag);
+      for (final jsAction in actions) {
+        final event = jsAction.handleBridgeMessage(action, data);
+        if (event != null) {
+          onEvent(event);
+          developer.log('Received action: $action', name: _tag);
+          return;
+        }
+      }
+      developer.log('Unhandled bridge action: $action', name: _tag);
     } on FormatException catch (e) {
       developer.log('Error parsing bridge message: $e', name: _tag);
     } on Exception catch (e) {

@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import './js_bridge.dart';
-import './platform_ssl_pinning.dart';
 import './webview_config.dart';
 import './webview_cookie_manager.dart';
 import './webview_event.dart';
@@ -62,24 +62,14 @@ class _BankingWebViewState extends State<BankingWebView> {
   void initState() {
     super.initState();
     _cookieManager = widget.cookieManager ?? BankingCookieManager();
-    // Wrap the caller's onEvent so JS bridge CLOSE actions map to WebViewCloseEvent.
     _bridge = widget.onEvent != null
-        ? JsBridge(onEvent: _handleBridgeEvent)
+        ? JsBridge(
+            onEvent: widget.onEvent!,
+            actions: widget.config.jsActions,
+          )
         : null;
     _controller = WebViewController();
     unawaited(_initController());
-  }
-
-  /// Maps bridge custom events to typed WebView events where needed.
-  ///
-  /// `window.close` posts action 'CLOSE' through the JS bridge.
-  /// We convert it to [WebViewCloseEvent] to match the original native callback.
-  void _handleBridgeEvent(WebViewEvent event) {
-    if (event is WebViewCustomEvent && event.name == 'CLOSE') {
-      widget.onEvent?.call(const WebViewCloseEvent());
-      return;
-    }
-    widget.onEvent?.call(event);
   }
 
   Future<void> _initController() async {
@@ -113,13 +103,8 @@ class _BankingWebViewState extends State<BankingWebView> {
             widget.onEvent?.call(const WebViewSessionExpiredEvent());
           }
         },
-        
         onSslAuthError: (error) => unawaited(
-          PlatformSslPinning.handle(
-            error: error,
-            pinHashes: widget.config.sslPinHashes,
-            onEvent: widget.onEvent,
-          ),
+          kDebugMode ? error.proceed() : error.cancel(),
         ),
       ),
     );
@@ -173,25 +158,15 @@ class _BankingWebViewState extends State<BankingWebView> {
     }
   }
 
-  /// Injects overrides for `window.close`, `window.open`, and `target="_blank"`.
+  /// Injects all [WebViewConfig.jsActions] scripts into the page.
   ///
   /// Must be called on every [_onPageFinished] because the JS environment is
   /// reset on each navigation.
   Future<void> _injectJsOverrides() async {
-    // window.close → WebViewCloseEvent (via JsBridge action 'CLOSE').
-    await _controller.runJavaScript(
-      'window.close=function(){if(window.FlutterBridge){window.FlutterBridge.postMessage(JSON.stringify({action:"CLOSE",data:null}));}};',
-    );
-
-    // window.open → WebViewCustomEvent(name: 'OPEN_NEW_WINDOW').
-    await _controller.runJavaScript(
-      'window.open=function(url){if(window.FlutterBridge){window.FlutterBridge.postMessage(JSON.stringify({action:"OPEN_NEW_WINDOW",data:{url:String(url)}}));}};',
-    );
-
-    // target="_blank" links → navigate in-frame so onNavigationRequest can intercept.
-    await _controller.runJavaScript(
-      'document.querySelectorAll(\'a[target="_blank"]\').forEach(function(a){a.removeAttribute("target");});',
-    );
+    for (final action in widget.config.jsActions) {
+      final script = action.script;
+      if (script != null) await _controller.runJavaScript(script);
+    }
   }
 
   Future<NavigationDecision> _onNavigationRequest(
