@@ -1,10 +1,9 @@
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
 /// Library-owned navigation policy returned by [BankNavigationAction.onMatch].
 ///
-/// Using this instead of the framework's [NavigationActionPolicy] keeps
-/// action implementations free of InAppWebView-specific dependencies (DIP).
-/// [WebViewNavigationDelegate] maps it to [NavigationActionPolicy] internally.
+/// Using this instead of the framework's `NavigationDecision` keeps
+/// action implementations — and [WebViewNavigationDelegate] itself — free of
+/// `webview_flutter`-specific dependencies (DIP). `BankingWebView` maps it to
+/// `NavigationDecision` internally when wiring the `NavigationDelegate`.
 enum WebViewNavigationPolicy {
   /// Allow the navigation to proceed.
   allow,
@@ -20,7 +19,7 @@ enum WebViewNavigationPolicy {
 ///   2. Performing its side-effect and returning a policy → [onMatch].
 ///
 /// Actions live **outside** the `webview_lib` package, in the feature layer.
-/// They depend on this interface (DIP) and never on InAppWebView internals.
+/// They depend on this interface (DIP) and never on `webview_flutter` internals.
 ///
 /// ---
 /// **Example – open phone dialer:**
@@ -68,12 +67,12 @@ abstract interface class BankNavigationAction {
 
 /// Orchestrates a chain of [BankNavigationAction]s.
 ///
-/// Extracts the URL and delegates each action's logic to the action itself,
-/// keeping this class as a pure coordinator (SRP + OCP: add actions without
-/// touching this class).
+/// Evaluates each action against the given URL in order and returns the first
+/// matching policy, or null if no action claims the URL. Keeping this class
+/// free of framework types means actions can be unit-tested without a WebView.
 ///
-/// Inject a custom implementation of this class into [WebViewConfig] to
-/// override the default chain-of-responsibility behaviour (DIP).
+/// Inject a custom implementation into `WebViewConfig` to override the default
+/// chain-of-responsibility behaviour (DIP).
 class WebViewNavigationDelegate {
   const WebViewNavigationDelegate({
     this.actions = const [],
@@ -82,20 +81,15 @@ class WebViewNavigationDelegate {
   /// The ordered list of actions to evaluate on each navigation request.
   final List<BankNavigationAction> actions;
 
-  /// Evaluates [actions] in order and returns the first matching policy mapped
-  /// to [NavigationActionPolicy], or null if no action claims the URL.
-  Future<NavigationActionPolicy?> call(
-    InAppWebViewController controller,
-    NavigationAction navigationAction,
-  ) async {
-    final url = navigationAction.request.url?.toString() ?? '';
+  /// Evaluates [actions] in order against [url] and returns the first matching
+  /// [WebViewNavigationPolicy], or null if no action claims the URL.
+  ///
+  /// The caller (`BankingWebView`) is responsible for mapping the returned
+  /// policy to the framework's `NavigationDecision`.
+  Future<WebViewNavigationPolicy?> call(String url) async {
     for (final action in actions) {
       if (action.matches(url)) {
-        final policy = await action.onMatch(url);
-        return switch (policy) {
-          WebViewNavigationPolicy.allow => NavigationActionPolicy.ALLOW,
-          WebViewNavigationPolicy.cancel => NavigationActionPolicy.CANCEL,
-        };
+        return action.onMatch(url);
       }
     }
     return null;

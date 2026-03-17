@@ -13,9 +13,9 @@ dependencies:
   cookie_jar:
   flutter:
     sdk: flutter
-  flutter_inappwebview:
-  security:
-    path: ../../core/security
+  webview_flutter:
+  webview_flutter_android:
+  webview_flutter_wkwebview:
   url_launcher: ^6.3.2
 
 dev_dependencies:

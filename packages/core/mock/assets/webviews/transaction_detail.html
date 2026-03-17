@@ -296,11 +296,11 @@
 
   // Send actions back to Flutter
   function sendAction(action) {
-    if (window.flutter_inappwebview) {
-      window.flutter_inappwebview.callHandler('FlutterBridge', {
+    if (window.FlutterBridge) {
+      window.FlutterBridge.postMessage(JSON.stringify({
         action: action,
         data: { timestamp: new Date().toISOString() }
-      });
+      }));
     }
   }
 </script>

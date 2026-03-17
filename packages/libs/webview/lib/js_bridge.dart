@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import './webview_event.dart';
 
@@ -13,7 +13,7 @@ class JsBridge {
     this.channelName = 'FlutterBridge',
   });
 
-  /// Name of the JS handler registered in the WebView.
+  /// Name of the JS channel registered in the WebView.
   final String channelName;
 
   /// Callback for events received from JS.
@@ -21,48 +21,55 @@ class JsBridge {
 
   static const _tag = 'JsBridge';
 
-  /// Registers the JS handler on the given [controller].
+  /// Registers the JS channel on the given [controller].
+  ///
+  /// Must be called **before** [WebViewController.loadRequest] or
+  /// [WebViewController.loadHtmlString] so the channel is available
+  /// when the page executes JavaScript.
   ///
   /// The web page can call:
   /// ```js
-  /// window.flutter_inappwebview.callHandler('FlutterBridge', payload);
+  /// window.FlutterBridge.postMessage(JSON.stringify(payload));
   /// ```
-  void register(InAppWebViewController controller) {
-    controller.addJavaScriptHandler(
-      handlerName: channelName,
-      callback: _handleMessage,
+  Future<void> register(WebViewController controller) async {
+    await controller.addJavaScriptChannel(
+      channelName,
+      onMessageReceived: (msg) => _handleMessage(msg.message),
     );
-    developer.log('Handler "$channelName" registered', name: _tag);
+    developer.log('Channel "$channelName" registered', name: _tag);
   }
 
   /// Sends data from Flutter to the WebView by calling
   /// `window.onFlutterData(jsonString)` in the loaded page.
+  ///
+  /// The argument is passed as a **JSON string** (not a JS object literal) so
+  /// that the web page can call `JSON.parse(data)` on it. To achieve this the
+  /// JSON-encoded map is double-encoded: the outer `jsonEncode` turns the JSON
+  /// string into a valid JS string literal with all inner quotes escaped.
   Future<void> sendToWeb(
-    InAppWebViewController controller,
+    WebViewController controller,
     Map<String, dynamic> data,
   ) async {
-    await controller.callAsyncJavaScript(
-      functionBody: 'if(window.onFlutterData) window.onFlutterData(JSON.stringify(flutterData));',
-      arguments: {'flutterData': data},
+    final json = jsonEncode(data);
+    final jsStringArg = jsonEncode(json); // produces a quoted, escaped JS string
+    await controller.runJavaScript(
+      'if(window.onFlutterData) window.onFlutterData($jsStringArg);',
     );
     developer.log('Sent data to web: ${data.keys}', name: _tag);
   }
 
-  dynamic _handleMessage(List<dynamic> args) {
-    if (args.isEmpty) return null;
-
+  void _handleMessage(String rawMessage) {
     try {
-      final Map<String, dynamic> payload;
-      if (args.first is Map) {
-        payload = Map<String, dynamic>.from(args.first as Map);
-      } else if (args.first is String) {
-        payload =
-            Map<String, dynamic>.from(jsonDecode(args.first as String) as Map);
-      } else {
-        developer.log('Unexpected bridge payload type: ${args.first.runtimeType}', name: _tag);
-        return null;
+      final decoded = jsonDecode(rawMessage);
+      if (decoded is! Map) {
+        developer.log(
+          'Unexpected bridge payload type: ${decoded.runtimeType}',
+          name: _tag,
+        );
+        return;
       }
 
+      final payload = Map<String, dynamic>.from(decoded);
       final action = payload['action'] as String? ?? 'unknown';
       final data = payload['data'] as Map<String, dynamic>?;
 
@@ -73,7 +80,5 @@ class JsBridge {
     } on Exception catch (e) {
       developer.log('Error handling bridge message: $e', name: _tag);
     }
-
-    return null;
   }
 }

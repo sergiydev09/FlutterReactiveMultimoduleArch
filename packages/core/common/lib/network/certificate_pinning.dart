@@ -90,8 +90,7 @@ class CertificatePinning {
   /// Validates DER-encoded certificate bytes against a flat list of SHA-256
   /// [pinHashes] (base64-encoded).
   ///
-  /// Pass [certDerBytes] for certificate pinning and/or [spkiDerBytes] for
-  /// public-key (SPKI) pinning. At least one must be non-null when
+  /// Pass [certDerBytes] for certificate pinning. Must be non-null when
   /// [pinHashes] is non-empty, otherwise [SslBlockReason.missingCertificate]
   /// is returned.
   ///
@@ -100,7 +99,6 @@ class CertificatePinning {
   static SslValidationResult validatePins({
     required List<String> pinHashes,
     List<int>? certDerBytes,
-    List<int>? spkiDerBytes,
     bool hasSslError = false,
   }) {
     if (pinHashes.isEmpty) {
@@ -109,24 +107,14 @@ class CertificatePinning {
           : const SslValidationAllowed();
     }
 
-    if (certDerBytes == null && spkiDerBytes == null) {
+    if (certDerBytes == null) {
       return const SslValidationBlocked(SslBlockReason.missingCertificate);
     }
 
-    if (certDerBytes != null) {
-      final certHash = sha256Fingerprint(certDerBytes);
-      if (pinHashes.contains(certHash)) {
-        developer.log('SSL pinning OK [cert]', name: _tag);
-        return const SslValidationAllowed();
-      }
-    }
-
-    if (spkiDerBytes != null) {
-      final keyHash = sha256Fingerprint(spkiDerBytes);
-      if (pinHashes.contains(keyHash)) {
-        developer.log('SSL pinning OK [pubkey]', name: _tag);
-        return const SslValidationAllowed();
-      }
+    final certHash = sha256Fingerprint(certDerBytes);
+    if (pinHashes.contains(certHash)) {
+      developer.log('SSL pinning OK [cert]', name: _tag);
+      return const SslValidationAllowed();
     }
 
     developer.log(
