@@ -323,18 +323,18 @@
         Verificar bridge registrado
       </button>
 
-      <!-- window.* overrides -->
-      <span class="test-group-label" style="margin-top:8px">window.close / window.open</span>
+      <!-- Standard bridge events -->
+      <span class="test-group-label" style="margin-top:8px">Eventos estándar (bridge directo)</span>
 
-      <button class="btn btn-test-danger" onclick="window.close()">
-        window.close() → WebViewCloseEvent
+      <button class="btn btn-test-danger" onclick="sendAction('CLOSE')">
+        CLOSE → WebViewCloseEvent
       </button>
-      <button class="btn btn-test" onclick="window.open('https://www.google.com')">
-        window.open() → OPEN_NEW_WINDOW
+      <button class="btn btn-test" onclick="sendAction('OPEN_NEW_WINDOW', {url: 'https://www.google.com'})">
+        OPEN_NEW_WINDOW → abrir en navegador
       </button>
 
-      <!-- target="_blank" link (rewritten to in-frame by JS injection) -->
-      <span class="test-group-label" style="margin-top:8px">target="_blank" (reescrito en frame)</span>
+      <!-- target="_blank" link (rewritten in-frame by BlankTargetLinksJsAction injection) -->
+      <span class="test-group-label" style="margin-top:8px">target="_blank" (inyección JS)</span>
 
       <a class="btn btn-link btn-test-neutral"
          href="https://www.google.com"
